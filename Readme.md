@@ -6,3 +6,7 @@
 ![小程序](./weapp.jpg)
 ## APP
 ![app](./app.png)
+
+## H5
+![h5](./h5.png)
+或者点击链接查看 https://example.duxui.cn
