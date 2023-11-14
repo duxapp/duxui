@@ -1,0 +1,65 @@
+.Cascade {
+  width: 100%;
+  height: 300px;
+  flex-direction: row;
+
+  &__left {
+    width: 180px;
+    border-right: 1px solid rgba(180, 180, 180, 0.3);
+
+    &__label {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 0;
+      border-bottom: 1px solid rgba(180, 180, 180, 0.3);
+
+      &__title {
+        font-size: 30px;
+        font-weight: 600;
+      }
+
+      &__select {
+        font-size: 24px;
+        flex-direction: row;
+        align-items: center;
+        padding-top: 10px;
+
+        &__num {
+          padding-left: 24px;
+        }
+      }
+    }
+  }
+
+  &__right {
+    flex: 1;
+    flex-direction: column;
+    padding: 24px;
+
+    &__item {
+      padding: 24px 0;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      &__label {
+        font-size: 26px;
+      }
+
+      &__icon {
+        font-size: 32px;
+      }
+    }
+  }
+}
+
+.Cascade-fill {
+  &__item {
+    padding: 24px;
+
+    &--select {
+      background-color: rgba($duxappPrimaryColor, 0.2);
+    }
+  }
+}

@@ -1,0 +1,22 @@
+.ModalForm {
+  background-color: #fff;
+  border-radius: 16px 16px 0 0;
+
+  &--vertical {
+    width: 750px;
+  }
+
+  &--full {
+    min-width: 500px;
+  }
+
+  &__head {
+    padding: 30px;
+  }
+
+  &__btns {
+    padding: 32px;
+    padding-bottom: 68px;
+    padding-top: 24px;
+  }
+}

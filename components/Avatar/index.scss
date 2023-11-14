@@ -1,0 +1,64 @@
+.Avatar {
+  background-color: $duxuiAvatarBgColor;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+
+  &--s {
+    width: $duxuiAvatarSSize;
+    height: $duxuiAvatarSSize;
+  }
+  &--m {
+    width: $duxuiAvatarMSize;
+    height: $duxuiAvatarMSize;
+  }
+  &--l {
+    width: $duxuiAvatarLSize;
+    height: $duxuiAvatarLSize;
+  }
+
+  &--round {
+    border-radius: 120px;
+  }
+
+  &--round-min {
+    border-radius: 6px;
+  }
+
+  &--text-color {
+    color: $duxuiAvatarColor;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__text {
+    &--s {
+      font-size: 24px;
+    }
+    &--m {
+      font-size: 28px;
+    }
+    &--l {
+      font-size: 36px;
+    }
+  }
+}
+.AvatarGroup {
+  &--s {
+    height: $duxuiAvatarSSize;
+  }
+  &--m {
+    height: $duxuiAvatarMSize;
+  }
+  &--l {
+    height: $duxuiAvatarLSize;
+  }
+  &__avatar {
+    position: absolute;
+    top: 0;
+    border: 1px solid #fff;
+  }
+}

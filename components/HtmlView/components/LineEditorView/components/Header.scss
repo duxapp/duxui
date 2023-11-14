@@ -1,0 +1,40 @@
+.LEV-Header {
+  font-weight: bold;
+  color: $duxappTextColor1;
+
+  &--1 {
+    font-size: 64px;
+    line-height: 64px * 1.4;
+    margin: 21.44px 0;
+  }
+
+  &--2 {
+    font-size: 48px;
+    line-height: 48px * 1.4;
+    margin: 24px 0;
+  }
+
+  &--3 {
+    font-size: 37.44px;
+    line-height: 37.44px * 1.4;
+    margin: 26.56px 0;
+  }
+
+  &--4 {
+    font-size: 32px;
+    line-height: 32px * 1.4;
+    margin: 35.84px 0;
+  }
+
+  &--5 {
+    font-size: 26.56px;
+    line-height: 26.56px * 1.4;
+    margin: 48px 0;
+  }
+
+  &--6 {
+    font-size: 24px;
+    line-height: 24px * 1.4;
+    margin: 53.44px 0;
+  }
+}

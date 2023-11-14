@@ -1,0 +1,88 @@
+.calendars {
+  background-color: #fff;
+  padding: 10px 5px;
+  &__head {
+    padding: 10px 30px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    &__text {
+      font-size: 32px;
+      color: #000;
+    }
+    &__icon {
+      font-size: 32px;
+      color: $duxappTextColor1;
+    }
+  }
+  &__row {
+    flex-direction: row;
+    &__item {
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+      height: 80px;
+      &__select {
+        position: absolute;
+        background-color: $duxappPrimaryColor;
+        top: 10px;
+        bottom: 10px;
+        &--select {
+          left: 10px;
+          right: 10px;
+          border-radius: 40px;
+        }
+        &--start {
+          left: 10px;
+          right: -1px;
+          border-radius: 40px 0 0 40px;
+        }
+        &--end {
+          left: -1px;
+          right: 10px;
+          border-radius: 0 40px 40px 0;
+        }
+        &--center {
+          left: -1px;
+          right: -1px;
+        }
+      }
+      &__text {
+        color: #333;
+        font-size: 28px;
+        z-index: 1;
+        &--disable {
+          color: #999;
+        }
+      }
+    }
+  }
+}
+.calendars-select {
+  &__top {
+    background-color: #fff;
+    border-radius: 40px 40px 0 0;
+    justify-content: space-between;
+    flex-direction: row;
+    &__right {
+      padding: 32px 32px 12px;
+      font-size: 32px;
+      color: $duxappPrimaryColor;
+    }
+
+    &__center {
+      padding: 32px 32px 12px;
+      flex: 1;
+      font-size: 36px;
+      font-weight: bold;
+      color: #323233;
+      text-align: center;
+    }
+
+    &__left {
+      padding: 32px 32px 12px;
+      font-size: 32px;
+      color: #999999;
+    }
+  }
+}

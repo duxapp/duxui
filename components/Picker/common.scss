@@ -1,0 +1,11 @@
+.PickerView {
+  /*  #ifndef rn */
+  height: 360px;
+  /*  #endif  */
+  &__item {
+    color: $duxappTextColor1;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+}

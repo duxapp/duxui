@@ -1,0 +1,15 @@
+.CardSelect {
+  background-color: #fff;
+  padding: 10px 8px;
+  align-items: center;
+  justify-content: center;
+  &--round {
+    border-radius: 150px;
+  }
+  &--round-min {
+    border-radius: 8px;
+  }
+  &--disable {
+    opacity: 0.3;
+  }
+}

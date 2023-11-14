@@ -1,0 +1,19 @@
+.ShowMessage {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  padding: 24px;
+  background-color: #fff;
+  z-index: 99;
+
+  &__title {
+    font-size: 32px;
+    color: #333;
+  }
+
+  &__content {
+    font-size: 24px;
+    margin-top: 20px;
+    color: #999;
+  }
+}

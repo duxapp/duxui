@@ -1,0 +1,23 @@
+.UIUplodImages {
+  &__item {
+    background-color: $duxappPageColor;
+    border-radius: 16px;
+
+    &__image {
+      border-radius: 16px;
+    }
+
+    &__icon {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+      border-radius: 22px;
+      border: 1px solid #f5f5f5;
+    }
+  }
+}

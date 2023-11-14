@@ -1,0 +1,32 @@
+.DuxuiShowConfirm {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 99;
+  &__main {
+    width: 606px;
+    background-color: #fff;
+    border-radius: 32px;
+    padding-top: 48px;
+    z-index: 100;
+  }
+
+  &__content {
+    margin-top: 48px;
+    margin-left: 32px;
+    margin-right: 32px;
+  }
+
+  &__divider {
+    margin-top: 68px;
+  }
+
+  &__btns {
+    height: 110px;
+  }
+}

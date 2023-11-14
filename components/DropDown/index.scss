@@ -1,0 +1,36 @@
+.dropdown {
+  &__mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+  }
+  &__main {
+    position: absolute;
+    background-color: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    z-index: 10;
+  }
+  &__item {
+    padding: 30px 50px;
+    padding-right: 40px;
+    flex-direction: row;
+    justify-content: space-between;
+    &--line {
+      border-top-width: 1px;
+      border-top-color: #e5e5e5;
+      margin: 0 50px;
+    }
+    &--select {
+      background-color: #fdf5f3;
+    }
+    &__text {
+      font-size: 32px;
+      margin-right: 50px;
+    }
+  }
+}

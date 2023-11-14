@@ -1,0 +1,13 @@
+.Space {
+  &__line--row {
+    width: 24px;
+    flex-shrink: 0;
+  }
+  &__line--column {
+    height: 24px;
+    flex-shrink: 0;
+  }
+  &__item-fill {
+    flex: 1;
+  }
+}

@@ -1,0 +1,53 @@
+.TabBar-page {
+  flex: 1;
+  &__item {
+    position: absolute;
+    left: -9999px;
+    right: 9999px;
+    top: 0;
+    bottom: 0;
+    &--hover {
+      left: 0;
+      right: 0;
+    }
+  }
+}
+.TabBar-menu {
+  flex-direction: row;
+  background-color: #fff;
+  border-top-width: 1px;
+  border-top-color: #f1f1f1;
+  /*postcss-pxtransform rn eject enable*/
+  border-top-style: solid;
+  /*postcss-pxtransform rn eject disable*/
+  &__item {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 0;
+    &__name {
+      margin-top: 10px;
+      font-size: 22px;
+      color: $duxuiTabBarNameColor;
+      &--hover {
+        color: $duxuiTabBarNameHoverColor;
+      }
+    }
+  }
+  &__icon {
+    align-items: center;
+    justify-content: center;
+    &__image {
+      width: 48px;
+      height: 48px;
+    }
+    &__name {
+      margin-top: 8px;
+      font-size: 20px;
+      color: $duxuiTabBarNameColor;
+      &--hover {
+        color: $duxuiTabBarNameHoverColor;
+      }
+    }
+  }
+}

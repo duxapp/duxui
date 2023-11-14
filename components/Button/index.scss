@@ -1,0 +1,130 @@
+.Button {
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  overflow: hidden;
+
+  &__text {
+    z-index: 1;
+  }
+
+  &-c-white {
+    color: #fff;
+  }
+
+  &--default {
+    border-width: 2px;
+    border-color: $duxappTextColor2;
+  }
+
+  &--primary {
+    background-color: $duxappPrimaryColor;
+  }
+
+  &--secondary {
+    background-color: $duxappSecondaryColor;
+  }
+
+  &--success {
+    background-color: $duxappSuccessColor;
+  }
+
+  &--danger {
+    background-color: $duxappDangerColor;
+  }
+
+  &--warning {
+    background-color: $duxappWarningColor;
+  }
+
+  &--custom1 {
+    background-color: $duxappCustomColor1;
+  }
+
+  &--custom2 {
+    background-color: $duxappCustomColor2;
+  }
+
+  &--custom3 {
+    background-color: $duxappCustomColor3;
+  }
+
+  &--plain {
+    border-width: 2px;
+    &-default {
+      border-color: $duxappTextColor2;
+    }
+
+    &-primary {
+      border-color: $duxappPrimaryColor;
+    }
+
+    &-secondary {
+      border-color: $duxappSecondaryColor;
+    }
+
+    &-success {
+      border-color: $duxappSuccessColor;
+    }
+
+    &-danger {
+      border-color: $duxappDangerColor;
+    }
+
+    &-warning {
+      border-color: $duxappWarningColor;
+    }
+
+    &--custom1 {
+      border-color: $duxappCustomColor1;
+    }
+
+    &--custom2 {
+      border-color: $duxappCustomColor2;
+    }
+
+    &--custom3 {
+      border-color: $duxappCustomColor3;
+    }
+  }
+
+  &--s {
+    height: $duxuiButtonSHeight;
+    padding: 0 $duxuiButtonSPadding;
+  }
+  &--m {
+    height: $duxuiButtonMHeight;
+    padding: 0 $duxuiButtonMPadding;
+  }
+  &--l {
+    height: $duxuiButtonLHeight;
+    padding: 0 $duxuiButtonLPadding;
+  }
+  &--fs-s {
+    font-size: $duxuiButtonSFontSize;
+  }
+  &--fs-m {
+    font-size: $duxuiButtonMFontSize;
+  }
+  &--fs-l {
+    font-size: $duxuiButtonLFontSize;
+  }
+  &__loading {
+    margin-right: 10px;
+  }
+  &--linear {
+    border-width: 0;
+  }
+  &--round {
+    border-radius: 750px;
+  }
+  &--round-min {
+    border-radius: 10px;
+  }
+  &--disabled {
+    opacity: 0.3;
+  }
+  &__image {
+    margin: 0 10px;
+  }
+}

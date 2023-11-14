@@ -1,0 +1,32 @@
+.LEV-Paragraph {
+  font-size: 30px;
+  line-height: 56px;
+  color: $duxappTextColor1;
+  padding: 14px 0;
+}
+
+.html-b {
+  font-weight: bold;
+}
+.html-i,
+.html-em {
+  font-style: italic;
+}
+.html-u {
+  text-decoration: underline;
+}
+.html-b,
+.html-strong {
+  font-weight: bold;
+}
+.html-del,
+.html-s,
+.html-strike {
+  text-decoration: line-through;
+}
+.html-br {
+  /*postcss-pxtransform rn eject enable*/
+  display: block;
+  /*postcss-pxtransform rn eject disable*/
+  height: 32px;
+}

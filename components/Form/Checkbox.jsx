@@ -1,0 +1,68 @@
+import { createContext, useCallback, useContext } from 'react'
+import { noop } from '@/duxapp/utils'
+import { Space } from '../Space'
+import { Text } from '../Text'
+import { DuxuiIcon } from '../DuxuiIcon'
+
+const context = createContext({ check: noop })
+
+const CheckboxGroup = ({
+  children,
+  value,
+  onChange,
+  disabled,
+  direction = 'horizontal',
+  ...props
+}) => {
+
+  const horizontal = direction === 'horizontal'
+
+  const check = useCallback(val => {
+    if (disabled) {
+      return
+    }
+    const _value = value ? [...value] : []
+    const index = _value.indexOf(val)
+    if (~index) {
+      _value.splice(index, 1)
+    } else {
+      _value.push(val)
+    }
+    onChange?.(_value)
+  }, [onChange, value, disabled])
+
+  return <context.Provider value={{ check, currentValue: value }}>
+    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} {...props} className='flex-grow'>
+      {children}
+    </Space>
+  </context.Provider>
+}
+
+CheckboxGroup.defaultProps = {
+  value: []
+}
+
+export const Checkbox = ({ value, label, checked, children: Child, ...props }) => {
+  const { check, currentValue } = useContext(context)
+
+  const isCheck = checked || currentValue?.includes(value)
+
+  if (Child) {
+    return <Child
+      {...props}
+      value={value}
+      label={label}
+      checked={isCheck}
+      onCheck={() => check(value)}
+    />
+  }
+
+  return <Space row items='center' size={8} onClick={() => check(value)}  {...props}>
+    <Text size={32} type={isCheck ? 'primary' : void 0} color={isCheck ? void 0 : 3}>
+      <DuxuiIcon name={isCheck ? 'xuanzhong' : 'xuanzekuang'} />
+    </Text>
+    {!!label && <Text>{label}</Text>}
+  </Space>
+}
+
+Checkbox.Group = CheckboxGroup

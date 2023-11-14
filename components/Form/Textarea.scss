@@ -1,0 +1,11 @@
+.Textarea {
+  background-color: $duxappPageColor;
+  border-radius: 16px;
+  padding: 24px;
+  min-width: 300px;
+  &__input {
+    textalignvertical: top;
+    width: 100%;
+    color: $duxappTextColor1;
+  }
+}

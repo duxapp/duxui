@@ -1,0 +1,57 @@
+.Elevator {
+  flex: 1;
+  &__group {
+    padding: 24px 0;
+    &__name {
+      color: $duxappTextColor1;
+      padding: 12px 0 24px 0;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    &__item {
+      padding: 24px 0;
+      font-size: 28px;
+      color: $duxappTextColor1;
+      border-bottom: 1px solid #f5f5f5;
+    }
+  }
+  &__nav {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    justify-content: center;
+    &__content {
+      background: #f7f8fa;
+      border-radius: 16px;
+      padding: 14px 0;
+      align-items: center;
+    }
+    &__item {
+      color: $duxappTextColor1;
+      padding: 6px 8px;
+      font-size: 24px;
+      color: #73778e;
+    }
+  }
+  &__search {
+    height: 72px;
+    background: #f7f8fa;
+    border-radius: 36px;
+    padding: 0 20px;
+    align-items: center;
+    flex-direction: row;
+    &__input {
+      color: $duxappTextColor1;
+      width: 100%;
+      margin-left: 20px;
+      font-size: 28px;
+    }
+    &__icon {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+  }
+}

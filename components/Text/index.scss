@@ -1,0 +1,149 @@
+.Text {
+  color: $duxappTextColor1;
+  font-size: $duxappTextSize3;
+
+  &-primary {
+    color: $duxappPrimaryColor;
+  }
+
+  &-secondary {
+    color: $duxappSecondaryColor;
+  }
+
+  &-success {
+    color: $duxappSuccessColor;
+  }
+
+  &-danger {
+    color: $duxappDangerColor;
+  }
+
+  &-warning {
+    color: $duxappWarningColor;
+  }
+
+  &-custom1 {
+    color: $duxappCustomColor1;
+  }
+
+  &-custom2 {
+    color: $duxappCustomColor2;
+  }
+
+  &-custom3 {
+    color: $duxappCustomColor3;
+  }
+
+  &-c-1 {
+    color: $duxappTextColor1;
+  }
+
+  &-c-2 {
+    color: $duxappTextColor2;
+  }
+
+  &-c-3 {
+    color: $duxappTextColor3;
+  }
+
+  &-c-4 {
+    color: $duxappTextColor4;
+  }
+
+  &-s-1 {
+    font-size: $duxappTextSize1;
+  }
+
+  &-s-2 {
+    font-size: $duxappTextSize2;
+  }
+
+  &-s-3 {
+    font-size: $duxappTextSize3;
+  }
+
+  &-s-4 {
+    font-size: $duxappTextSize4;
+  }
+
+  &-s-5 {
+    font-size: $duxappTextSize5;
+  }
+
+  &-s-6 {
+    font-size: $duxappTextSize6;
+  }
+
+  &-s-7 {
+    font-size: $duxappTextSize7;
+  }
+
+  &-s-l-1 {
+    line-height: $duxappTextSize1 * 1.4;
+  }
+
+  &-s-l-2 {
+    line-height: $duxappTextSize2 * 1.4;
+  }
+
+  &-s-l-3 {
+    line-height: $duxappTextSize3 * 1.4;
+  }
+
+  &-s-l-4 {
+    line-height: $duxappTextSize4 * 1.4;
+  }
+
+  &-s-l-5 {
+    line-height: $duxappTextSize5 * 1.4;
+  }
+
+  &-s-l-6 {
+    line-height: $duxappTextSize6 * 1.4;
+  }
+
+  &-s-l-7 {
+    line-height: $duxappTextSize7 * 1.4;
+  }
+
+  &-bold {
+    font-weight: bold;
+  }
+
+  &-break {
+    word-break: break-all;
+  }
+
+  &-nobold {
+    font-weight: normal;
+  }
+
+  &-underline {
+    text-decoration: underline;
+  }
+
+  &-delete {
+    text-decoration: line-through;
+  }
+
+  /*postcss-pxtransform rn eject enable*/
+  &-ellipsis {
+    //超出一行文字自动隐藏
+    overflow: hidden;
+    //文字隐藏后添加省略号
+    text-overflow: ellipsis;
+    //强制不换行
+    white-space: nowrap;
+
+    &--more {
+      display: -webkit-box;
+      overflow: hidden;
+
+      /*! autoprefixer: ignore next */
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+    }
+  }
+
+  /*postcss-pxtransform rn eject disable*/
+}

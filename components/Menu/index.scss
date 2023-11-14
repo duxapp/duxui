@@ -1,0 +1,16 @@
+.Menu {
+  background-color: #fff;
+  &__mask {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  &__content {
+    background-color: #fff;
+    padding: 24px;
+    &--round {
+      border-radius: 0 0 16px 16px;
+    }
+  }
+}
+.MenuItem {
+  padding: 24px;
+}

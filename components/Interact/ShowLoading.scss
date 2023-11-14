@@ -1,0 +1,28 @@
+.ShowLoading {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 16px;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  &__mask {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+  }
+
+  &__text {
+    font-size: 26px;
+    color: #fff;
+    margin-top: 20px;
+    text-align: center;
+    line-height: 34px;
+  }
+}

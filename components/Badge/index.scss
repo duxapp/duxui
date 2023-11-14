@@ -1,0 +1,36 @@
+.Badge {
+  &__count {
+    background-color: #F24844;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    align-items: center;
+    justify-content: center;
+    &--child {
+      position: absolute;
+      top: -16px;
+      right: -16px;
+    }
+    &--outside {
+      position: absolute;
+      top: -16px;
+    }
+    &__text {
+      color: #fff;
+      font-size: 24px;
+      padding: 0 8px;
+      white-space: nowrap;
+    }
+  }
+  &__dot {
+    background-color: #e87369;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    &--child {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+    }
+  }
+}
