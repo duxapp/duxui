@@ -41,23 +41,29 @@ export const Form = forwardRef(({
   defaultValues: propsDefaultValues
 }, ref) => {
 
-  const defaultValues = useMemo(() => {
+  const _defaultValues = useMemo(() => {
     if (typeof propsDefaultValues === 'function') {
       return {}
     }
-    return propsDefaultValues || {}
+    return { ...propsDefaultValues || {} }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [values, setvalues] = useState({ ...defaultValues })
+  const [defaultValues, setDefaultValues] = useState(_defaultValues)
+
+  const [values, setvalues] = useState(_defaultValues)
 
   // 同步或者异步获取默认值
   useEffect(() => {
     if (typeof propsDefaultValues === 'function') {
       const val = propsDefaultValues()
       if (val instanceof Promise) {
-        val.then(setvalues)
+        val.then(res => {
+          setDefaultValues(res)
+          setvalues(res)
+        })
       } else {
+        setDefaultValues(val)
         setvalues(val)
       }
     }
@@ -79,8 +85,11 @@ export const Form = forwardRef(({
   onSubmitRef.current = onSubmit
 
   useEffect(() => {
+    if (defaultValues === values) {
+      return
+    }
     onChangeRef.current?.(deepCopy(values))
-  }, [values])
+  }, [values, defaultValues])
 
   const setValue = useCallback((key, value) => {
     setvalues(old => {
