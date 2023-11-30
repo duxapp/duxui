@@ -36,8 +36,6 @@ export const Form = forwardRef(({
   direction = 'horizontal',
   disabled,
   children,
-  // 是否快速响应 当输入的时候就获得结果
-  quick = true,
   onChange,
   onSubmit,
   defaultValues: propsDefaultValues
@@ -81,16 +79,8 @@ export const Form = forwardRef(({
   onSubmitRef.current = onSubmit
 
   useEffect(() => {
-    if (quick) {
-      setResultData(old => {
-        if (JSON.stringify(old) !== JSON.stringify(values)) {
-          onChangeRef.current?.(deepCopy(values))
-          return deepCopy(values)
-        }
-        return old
-      })
-    }
-  }, [quick, values])
+    onChangeRef.current?.(deepCopy(values))
+  }, [values])
 
   const setValue = useCallback((key, value) => {
     setvalues(old => {
@@ -125,7 +115,6 @@ export const Form = forwardRef(({
         setValidateErrors(errors)
       })
     })
-
   }, [])
 
   /**
@@ -138,24 +127,21 @@ export const Form = forwardRef(({
   const submit = useCallback(async () => {
     await validate()
     onSubmitRef.current?.(deepCopy(valuesRef.current))
-    if (quick) {
-      return
-    }
-    onChangeRef.current?.(deepCopy(valuesRef.current))
+
+    // onChangeRef.current?.(deepCopy(valuesRef.current))
     setResultData(deepCopy(valuesRef.current))
-  }, [quick, validate])
+  }, [validate])
 
   const reset = useCallback(() => {
     setvalues(deepCopy(defaultValues))
-    if (quick) {
-      setResultData(deepCopy(defaultValues))
-      onChangeRef.current?.(deepCopy(defaultValues))
-    }
-  }, [defaultValues, quick])
+
+    setResultData(deepCopy(defaultValues))
+    // onChangeRef.current?.(deepCopy(defaultValues))
+  }, [defaultValues])
 
   useImperativeHandle(ref, () => {
     return {
-      resultData,
+      data: resultData,
       defaultValues,
       values,
       setValue,
@@ -166,7 +152,7 @@ export const Form = forwardRef(({
     }
   }, [resultData, defaultValues, values, reset, setValue, setValues, submit, validate])
 
-  const result = { data: resultData, defaultValues, values, setValue, setValues, submit, reset, addItem, labelProps, direction, disabled, validateErrors }
+  const result = { data: resultData, defaultValues, values, setValue, setValues, submit, reset, validate, addItem, labelProps, direction, disabled, validateErrors }
 
   return <formContext.Provider value={result}>
     {

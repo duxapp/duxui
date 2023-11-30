@@ -24,23 +24,20 @@ export const UploadImages = ({
   const [progress, setProgress] = useState(-1)
 
   const add = useCallback(async () => {
-    const upload = formConfig.getConfig('upload')
-    if (!upload) {
-      throw '请使用 formConfig.setConfig 设置上传函数'
-    }
+    const upload = formConfig.getUpload()
     try {
-      const urls = await upload('image', { count: max - value.length, sizeType: ['compressed'] }).start(() => {
+      const urls = await upload('image', { count: max - (value?.length || 0), sizeType: ['compressed'] }).start(() => {
         setProgress(0)
       }).progress(setProgress)
       setProgress(-1)
-      onChange?.([...value, ...urls])
+      onChange?.([...value || [], ...urls])
     } catch (error) {
       setProgress(-1)
     }
   }, [max, onChange, value])
 
   return <Grid column={column} square gap={24}>
-    {value.map((item, index) => {
+    {value?.map((item, index) => {
       return (
         <View className='UIUplodImages__item' key={item}>
           <Image className='UIUplodImages__item__image w-full h-full' src={item} mode='aspectFit' />
@@ -50,7 +47,7 @@ export const UploadImages = ({
         </View>
       )
     })}
-    {value.length < max &&
+    {(value?.length || 0) < max &&
       <Column className='UIUplodImages__item' justify='center' items='center' onClick={!~progress && add}>
         {
           ~progress ?

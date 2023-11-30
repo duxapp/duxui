@@ -87,18 +87,15 @@ export class Sign extends Component {
   }
 
   async save() {
+    const uploadTempFile = formConfig.getUploadTempFile('uploadTempFile')
+
     const res = await Taro.canvasToTempFilePath(
       {
         canvasId: 'sign',
       },
       this
     )
-    const uploadTempFile = formConfig.getConfig('uploadTempFile')
 
-
-    if (!uploadTempFile) {
-      throw '请使用formConfig.setConfig 设置上传临时文件的函数: uploadTempFile'
-    }
     const [url] = await uploadTempFile([{ path: res.tempFilePath }])
     this.props.onChange?.(url)
     return url

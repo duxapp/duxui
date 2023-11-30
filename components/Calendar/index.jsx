@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useState, useEffect } from 'react'
+import { useCallback, useMemo, useState, useEffect, isValidElement } from 'react'
 import { View, Text } from '@tarojs/components'
+import { toast } from '@/duxapp'
 import { dateAdd, dateToStr, getMaxDay, strFormatToDate } from './date'
 import './index.scss'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -31,35 +32,14 @@ const getMouth = (current, num) => {
 
 const weeks = ['一', '二', '三', '四', '五', '六', '日']
 
-const Day = ({
-  text,
-  disable,
-  onClick,
-  select,
-  selectType,
-  week
-}) => {
-
-  const click = useCallback(() => {
-    onClick({
-      text,
-      disable,
-      week
-    })
-  }, [onClick, text, disable, week])
-
-  return <View className='calendars__row__item' onClick={click}>
-    {select && <View className={`calendars__row__item__select calendars__row__item__select--${selectType}`} />}
-    <Text className={`calendars__row__item__text${disable ? ' calendars__row__item__text--disable' : ''}`} style={select ? { color: '#fff' } : {}}>{text}</Text>
-  </View>
-}
-
 export const Calendar = ({
-  mode = 'day', // day日期选择 week周选择 scope范围选择
+  mode, // day日期选择 week周选择 scope范围选择
   value: propsValue = '',// 周或者范围选择传入数组，第一项开始时间，第二项结束时间
   style,
   className,
   onChange,
+  disabledDate,
+  cunstomDate,
   max,
   min,
   onlyCurrentWeek, // 仅显示当前这周的数据
@@ -71,7 +51,6 @@ export const Calendar = ({
 
   const [scopeStart, setScopeStart] = useState('')
 
-
   useEffect(() => {
     setValue(old => {
       if (old === propsValue || old.toString() === propsValue.toString()) {
@@ -81,6 +60,88 @@ export const Calendar = ({
     }, [])
   }, [propsValue])
 
+  /**
+   * 序列化禁用日期数据
+   */
+  const disabledDateCache = useMemo(() => {
+    return disabledDate?.reduce((prev, current) => {
+      if (Array.isArray(current) && current.length === 2) {
+        const dates = current.map(v => strFormatToDate('yyyy-MM-dd', v).getTime()).sort((a, b) => a - b)
+        for (let i = dates[0]; i <= dates[1]; i += 24 * 60 * 60 * 1000) {
+          prev.push(i)
+        }
+      } else {
+        prev.push(strFormatToDate('yyyy-MM-dd', current).getTime())
+      }
+      return prev
+    }, []) || []
+  }, [disabledDate])
+
+  /**
+   * 序列化自定义数据
+   */
+  const cunstomDateCache = useMemo(() => {
+    return cunstomDate?.reduce((prev, { date, ...config }) => {
+      date.forEach(item => {
+        if (Array.isArray(item) && item.length === 2) {
+          const dates = item.map(v => strFormatToDate('yyyy-MM-dd', v).getTime()).sort((a, b) => a - b)
+          for (let i = dates[0]; i <= dates[1]; i += 24 * 60 * 60 * 1000) {
+            const day = dateToStr('yyyy-MM-dd', i)
+            prev[day] = {
+              config: prev[day]?.config ? { ...prev[day]?.config, ...config } : config,
+              customType: dates[0] === dates[1]
+                ? 'select' : i === dates[0] ?
+                  'start' : i === dates[1] ?
+                    'end' : 'center'
+            }
+          }
+        } else {
+          prev[item] = {
+            config: prev[item]?.config ? { ...prev[item]?.config, ...config } : config,
+            customType: prev[item]?.customType || 'select'
+          }
+        }
+      })
+      return prev
+    }, {})
+  }, [cunstomDate])
+
+  const getCustomConfig = useCallback(config => {
+    if (!cunstomDateCache) {
+      return
+    }
+    const day = `${month}-${(config.text + '').padStart(2, '0')}`
+    const userConfig = cunstomDateCache[day]?.config
+    const getRes = render => {
+      if (typeof render === 'undefined') {
+        return
+      }
+      if (typeof render === 'string' || isValidElement(render) || render?.__proto__ === Object.prototype) {
+        return render
+      }
+      return render({ ...config, date: day, customType: cunstomDateCache[day].customType })
+    }
+    if (userConfig) {
+      const _config = {}
+      if (userConfig.text) {
+        _config.text = getRes(userConfig.text)
+      }
+      if (userConfig.top) {
+        _config.renderTop = getRes(userConfig.top)
+      }
+      if (userConfig.bottom) {
+        _config.renderBottom = getRes(userConfig.bottom)
+      }
+      if (userConfig.style) {
+        _config.customStyle = getRes(userConfig.style)
+      }
+      if (userConfig.textStyle) {
+        _config.textStyle = getRes(userConfig.textStyle)
+      }
+      _config.customType = cunstomDateCache[day].customType
+      return _config
+    }
+  }, [cunstomDateCache, month])
 
   const list = useMemo(() => {
     const firstDay = `${month}-01`
@@ -117,25 +178,36 @@ export const Calendar = ({
     })()
 
     const isDsiable = day => {
-      if (max && strFormatToDate('yyyy-MM-dd', `${month}-${day}`) > strFormatToDate('yyyy-MM-dd', max)) {
+      const time = strFormatToDate('yyyy-MM-dd', `${month}-${day}`)
+      // 用户禁用
+      if (disabledDateCache.includes(time.getTime())) {
         return true
       }
-      if (min && strFormatToDate('yyyy-MM-dd', `${month}-${day}`) < strFormatToDate('yyyy-MM-dd', min)) {
+
+      if (max && time > strFormatToDate('yyyy-MM-dd', max)) {
+        return true
+      }
+      if (min && time < strFormatToDate('yyyy-MM-dd', min)) {
         return true
       }
       return false
     }
+
     if (scopeStart) {
       // 判断是value所在的月份
       const dates = scopeStart.split('-')
 
       for (let i = 0; i < maxDay; i++) {
         const isSelect = +dates[2] === i + 1
-        arr.push({
+        const config = {
           text: i + 1,
           select: isSelect,
           selectType: isSelect ? 'start' : '',
           disable: beyond || isDsiable(i + 1)
+        }
+        arr.push({
+          ...config,
+          ...getCustomConfig(config)
         })
       }
     } else if (typeof value === 'object') {
@@ -143,7 +215,7 @@ export const Calendar = ({
       for (let i = 0; i < maxDay; i++) {
         const currentDate = strFormatToDate('yyyy-MM-dd', `${month}-${i + 1}`).getTime()
         const isSelect = scope.length === 2 && currentDate >= scope[0] && currentDate <= scope[1]
-        arr.push({
+        const config = {
           text: i + 1,
           select: isSelect,
           selectType: currentDate === scope[0] && currentDate === scope[1] ?
@@ -153,6 +225,10 @@ export const Calendar = ({
                   'center'
                   : '',
           disable: beyond || isDsiable(i + 1)
+        }
+        arr.push({
+          ...config,
+          ...getCustomConfig(config)
         })
       }
       // console.log(JSON.stringify(arr, null, 2))
@@ -163,11 +239,15 @@ export const Calendar = ({
 
       for (let i = 0; i < maxDay; i++) {
         const isSelect = isCurrentMouth && +dates[2] === i + 1
-        arr.push({
+        const config = {
           text: i + 1,
           select: isSelect,
           selectType: isSelect ? 'select' : '',
           disable: beyond || isDsiable(i + 1)
+        }
+        arr.push({
+          ...config,
+          ...getCustomConfig(config)
         })
       }
     }
@@ -188,7 +268,7 @@ export const Calendar = ({
       return prev
     }, [])
 
-  }, [month, value, max, min, scopeStart])
+  }, [month, scopeStart, value, max, min, disabledDateCache, getCustomConfig])
 
   const prev = useCallback(() => {
     setMonth(old => dateToStr('yyyy-MM', getMouth(old, -1)))
@@ -210,23 +290,37 @@ export const Calendar = ({
       setValue(day)
       onChange?.(day)
     } else if (mode === 'week') {
+      // 判断当前周所有日期是否被禁用
       const val = Calendar.getWeekScopeForDay(day)
+      const dates = val.map(v => strFormatToDate('yyyy-MM-dd', v).getTime())
+      for (let i = dates[0]; i <= dates[1]; i += 24 * 60 * 60 * 1000) {
+        if (disabledDateCache.includes(i)) {
+          return toast('范围不可选')
+        }
+      }
       setValue(val)
       onChange?.(val)
     } else if (mode === 'scope') {
       if (!scopeStart) {
         setScopeStart(day)
+        onChange?.([])
       } else {
         let val = [scopeStart, day]
         if (strFormatToDate('yyyy-MM-dd', val[0]) > strFormatToDate('yyyy-MM-dd', val[1])) {
           val = [day, scopeStart]
+        }
+        const dates = val.map(v => strFormatToDate('yyyy-MM-dd', v).getTime())
+        for (let i = dates[0]; i <= dates[1]; i += 24 * 60 * 60 * 1000) {
+          if (disabledDateCache.includes(i)) {
+            return toast('范围不可选')
+          }
         }
         setValue(val)
         onChange?.(val)
         setScopeStart('')
       }
     }
-  }, [month, mode, onChange, scopeStart])
+  }, [month, mode, onChange, disabledDateCache, scopeStart])
 
   const [selectDay, selelctOfWeekIndex] = useMemo(() => {
     let val
@@ -254,24 +348,65 @@ export const Calendar = ({
     }
   }, [onlyCurrentWeek, selectDay, month])
 
-  return <View className={`calendars ${className}`} style={style}>
-    {!onlyCurrentWeek && <View className='calendars__head'>
-      <DuxuiIcon name='direction_left' className='calendars__head__icon' onClick={prev} />
-      <Text className='calendars__head__text'>{month}</Text>
-      <DuxuiIcon name='direction_right' className='calendars__head__icon' onClick={next} />
+  return <View className={`Calendar ${className}`} style={style}>
+    {!onlyCurrentWeek && <View className='Calendar__head'>
+      <DuxuiIcon name='direction_left' className='Calendar__head__icon' onClick={prev} />
+      <Text className='Calendar__head__text'>{month}</Text>
+      <DuxuiIcon name='direction_right' className='Calendar__head__icon' onClick={next} />
     </View>}
     {
       list.map((week, index) => {
         if (onlyCurrentWeek && selelctOfWeekIndex !== index && index) {
           return null
         }
-        return <View className='calendars__row' key={index}>
+        return <View className='Calendar__row' key={index}>
           {
             week.map((day, dayIndex) => <Day key={day.text} week={dayIndex + 1} {...day} onClick={click} />)
           }
         </View>
       })
     }
+  </View>
+}
+
+const Day = ({
+  text,
+  disable,
+  onClick,
+  select,
+  selectType,
+  week,
+  renderTop,
+  renderBottom,
+  textStyle,
+  customStyle,
+  customType
+}) => {
+
+  const click = useCallback(() => {
+    onClick({
+      text,
+      disable,
+      week
+    })
+  }, [onClick, text, disable, week])
+
+  return <View className='Calendar__row__item' onClick={click}>
+    {customType && <View
+      className={`Calendar__row__item__custom Calendar__row__item__custom--${customType}`}
+      style={customStyle}
+    />}
+    {select && <View
+      className={`Calendar__row__item__select Calendar__row__item__select--${selectType}`}
+    />}
+    <Text
+      className={`Calendar__row__item__text${disable ? ' Calendar__row__item__text--disable' : ''}`}
+      style={select ? { color: '#fff', ...textStyle } : textStyle}
+    >{text}</Text>
+    {(renderTop || renderBottom) && <View className='Calendar__row__item__other'>
+      <View className='Calendar__row__item__other__item'>{renderTop}</View>
+      <View className='Calendar__row__item__other__item'>{renderBottom}</View>
+    </View>}
   </View>
 }
 

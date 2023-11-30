@@ -1,7 +1,40 @@
 import { ComponentType, Component, CSSProperties } from 'react'
 
+interface CunstomCallbackConfig {
+  /** 当前日期的字符串格式 如：2024-01-01 */
+  date: string
+  /** 当前日文本数字 */
+  text: number,
+  /** 是否选中 */
+  select: boolean
+  /** 选中的类型 */
+  selectType: keyof {
+    /** 范围开始 */
+    start,
+    /** 范围结束 */
+    end,
+    /** 范围中间部分 */
+    center,
+    /** 选中单个日期 */
+    select
+  }
+  /** 当前日期是否禁用 */
+  disable: boolean
+  /** 自定义日期数据的类型 */
+  customType: keyof {
+    /** 范围开始 */
+    start,
+    /** 范围结束 */
+    end,
+    /** 范围中间部分 */
+    center,
+    /** 选中单个日期 */
+    select
+  }
+}
+
 interface CalendarProps {
-  /** 日历功能类型 默认为日期选择 */
+  /** 日历功能类型 默认不支持选择 */
   mode?: keyof {
     /** 日期选择 */
     day
@@ -28,6 +61,23 @@ interface CalendarProps {
   min?: string
   /** 是否仅显示当前日期所在的周 为true只会显示一周的数据 */
   onlyCurrentWeek?: boolean
+  /** 禁用的日期 日期或者日期范围组成的数组 */
+  disabledDate?: (string | [string, string])[]
+  /** 自定义日历数据 */
+  cunstomDate?: {
+    /** 日期或者日期范围组成的数组 */
+    data: (string | [string, string])[]
+    /** 所选日期样式 { backgroundColor: '#fee1d3' } */
+    style?: CSSProperties | ((config: CunstomCallbackConfig) => CSSProperties)
+    /** 日期央视 */
+    textStyle?: CSSProperties | ((config: CunstomCallbackConfig) => CSSProperties)
+    /** 日期文本 */
+    text?: string | ReactElement | ((config: CunstomCallbackConfig) => string | ReactElement)
+    /** 自定义日期上侧限制 */
+    top?: string | ReactElement | ((config: CunstomCallbackConfig) => string | ReactElement)
+    /** 自定义日期上下侧限制 */
+    bottom?: string | ReactElement | ((config: CunstomCallbackConfig) => string | ReactElement)
+  }[]
   /** 引用 */
   ref?: string | ((node: any) => any)
 }

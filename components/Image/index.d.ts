@@ -1,7 +1,7 @@
 import { ImageProps } from '@tarojs/components/types/Image'
 import { ReactNode } from 'react'
 
-interface ImageProps extends ImageProps {
+interface UIImageProps extends ImageProps {
   /** 图片地址 */
   src: string
   /** 点击图片时是否预览 */
@@ -19,6 +19,6 @@ interface ImageGroupProps {
   children?: ReactNode
 }
 
-export const Image: React.FC<ImageProps> & {
+export const Image: React.FC<UIImageProps> & {
   Group: React.FC<ImageGroupProps>
 }

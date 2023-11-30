@@ -150,15 +150,12 @@ export class Sign extends Component {
     // ).catch(err => {
     //   console.error('截取图片失败', err)
     // })
+    const uploadTempFile = formConfig.getUploadTempFile('uploadTempFile')
+
     const uri = await captureRef(this.viewShotRef, {
       format: 'png',
       quality: 1,
     })
-
-    const uploadTempFile = formConfig.getConfig('uploadTempFile')
-    if (!uploadTempFile) {
-      throw '请使用formConfig.setConfig 设置上传临时文件的函数: uploadTempFile'
-    }
     const [url] = await uploadTempFile([{ path: uri }])
 
     this.props.onChange?.(url)

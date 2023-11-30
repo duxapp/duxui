@@ -63,10 +63,8 @@ interface RadioContextValue {
   currentValue: any;
 }
 
-declare const Radio: FC<RadioProps>;
-
-declare namespace Radio {
-  const Group: FC<RadioGroupProps>;
-}
+declare const Radio: FC<RadioProps> & {
+  Group: FC<RadioGroupProps>
+};
 
 export { Radio };

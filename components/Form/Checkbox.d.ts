@@ -67,10 +67,8 @@ interface CheckboxContextValue {
   currentValue: any[];
 }
 
-declare const Checkbox: FC<CheckboxProps>;
-
-declare namespace Checkbox {
-  const Group: FC<CheckboxGroupProps>;
-}
+declare const Checkbox: FC<CheckboxProps> & {
+  Group: FC<CheckboxGroupProps>;
+};
 
 export { Checkbox };
