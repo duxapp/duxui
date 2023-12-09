@@ -18,7 +18,8 @@ const TabItem = ({
   paneKey,
   select,
   onClick,
-  isExpand
+  isExpand,
+  scroll
 }) => {
 
   if (type === 'button') {
@@ -39,7 +40,7 @@ const TabItem = ({
 
   return <Column
     self='center'
-    className='Tab__item'
+    className={scroll && 'Tab__item'}
     items='center'
     justify='center'
     onClick={() => onClick(paneKey)}
@@ -136,6 +137,7 @@ export const Tab = ({
       buttonColor={buttonColor}
       buttonRound={buttonRound}
       key={item.paneKey || index}
+      scroll={scroll}
       {...item}
       select={item.paneKey === select}
       onClick={change}

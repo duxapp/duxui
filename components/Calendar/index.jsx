@@ -39,7 +39,8 @@ export const Calendar = ({
   className,
   onChange,
   disabledDate,
-  cunstomDate,
+  customDate,
+  customSelect,
   max,
   min,
   onlyCurrentWeek, // 仅显示当前这周的数据
@@ -80,8 +81,8 @@ export const Calendar = ({
   /**
    * 序列化自定义数据
    */
-  const cunstomDateCache = useMemo(() => {
-    return cunstomDate?.reduce((prev, { date, ...config }) => {
+  const customDateCache = useMemo(() => {
+    return customDate?.reduce((prev, { date, ...config }) => {
       date.forEach(item => {
         if (Array.isArray(item) && item.length === 2) {
           const dates = item.map(v => strFormatToDate('yyyy-MM-dd', v).getTime()).sort((a, b) => a - b)
@@ -104,14 +105,14 @@ export const Calendar = ({
       })
       return prev
     }, {})
-  }, [cunstomDate])
+  }, [customDate])
 
   const getCustomConfig = useCallback(config => {
-    if (!cunstomDateCache) {
+    if (!customDateCache) {
       return
     }
     const day = `${month}-${(config.text + '').padStart(2, '0')}`
-    const userConfig = cunstomDateCache[day]?.config
+    const userConfig = customDateCache[day]?.config
     const getRes = render => {
       if (typeof render === 'undefined') {
         return
@@ -119,10 +120,10 @@ export const Calendar = ({
       if (typeof render === 'string' || isValidElement(render) || render?.__proto__ === Object.prototype) {
         return render
       }
-      return render({ ...config, date: day, customType: cunstomDateCache[day].customType })
+      return render({ ...config, date: day, customType: customDateCache[day]?.customType })
     }
+    const _config = {}
     if (userConfig) {
-      const _config = {}
       if (userConfig.text) {
         _config.text = getRes(userConfig.text)
       }
@@ -138,10 +139,27 @@ export const Calendar = ({
       if (userConfig.textStyle) {
         _config.textStyle = getRes(userConfig.textStyle)
       }
-      _config.customType = cunstomDateCache[day].customType
-      return _config
+      _config.customType = customDateCache[day].customType
     }
-  }, [cunstomDateCache, month])
+    if (config.selectType) {
+      if (customSelect?.text) {
+        _config.text = getRes(customSelect.text)
+      }
+      if (customSelect?.top) {
+        _config.renderTop = getRes(customSelect.top)
+      }
+      if (customSelect?.bottom) {
+        _config.renderBottom = getRes(customSelect.bottom)
+      }
+      if (customSelect?.style) {
+        _config.style = getRes(customSelect.style)
+      }
+      if (customSelect?.textStyle) {
+        _config.textStyle = getRes(customSelect.textStyle)
+      }
+    }
+    return _config
+  }, [customDateCache, customSelect?.bottom, customSelect?.style, customSelect?.text, customSelect?.textStyle, customSelect?.top, month])
 
   const list = useMemo(() => {
     const firstDay = `${month}-01`
@@ -161,7 +179,7 @@ export const Calendar = ({
 
     for (let i = lastMonthDys; i > 0; i--) {
       arr.push({
-        text: lastMaxDay - i + 1,
+        text: false ? lastMaxDay - i + 1 : '',
         disable: true
       })
     }
@@ -198,7 +216,7 @@ export const Calendar = ({
       const dates = scopeStart.split('-')
 
       for (let i = 0; i < maxDay; i++) {
-        const isSelect = +dates[2] === i + 1
+        const isSelect = +dates[2] === i + 1 && dates.slice(0, 2).join('-') === month
         const config = {
           text: i + 1,
           select: isSelect,
@@ -255,7 +273,7 @@ export const Calendar = ({
     if (nextMonthDys < 7) {
       for (let i = 0; i < nextMonthDys; i++) {
         arr.push({
-          text: i + 1,
+          text: false ? i + 1 : '',
           disable: true
         })
       }
@@ -378,6 +396,7 @@ const Day = ({
   week,
   renderTop,
   renderBottom,
+  style,
   textStyle,
   customStyle,
   customType
@@ -397,6 +416,7 @@ const Day = ({
       style={customStyle}
     />}
     {select && <View
+      style={style}
       className={`Calendar__row__item__select Calendar__row__item__select--${selectType}`}
     />}
     <Text

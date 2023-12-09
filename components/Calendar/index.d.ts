@@ -33,6 +33,24 @@ interface CunstomCallbackConfig {
   }
 }
 
+interface CalendarSelect {
+  /** 日期背景样式 { backgroundColor: '#fee1d3' } */
+  style?: CSSProperties | ((config: CunstomCallbackConfig) => CSSProperties)
+  /** 日期文字样式 */
+  textStyle?: CSSProperties | ((config: CunstomCallbackConfig) => CSSProperties)
+  /** 日期文本 */
+  text?: string | ReactElement | ((config: CunstomCallbackConfig) => string | ReactElement)
+  /** 自定义日期上侧显示 */
+  top?: string | ReactElement | ((config: CunstomCallbackConfig) => string | ReactElement)
+  /** 自定义日期上下侧显示 */
+  bottom?: string | ReactElement | ((config: CunstomCallbackConfig) => string | ReactElement)
+}
+
+interface CalendarCustom extends CalendarSelect {
+  /** 日期或者日期范围组成的数组 */
+  data: (string | [string, string])[]
+}
+
 interface CalendarProps {
   /** 日历功能类型 默认不支持选择 */
   mode?: keyof {
@@ -63,21 +81,10 @@ interface CalendarProps {
   onlyCurrentWeek?: boolean
   /** 禁用的日期 日期或者日期范围组成的数组 */
   disabledDate?: (string | [string, string])[]
-  /** 自定义日历数据 */
-  cunstomDate?: {
-    /** 日期或者日期范围组成的数组 */
-    data: (string | [string, string])[]
-    /** 所选日期样式 { backgroundColor: '#fee1d3' } */
-    style?: CSSProperties | ((config: CunstomCallbackConfig) => CSSProperties)
-    /** 日期央视 */
-    textStyle?: CSSProperties | ((config: CunstomCallbackConfig) => CSSProperties)
-    /** 日期文本 */
-    text?: string | ReactElement | ((config: CunstomCallbackConfig) => string | ReactElement)
-    /** 自定义日期上侧限制 */
-    top?: string | ReactElement | ((config: CunstomCallbackConfig) => string | ReactElement)
-    /** 自定义日期上下侧限制 */
-    bottom?: string | ReactElement | ((config: CunstomCallbackConfig) => string | ReactElement)
-  }[]
+  /** 自定义日期日历数据 */
+  customDate?: CalendarCustom[]
+  /** 自定义选中的部分的日历数据 */
+  customSelect?: CalendarSelect
   /** 引用 */
   ref?: string | ((node: any) => any)
 }
