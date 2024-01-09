@@ -1,0 +1,13 @@
+.Image {
+  flex-shrink: 0;
+  &--round-min {
+    border-radius: 8px;
+  }
+  &--img-square {
+    width: 100%;
+    &__root {
+      aspect-ratio: 1;
+      overflow: hidden;
+    }
+  }
+}
