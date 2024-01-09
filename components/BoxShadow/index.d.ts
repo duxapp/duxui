@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactNode } from 'react'
+import { StandardProps } from '@tarojs/components/types/common'
 
-interface BoxShadowProps {
+interface BoxShadowProps extends StandardProps {
   /** 阴影颜色，默认值为 '#999' */
   color?: string;
   /** 阴影边框大小，默认值为 10 */

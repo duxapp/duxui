@@ -10,26 +10,29 @@ const arr = [...new Array(5)]
 export const Grade = ({
   value,
   onChange,
-  size = 'm'
+  size = 'm',
+  type = 'primary'
 }) => {
 
   return <Space row items='center' size={16}>
     <Row items='center'>
       {arr.map((item, index) => {
         return <Text
-          type={index < value ? 'primary' : void 0}
+          type={index < value ? type : void 0}
           color={index < value ? void 0 : 3}
           key={index}
           onClick={() => onChange?.(index + 1)}
           className={classNames('Grade--' + size)}
         >
-          <DuxuiIcon name={index < value ? 'collection-fill' : 'collection'} onClick={() => {
-            // RN安卓端外面的事件不触发 触发了此处
-            onChange?.(index + 1)
-          }} />
+          <DuxuiIcon
+            name={index < value ? 'collection-fill' : 'collection'} onClick={() => {
+              // RN安卓端外面的事件不触发 触发了此处
+              onChange?.(index + 1)
+            }}
+          />
         </Text>
       })}
     </Row>
-    {!!value && <Text type='primary'>{value}.0</Text>}
+    {!!value && <Text type={type}>{value}.0</Text>}
   </Space>
 }

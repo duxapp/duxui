@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { PickerProps as TaroPickerProps } from '@tarojs/components';
+import { DatePickerProps } from '../Picker/Date';
 
 interface PickerValueProps {
   /**
@@ -76,7 +77,7 @@ interface PickerMultiSelectProps {
 
 declare const PickerMultiSelect: React.FC<PickerMultiSelectProps>;
 
-interface PickerDateProps {
+interface PickerDateProps extends DatePickerProps {
   /**
    * 当前选中的日期值
    */

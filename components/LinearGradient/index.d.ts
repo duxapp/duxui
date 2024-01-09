@@ -1,7 +1,8 @@
 import { ReactNode, CSSProperties, HTMLAttributes } from 'react';
 import { CommonEventFunction } from '@tarojs/components/types/common';
+import { StandardProps } from '@tarojs/components/types/common'
 
-interface LinearGradientProps extends HTMLAttributes<HTMLElement> {
+interface LinearGradientProps extends StandardProps {
   /**
    * 起点坐标
    */
@@ -71,4 +72,4 @@ interface LinearGradientProps extends HTMLAttributes<HTMLElement> {
   onClick?: CommonEventFunction;
 }
 
-export const LinearGradient: FC<LinearGradientProps>;
+export const LinearGradient: React.FC<LinearGradientProps>;

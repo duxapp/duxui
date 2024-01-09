@@ -31,22 +31,30 @@ const RadioGroup = ({
   </context.Provider>
 }
 
-export const Radio = ({ value, label, children: Child, ...props }) => {
+export const Radio = ({ value, label, checked, onClick, children: Child, ...props }) => {
   const { check, currentValue } = useContext(context)
+
+  const _checked = typeof checked === 'boolean' ? checked : currentValue === value
 
   if (Child) {
     return <Child
       {...props}
       value={value}
       label={label}
-      checked={currentValue === value}
+      checked={_checked}
       onCheck={() => check(value)}
     />
   }
 
-  return <Space row items='center' size={8} onClick={() => check(value)} {...props}>
-    <Text size={42} type={currentValue === value ? 'primary' : void 0} color={currentValue === value ? void 0 : 3}>
-      <DuxuiIcon name={currentValue === value ? 'add_check1' : 'option'} />
+  return <Space row items='center' size={8}
+    onClick={e => {
+      check(value)
+      onClick?.(e)
+    }}
+    {...props}
+  >
+    <Text size={42} type={_checked ? 'primary' : void 0} color={_checked ? void 0 : 3}>
+      <DuxuiIcon name={_checked ? 'add_check1' : 'option'} />
     </Text>
     {!!label && <Text>{label}</Text>}
   </Space>

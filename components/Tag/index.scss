@@ -45,6 +45,10 @@
 
   &--plain {
 
+    &--default {
+      border: 1px solid $duxappTextColor2;
+    }
+
     &--primary {
       border: 1px solid $duxappPrimaryColor;
     }

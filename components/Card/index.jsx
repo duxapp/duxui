@@ -25,7 +25,7 @@ export const Card = ({
 
   const cn = classNames(
     'Card',
-    verticalPadding && 'Card--v-p',
+    !verticalPadding && 'Card--v-p',
     margin && 'Card--margin',
     disableMarginBottom && 'Card--margin-bottom',
     disableMarginTop && 'Card--margin-top',
@@ -51,11 +51,12 @@ export const Card = ({
 const Title = ({
   numberOfLines = 1,
   line = true,
-  children
+  children,
+  sizeStyle = {}
 }) => {
   return <View className='CardTitle'>
     {line && <View className='CardTitle__line' />}
-    <Text className='CardTitle__text' numberOfLines={numberOfLines}>{children}</Text>
+    <Text className='CardTitle__text' style={sizeStyle} numberOfLines={numberOfLines}>{children}</Text>
   </View>
 }
 

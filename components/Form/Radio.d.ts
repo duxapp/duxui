@@ -43,13 +43,19 @@ interface RadioProps {
    */
   label?: ReactNode;
   /**
+   * 是否选中这个项目
+   */
+  checked?: boolean;
+  /**
+   * 点击事件
+   * @param event
+   * @returns
+   */
+  onClick?: (event: any) => void
+  /**
    * 附加在单选按钮容器上的 CSS 类名
    */
   className?: string;
-  /**
-   * 其他属性
-   */
-  [key: string]: any;
 }
 
 interface RadioContextValue {

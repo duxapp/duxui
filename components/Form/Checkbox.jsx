@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext } from 'react'
 import { noop } from '@/duxapp/utils'
+import classNames from 'classnames'
 import { Space } from '../Space'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -12,6 +13,7 @@ const CheckboxGroup = ({
   onChange,
   disabled,
   direction = 'horizontal',
+  className,
   ...props
 }) => {
 
@@ -32,7 +34,7 @@ const CheckboxGroup = ({
   }, [onChange, value, disabled])
 
   return <context.Provider value={{ check, currentValue: value }}>
-    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} {...props} className='flex-grow'>
+    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} {...props} className={classNames('flex-grow', className)}>
       {children}
     </Space>
   </context.Provider>
@@ -41,6 +43,16 @@ const CheckboxGroup = ({
 CheckboxGroup.defaultProps = {
   value: []
 }
+
+/**
+ * 用于计算出选中的内容显示值
+ * @param {*} value 当前值
+ * @param {*} param1 传入组件的参数
+ * @returns
+ */
+// CheckboxGroup.getShowText = (value, props) => {
+//   console.log('12323',value, props)
+// }
 
 export const Checkbox = ({ value, label, checked, children: Child, ...props }) => {
   const { check, currentValue } = useContext(context)

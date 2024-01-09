@@ -1,12 +1,14 @@
 import { Text as TaroText } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import { pxTransform } from '@tarojs/taro'
 import classNames from 'classnames'
-import { createContext, useContext } from 'react'
+import { createContext, memo, useContext } from 'react'
 import './index.scss'
 
 const context = createContext({ child: false })
 
-export const Text = ({
+const isTexts = ['string', 'number', 'boolean', 'undefined']
+
+export const Text = memo(({
   type,
   color,
   bold,
@@ -20,42 +22,59 @@ export const Text = ({
   self,
   className,
   style,
+  children,
+  delete: _delete,
   ...props
 }) => {
 
   const { child } = useContext(context)
 
+  const _style = { ...style }
+
+  if (size >= 12) {
+    _style.fontSize = pxTransform(size)
+    if (!child) {
+      _style.lineHeight = pxTransform(size * 1.4)
+    }
+  }
+
+  if (typeof color === 'string') {
+    _style.color = color
+  }
+
+  if (process.env.TARO_ENV !== 'rn' && numberOfLines > 1) {
+    _style['-webkit-line-clamp'] = numberOfLines
+  }
+
+  const render = <TaroText
+    className={classNames(
+      !child && 'Text',
+      type && 'Text-' + type,
+      typeof color === 'number' ? ('Text-c-' + color) : '',
+      bold ?? bold ? 'Text-bold' : 'Text-nobold',
+      breakWord && 'Text-break',
+      size && size < 10 && 'Text-s-' + size,
+      !child ? (size ? (size < 10 ? 'Text-s-l-' + size : '') : 'Text-s-l-3') : '',
+      _delete && 'Text-delete',
+      underline && 'Text-underline',
+      grow && 'w-0 flex-grow',
+      shrink && 'flex-shrink',
+      self && 'self-' + self,
+      align && 'text-' + align,
+      // 省略行数量
+      process.env.TARO_ENV === 'rn' ? '' : numberOfLines === 1 ? 'Text-ellipsis' : numberOfLines > 1 ? 'Text-ellipsis--more' : '',
+      className
+    )}
+    style={_style}
+    {...(numberOfLines ? { numberOfLines: Number(numberOfLines) } : {})}
+    {...props}
+  >{children}</TaroText>
+
+  if (!children || isTexts.includes(typeof children)) {
+    return render
+  }
+
   return <context.Provider value={{ child: true }}>
-    <TaroText
-      className={classNames(
-        !child && 'Text',
-        type && 'Text-' + type,
-        typeof color === 'number' ? ('Text-c-' + color) : '',
-        bold ?? bold ? 'Text-bold' : 'Text-nobold',
-        breakWord && 'Text-break',
-        size && size < 10 && 'Text-s-' + size,
-        !child ? (size ? (size < 10 ? 'Text-s-l-' + size : '') : 'Text-s-l-3') : '',
-        props.delete && 'Text-delete',
-        underline && 'Text-underline',
-        grow && 'w-0 flex-grow',
-        shrink && 'flex-shrink',
-        self && 'self-' + self,
-        align && 'text-' + align,
-        // 省略行数量
-        process.env.TARO_ENV === 'rn' ? '' : numberOfLines === 1 ? 'Text-ellipsis' : numberOfLines > 1 ? 'Text-ellipsis--more' : '',
-        className
-      )}
-      style={{
-        ...style,
-        ...size >= 12 ? { fontSize: Taro.pxTransform(size) } : {},
-        ...size >= 12 && !child ? { lineHeight: Taro.pxTransform(size * 1.4) } : {},
-        ...typeof color === 'string' ? { color } : {},
-        ...(process.env.TARO_ENV !== 'rn' && numberOfLines > 1 ? {
-          '-webkit-line-clamp': '' + numberOfLines
-        } : {})
-      }}
-      {...(numberOfLines ? { numberOfLines: Number(numberOfLines) } : {})}
-      {...props}
-    />
+    {render}
   </context.Provider>
-}
+})

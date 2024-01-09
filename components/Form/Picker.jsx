@@ -53,5 +53,5 @@ export const PickerDate = ({
     value={value}
     onChange={onChange}
     disabled={disabled}
-  />
+  >{children}</ModalForm>
 }

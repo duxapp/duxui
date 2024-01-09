@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
+import { BoxShadowProps } from '../BoxShadow';
 
-interface CardProps {
+interface CardProps extends BoxShadowProps {
   /** 是否显示阴影，默认为 true */
   shadow?: boolean;
   /** 圆角大小，默认为 5px */

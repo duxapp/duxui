@@ -1,7 +1,8 @@
 import classNames from 'classnames'
+import { memo } from 'react'
 import { View } from '../common'
 
-export const Row = ({
+export const Row = memo(({
   wrap,
   justify,
   items,
@@ -26,9 +27,9 @@ export const Row = ({
     style={style}
     {...props}
   />
-}
+})
 
-export const Column = ({
+export const Column = memo(({
   justify,
   items,
   grow,
@@ -50,4 +51,4 @@ export const Column = ({
     style={style}
     {...props}
   />
-}
+})

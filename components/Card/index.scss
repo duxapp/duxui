@@ -1,10 +1,10 @@
 .Card {
   background-color: #fff;
   border-radius: $duxuiCardRadius;
-  padding: 0 24px;
+  padding: 24px;
   &--v-p {
-    padding-top: 24px;
-    padding-bottom: 24px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
   &--margin {
     margin: $duxuiCardMargin;

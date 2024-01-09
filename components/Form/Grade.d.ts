@@ -8,6 +8,20 @@ interface size {
   l
 }
 
+
+interface type {
+  /** 主色 */
+  primary
+  /** 辅色 */
+  secondary
+  /** 成功 */
+  success
+  /** 错误 */
+  danger
+  /** 警告 */
+  warning
+}
+
 interface GradeProps {
   /**
    * 当前评分值
@@ -21,6 +35,10 @@ interface GradeProps {
    * 图标尺寸
    */
   size?: keyof size
+  /**
+   * 图标颜色
+   */
+  type?: keyof type
 }
 
 declare const Grade: React.FC<GradeProps>;

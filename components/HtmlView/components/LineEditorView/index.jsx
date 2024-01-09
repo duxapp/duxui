@@ -22,7 +22,7 @@ export const LineEditorView = ({
 }) => {
 
   const click = useCallback(item => {
-    if (item.typoe === 'image' && previewImage) {
+    if (item.type === 'image' && previewImage) {
       Taro.previewImage({
         current: item.data.src,
         urls: blocks.filter(v => v.type === 'image').map(v => v.data.src)

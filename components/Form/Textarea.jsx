@@ -41,7 +41,7 @@ export const Textarea = ({
       className='Textarea__input'
       style={{ height: Taro.pxTransform(36 * line) }}
       placeholderTextColor={duxappTheme.textColor3}
-      placeholderStyle={{ color: duxappTheme.textColor3 }}
+      placeholderStyle={`color: ${duxappTheme.textColor3}`}
       {...porps}
       onInput={input}
     />
