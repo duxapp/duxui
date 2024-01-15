@@ -25,10 +25,4 @@ interface SpaceProps extends StandardProps {
   self?: 'auto' | 'start' | 'end' | 'center' | 'baseline' | 'stretch'
 }
 
-declare const Space: FunctionComponent<SpaceProps> & {
-  defaultProps: SpaceProps
-}
-
-export {
-  Space
-}
+export const Space: React.FC<SpaceProps>

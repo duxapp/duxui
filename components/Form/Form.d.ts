@@ -2,6 +2,7 @@ import { ImageProps } from '@tarojs/components/types/Image'
 import { CSSProperties, ReactNode } from 'react'
 import { SchemaRuleType } from 'b-validate'
 import { TextProps } from '../Text'
+import { SpaceProps } from '../Space'
 import { ButtonProps } from '../Button'
 
 interface Values {
@@ -37,6 +38,8 @@ interface FormRef {
 interface FormChildProps extends FormRef {
   /** 表单属性 */
   labelProps?: TextProps
+  /** 全局传递给项目容器的属性 */
+  containerProps?: SpaceProps
   /** 表单方向 */
   direction?: keyof Direction
   /** 是否禁用表单 */
@@ -60,6 +63,8 @@ interface FormProps {
   direction?: keyof Direction
   /** 全局传递给标签的属性 */
   labelProps?: TextProps
+  /** 全局传递给项目容器的属性 */
+  containerProps?: SpaceProps
   /** 子元素 */
   children?: ReactNode | FormChild
   /** 表单操作 */
@@ -86,6 +91,8 @@ interface FormItemProps {
   label?: string
   /** 标题属性 */
   labelProps?: TextProps
+  /** 项目容器的属性 */
+  containerProps?: SpaceProps
   /** 副标题 仅跟着标题渲染 */
   subLabel?: string
   /** 自定义渲染标题右侧区域 一般设置 direction为vertical时使用 */

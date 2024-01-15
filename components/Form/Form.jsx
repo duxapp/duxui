@@ -16,6 +16,7 @@ export const formContext = createContext({
   submit: noop,
   reset: noop,
   labelProps: {},
+  containerProps: {},
   direction: 'horizontal',
   disabled: false,
   addItem: noop,
@@ -33,6 +34,7 @@ export const useFormContext = () => useContext(formContext)
 
 export const Form = forwardRef(({
   labelProps,
+  containerProps,
   direction = 'horizontal',
   disabled,
   children,
@@ -161,7 +163,7 @@ export const Form = forwardRef(({
     }
   }, [resultData, defaultValues, values, reset, setValue, setValues, submit, validate])
 
-  const result = { data: resultData, defaultValues, values, setValue, setValues, submit, reset, validate, addItem, labelProps, direction, disabled, validateErrors }
+  const result = { data: resultData, defaultValues, values, setValue, setValues, submit, reset, validate, addItem, labelProps, containerProps, direction, disabled, validateErrors }
 
   return <formContext.Provider value={result}>
     {
@@ -175,6 +177,7 @@ export const Form = forwardRef(({
 const FormItem = ({
   label,
   labelProps,
+  containerProps,
   subLabel,
   renderLabelRight,
   desc,
@@ -214,6 +217,8 @@ const FormItem = ({
   const horizontal = (direction || form.direction) === 'horizontal'
 
   const _labelProps = { ...form.labelProps, ...labelProps }
+
+  const _containerProps = { ...form.containerProps, ...containerProps }
 
   const value = form.values[field]
 
@@ -261,7 +266,7 @@ const FormItem = ({
   </Text>
 
   return <Column style={style} className={classNames('FormItem', className)}>
-    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'}>
+    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} style={_containerProps.style} {..._containerProps} >
       {
         renderLabelRight ? <Space row justify='between'>
           {_label}
@@ -278,7 +283,8 @@ const FormItem = ({
 
 FormItem.defaultProps = {
   trigger: 'onChange',
-  triggerPropName: 'value'
+  triggerPropName: 'value',
+  containerProps: {}
 }
 
 const Submit = ({ children, ...props }) => {

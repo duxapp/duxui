@@ -71,6 +71,10 @@ interface CalendarProps {
   style?: CSSProperties
   /** 样式类名 */
   className?: string
+  /** 导航部分的样式 */
+  navStyle?: CSSProperties
+  /** 头部的容器样式 */
+  headStyle?: CSSProperties
   /** 当选择发生改变是触发的时事件 */
   onChange?: (value: string | string[]) => void
   /** 允许选择的最大日期 如2020-01-01 */

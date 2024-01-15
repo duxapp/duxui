@@ -1,77 +1,96 @@
 .Calendar {
-  background-color: #fff;
-  padding: 10px 5px;
+  // padding: 10px 5px;
+
   &__head {
     padding: 10px 30px;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+
     &__text {
       font-size: 32px;
-      color: #000;
+      color: $duxappTextColor1;
     }
+
     &__icon {
       font-size: 32px;
       color: $duxappTextColor1;
     }
   }
+
   &__row {
     flex-direction: row;
+
     &__item {
       flex: 1;
       justify-content: center;
       align-items: center;
       height: 120px;
+
+      &--head {
+        height: 80px;
+      }
+
       &__select {
         position: absolute;
         top: 5px;
         bottom: 5px;
         background-color: $duxappPrimaryColor;
+
         &--select {
           left: 5px;
           right: 5px;
           border-radius: 16px;
         }
+
         &--start {
           left: 5px;
           right: -1px;
           border-radius: 16px 0 0 16px;
         }
+
         &--end {
           left: -1px;
           right: 5px;
           border-radius: 0 16px 16px 0;
         }
+
         &--center {
           left: -1px;
           right: -1px;
           background-color: lighten($duxappPrimaryColor, 20%);
         }
       }
+
       &__custom {
         position: absolute;
         top: 5px;
         bottom: 5px;
+
         &--select {
           left: 5px;
           right: 5px;
           border-radius: 16px;
         }
+
         &--start {
           left: 5px;
           right: -1px;
           border-radius: 16px 0 0 16px;
         }
+
         &--end {
           left: -1px;
           right: 5px;
           border-radius: 0 16px 16px 0;
         }
+
         &--center {
           left: -1px;
           right: -1px;
         }
       }
+
       &__other {
         position: absolute;
         top: 5px;
@@ -79,16 +98,19 @@
         left: 5px;
         right: 5px;
         justify-content: space-between;
+
         &__item {
           height: 46px;
           align-items: center;
           justify-content: center;
         }
       }
+
       &__text {
         color: #333;
         font-size: 28px;
         z-index: 1;
+
         &--disable {
           color: #999;
         }

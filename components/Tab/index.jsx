@@ -131,7 +131,7 @@ export const Tab = ({
     setLayout({})
   }, [onChange, disabled])
 
-  const tabs = <Scroll scroll={scroll} style={tabStyle}>
+  const tabs = <Scroll scroll={scroll} style={expand && scroll ? undefined : tabStyle}>
     {list.map((item, index) => <TabItem
       type={type}
       buttonColor={buttonColor}
@@ -147,9 +147,9 @@ export const Tab = ({
   return (
     <View className={classNames(Tab, className, justify && 'flex-grow')} style={style} {...props}>
       {
-        expand && scroll ? <Layout className='flex-row' onLayout={e => showExpand && setLayout(e)} reloadKey={showExpand ? 1 : 0}>
+        expand && scroll ? <Layout className='flex-row' style={tabStyle} onLayout={e => showExpand && setLayout(e)} reloadKey={showExpand ? 1 : 0}>
           <Column grow>
-            <Column className='inset-0 absolute' justify='center' items='center'>
+            <Column className='inset-0 absolute' justify='center'>
               {tabs}
             </Column>
           </Column>

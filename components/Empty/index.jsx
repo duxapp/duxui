@@ -22,8 +22,8 @@ export const Empty = ({
     style={style}
     {...props}
   >
-    {icon || <Image mode='widthFix' className='Empty__image' src={url || empry} />}
-    <Text className='Empty__title' align='center'>{title}</Text>
+    {icon || <Image className='Empty__image' src={url || empry} />}
+    <Text className='Empty__title' align='center' color={3}>{title}</Text>
     {renderFooter}
   </View>
 }

@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, useEffect, isValidElement } from 'react'
 import { View, Text } from '@tarojs/components'
 import { toast } from '@/duxapp'
+import classNames from 'classnames'
 import { dateAdd, dateToStr, getMaxDay, strFormatToDate } from './date'
 import './index.scss'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -35,6 +36,8 @@ const weeks = ['一', '二', '三', '四', '五', '六', '日']
 export const Calendar = ({
   mode, // day日期选择 week周选择 scope范围选择
   value: propsValue = '',// 周或者范围选择传入数组，第一项开始时间，第二项结束时间
+  navStyle,
+  headStyle,
   style,
   className,
   onChange,
@@ -366,8 +369,8 @@ export const Calendar = ({
     }
   }, [onlyCurrentWeek, selectDay, month])
 
-  return <View className={`Calendar ${className}`} style={style}>
-    {!onlyCurrentWeek && <View className='Calendar__head'>
+  return <View className={classNames('Calendar', className)} style={style}>
+    {!onlyCurrentWeek && <View className='Calendar__head' style={navStyle}>
       <DuxuiIcon name='direction_left' className='Calendar__head__icon' onClick={prev} />
       <Text className='Calendar__head__text'>{month}</Text>
       <DuxuiIcon name='direction_right' className='Calendar__head__icon' onClick={next} />
@@ -377,9 +380,9 @@ export const Calendar = ({
         if (onlyCurrentWeek && selelctOfWeekIndex !== index && index) {
           return null
         }
-        return <View className='Calendar__row' key={index}>
+        return <View className='Calendar__row' key={index} style={!index ? headStyle : undefined}>
           {
-            week.map((day, dayIndex) => <Day key={day.text} week={dayIndex + 1} {...day} onClick={click} />)
+            week.map((day, dayIndex) => <Day header={!index} key={day.text} week={dayIndex + 1} {...day} onClick={click} />)
           }
         </View>
       })
@@ -389,6 +392,7 @@ export const Calendar = ({
 
 const Day = ({
   text,
+  header,
   disable,
   onClick,
   select,
@@ -410,7 +414,7 @@ const Day = ({
     })
   }, [onClick, text, disable, week])
 
-  return <View className='Calendar__row__item' onClick={click}>
+  return <View className={classNames('Calendar__row__item', header && 'Calendar__row__item--head')} onClick={click}>
     {customType && <View
       className={`Calendar__row__item__custom Calendar__row__item__custom--${customType}`}
       style={customStyle}
