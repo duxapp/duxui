@@ -83,7 +83,7 @@ export const Image = memo(({
   if (square) {
     return <View className={classNames('Image--img-square__root Image', 'Image--' + radiusType, className)} style={style}>
       <BaseImage
-        className='Image--img-square'
+        className={classNames('Image--img-square', process.env.TARO_ENV !== 'weapp' && 'Image--img-square--height')}
         mode='aspectFill'
         src={src}
         {...onClick || preview || data.group ? { onClick: click } : {}}

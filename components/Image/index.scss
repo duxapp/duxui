@@ -5,6 +5,9 @@
   }
   &--img-square {
     width: 100%;
+    &--height {
+      height: 100%;
+    }
     &__root {
       aspect-ratio: 1;
       overflow: hidden;
