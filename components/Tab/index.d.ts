@@ -1,5 +1,6 @@
 import { StandardProps } from '@tarojs/components/types/common'
 import { ReactNode } from 'react'
+import { BadgeProps } from '../Badge'
 
 interface TabProps extends StandardProps {
   /** tab主题样式 */
@@ -39,6 +40,8 @@ interface TabItemProps {
   select?: boolean
   /** 点击时的回调函数 */
   onClick?: (paneKey: string | number) => void
+  /** 显示红点组件的属性 */
+  badgeProps?: BadgeProps
 }
 
 export const Tab: React.FC<TabProps> & {

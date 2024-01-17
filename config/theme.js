@@ -58,5 +58,9 @@ export default {
   cardSelect: {
     color: duxappTheme.primaryColor,
     radiusType: 'round-min', // 按钮圆角类型 square直角 round圆角 round-min较小的圆角
+  },
+
+  divider: {
+    padding: 16
   }
 }

@@ -1,0 +1,125 @@
+.StatusIncline {
+  height: 40px;
+  width: 200px;
+  align-items: center;
+  justify-content: center;
+  &--top-left {
+    transform: rotateZ(315deg);
+    left: -60px;
+    top: 20px;
+  }
+  &--top-right {
+    transform: rotateZ(45deg);
+    right: -60px;
+    top: 20px;
+  }
+  &--bottom-left {
+    transform: rotateZ(45deg);
+    left: -60px;
+    bottom: 20px;
+  }
+  &--bottom-right {
+    transform: rotateZ(315deg);
+    right: -60px;
+    bottom: 20px;
+  }
+  &--primary {
+    background-color: $duxappPrimaryColor;
+  }
+
+  &--secondary {
+    background-color: $duxappSecondaryColor;
+  }
+
+  &--success {
+    background-color: $duxappSuccessColor;
+  }
+
+  &--danger {
+    background-color: $duxappDangerColor;
+  }
+
+  &--warning {
+    background-color: $duxappWarningColor;
+  }
+
+  &--custom1 {
+    background-color: $duxappCustomColor1;
+  }
+
+  &--custom2 {
+    background-color: $duxappCustomColor2;
+  }
+
+  &--custom3 {
+    background-color: $duxappCustomColor3;
+  }
+  &__text {
+    color: #fff;
+    font-size: 22px;
+  }
+}
+
+.StatusCommon {
+  align-items: center;
+  justify-content: center;
+  &--top-left {
+    border-bottom-right-radius: 16px;
+  }
+  &--top-right {
+    border-bottom-left-radius: 16px;
+  }
+  &--bottom-left {
+    border-top-right-radius: 16px;
+  }
+  &--bottom-right {
+    border-top-left-radius: 16px;
+  }
+
+  &--s {
+    height: 42px;
+    width: 120px;
+  }
+
+  &--m {
+    height: 56px;
+    width: 140px;
+  }
+
+  &--l {
+    height: 72px;
+    width: 156px;
+  }
+
+  &--primary {
+    background-color: lighten($duxappPrimaryColor, 40%);
+  }
+
+  &--secondary {
+    background-color: lighten($duxappSecondaryColor, 40%);
+  }
+
+  &--success {
+    background-color: lighten($duxappSuccessColor, 40%);
+  }
+
+  &--danger {
+    background-color: lighten($duxappDangerColor, 40%);
+  }
+
+  &--warning {
+    background-color: lighten($duxappWarningColor, 40%);
+  }
+
+  &--custom1 {
+    background-color: lighten($duxappCustomColor1, 40%);
+  }
+
+  &--custom2 {
+    background-color: lighten($duxappCustomColor2, 40%);
+  }
+
+  &--custom3 {
+    background-color: lighten($duxappCustomColor3, 40%);
+  }
+}

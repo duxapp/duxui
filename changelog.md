@@ -1,3 +1,22 @@
+# 1.0.16
+## 新增Status组件
+组件用于显示在四角的状态，提供两个默认组件,使用方法如下
+```jsx
+<View className='bg-white items-center justify-center overflow-hidden' style={{ height: px(300) }}>
+  <Text>这是内容</Text>
+  <Status status={<Status.Incline>状态1</Status.Incline>} />
+  <Status horizontal='right' status={<Status.Incline>状态2</Status.Incline>} />
+  <Status horizontal='right' vertical='bottom' status={<Status.Incline>状态3</Status.Incline>} />
+  <Status status={<Status.Common type='success'>状态</Status.Common>} />
+</View>
+```
+
+## Tab
+- [新增] 新增`badgeProps`属性 用于在Tab项目上显示红点
+
+## Divider
+- [新增] `padding`支持通过主题配置默认值
+
 # 1.0.15
 
 ## Tab

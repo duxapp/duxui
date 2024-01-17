@@ -33,7 +33,10 @@ $duxuiAvatarLSize: 120px;`],
   card: [`
 // Card组件
 $duxuiCardRadius: #{$duxappCommonRadius};
-$duxuiCardMargin: 24px;`]
+$duxuiCardMargin: 24px;`],
+  divider: [`
+// Divider组件
+$duxuiDividerPadding: 16px;`]
 }
 
 module.exports = theme => {
@@ -102,6 +105,12 @@ module.exports = theme => {
       case 'card': {
         if (value.radius !== undefined) {
           scssData.card.push(`$duxuiCardRadius: ${value.radius}px;`)
+        }
+        break
+      }
+      case 'divider': {
+        if (value.padding !== undefined) {
+          scssData.divider.push(`$duxuiDividerPadding: ${value.padding}px;`)
         }
         break
       }
