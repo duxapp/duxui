@@ -19,13 +19,19 @@ export const Grid = ({
 
   const group = useMemo(() => {
     const _group = []
-    React.Children.forEach(children, ((child, index) => {
+    const _childs = []
+    React.Children.forEach(children, child => {
+      if (![false, true, null, undefined].some(v => v === child)) {
+        _childs.push(child)
+      }
+    })
+    _childs.forEach((child, index) => {
       const _index = index / column | 0
       if (!_group[_index]) {
         _group[_index] = []
       }
       _group[_index].push(child)
-    }))
+    })
     // 将最后一行填满
     const last = _group[_group.length - 1]
     if (last) {
