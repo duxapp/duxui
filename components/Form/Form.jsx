@@ -163,7 +163,11 @@ export const Form = forwardRef(({
     }
   }, [resultData, defaultValues, values, reset, setValue, setValues, submit, validate])
 
-  const result = { data: resultData, defaultValues, values, setValue, setValues, submit, reset, validate, addItem, labelProps, containerProps, direction, disabled, validateErrors }
+  const result = {
+    data: resultData, defaultValues, values,
+    setValue, setValues, submit, reset, validate, addItem,
+    labelProps, containerProps, direction, disabled, validateErrors
+  }
 
   return <formContext.Provider value={result}>
     {
@@ -347,7 +351,13 @@ const ArrayForm = ({
 
   const defaultData = useMemo(() => [], [])
 
-  return <formContext.Provider value={{ ...form, values: value || defaultData, setValues, setValue }}>
+  return <formContext.Provider
+    value={{
+      ...form,
+      values: value || defaultData, setValues, setValue,
+      parent: form
+    }}
+  >
     <arrayContext.Provider value={{ values: value || defaultData, setValues, setValue }}>
       {renderTop}
       <ItemContainer>
@@ -410,7 +420,14 @@ const ObjectForm = ({
 
   // console.log(value || defaultData)
 
-  return <formContext.Provider value={{ ...form, values: value || defaultData, setValues, setValue }}>
+
+  return <formContext.Provider
+    value={{
+      ...form, values: value || defaultData,
+      setValues, setValue,
+      parent: form
+    }}
+  >
     {children}
   </formContext.Provider>
 }
@@ -421,3 +438,4 @@ Form.Reset = Reset
 Form.Object = ObjectForm
 Form.Array = ArrayForm
 Form.ArrayAction = ArrayAction
+Form.useFormContext = useFormContext

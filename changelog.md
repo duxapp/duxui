@@ -1,3 +1,11 @@
+# 1.0.20
+
+## 新增NumberKeyboard组件
+此组件为数字键盘，可以对诸如验证码输入、支付密码输入等环节进行输入优化
+
+## 新增InputCode组件
+验证码或者密码输入组件，此组件需配合NumberKeyboard一起使用，使用示例参考示例模块(duxuiExample)
+
 # 1.0.17
 ## Image
 - [修复] square属性在h5下不显示图片

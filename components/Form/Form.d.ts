@@ -226,4 +226,9 @@ export const Form: React.FC<FormProps> & {
    * 这个组件需要写在 Form.Array 的renderItem、renderTop、renderBottom或者itemContainer中否则不会生效
    */
   ArrayAction: React.FC<FormArrayActionProps>
+  /**
+   * 获取表单上下文
+   * @returns
+   */
+  useFormContext: () => FormRef
 }

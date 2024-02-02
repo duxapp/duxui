@@ -1,0 +1,23 @@
+.InputCode {
+  gap: 24px;
+
+  &__item {
+    background-color: #fff;
+    height: 100px;
+    max-width: 100px;
+    border-radius: 8px;
+  }
+
+  &__password {
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background-color: $duxappTextColor1;
+  }
+
+  &__focus {
+    width: 4px;
+    height: 40px;
+    background-color: $duxappTextColor1;
+  }
+}

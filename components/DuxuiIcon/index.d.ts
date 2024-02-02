@@ -1,6 +1,7 @@
 import { ComponentType, Component, CSSProperties } from 'react'
 
 interface names {
+  'backspace'
   'direction_left'
   'pengyouquan'
   'shoucangfill'
