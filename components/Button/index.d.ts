@@ -51,7 +51,7 @@ interface ButtonProps {
    * 渐变角度，仅颜色为数组时生效
    * @default 90 从左到右
    */
-  colorAngle?: number;
+  colorAngle?: number
   /** 圆角类型 */
   radiusType?: keyof radiusType
   /** 按钮尺寸 */

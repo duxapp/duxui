@@ -1,3 +1,22 @@
+# 1.0.23
+## Avatar
+优化头像默认值
+
+## UploadImages
+修图图片上传组件样式问题
+
+## 新增ScrollViewManage组件
+组件用于管理ScrollView组件的刷新状态，提供给多个子元素刷新方法
+
+## TabBar
+修复组件会多次刷新的问题
+
+## Tab
+新增 `oneHidden` 属性，只有一个Tab选项的时候隐藏Tab
+
+## Types
+完善多个组件的代码提示
+
 # 1.0.20
 
 ## 新增NumberKeyboard组件

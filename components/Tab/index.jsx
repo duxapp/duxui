@@ -27,6 +27,7 @@ export const Tab = ({
   tabStyle,
   className,
   children,
+  oneHidden,
   ...props
 }) => {
 
@@ -103,41 +104,43 @@ export const Tab = ({
   return (
     <View className={classNames(Tab, className, justify && 'flex-grow')} style={style} {...props}>
       {
-        expand && scroll ? <Layout className='flex-row' style={tabStyle} onLayout={e => showExpand && setLayout(e)} reloadKey={showExpand ? 1 : 0}>
-          <Column grow>
-            <Column className='inset-0 absolute' justify='center'>
-              {tabs}
-            </Column>
-          </Column>
-          <BoxShadow className='Tab__expand' x={-10} onClick={() => setShowExpand(true)}>
-            <Text size={48}>
-              <DuxuiIcon name='more-horizontal' />
-            </Text>
-          </BoxShadow>
-          {showExpand && !!layout.width && <Absolute>
-            <Column className='Tab__expand__mask-top absolute left-0 right-0 top-0' style={{ height: layout.top }} />
-            <Column className='Tab__expand__mask absolute left-0 right-0 bottom-0' style={{ top: layout.top }}
-              onClick={() => {
-                setShowExpand(false)
-                setLayout({})
-              }}
-            />
-            <Space row wrap className='Tab__expand__content absolute left-0 right-0' style={{ top: layout.top }}>
-              {list.map((item, index) => <TabItem
-                type={type}
-                buttonColor='page'
-                buttonRound={buttonRound}
-                key={item.paneKey || index}
-                badgeType={badgeType}
-                {...item}
-                isExpand
-                select={item.paneKey === select}
-                onClick={change}
-              />)}
-            </Space>
-          </Absolute>}
-        </Layout> :
-          tabs
+        oneHidden && list.length < 2 ?
+          null : expand && scroll ?
+            <Layout className='flex-row' style={tabStyle} onLayout={e => showExpand && setLayout(e)} reloadKey={showExpand ? 1 : 0}>
+              <Column grow>
+                <Column className='inset-0 absolute' justify='center'>
+                  {tabs}
+                </Column>
+              </Column>
+              <BoxShadow className='Tab__expand' x={-10} onClick={() => setShowExpand(true)}>
+                <Text size={48}>
+                  <DuxuiIcon name='more-horizontal' />
+                </Text>
+              </BoxShadow>
+              {showExpand && !!layout.width && <Absolute>
+                <Column className='Tab__expand__mask-top absolute left-0 right-0 top-0' style={{ height: layout.top }} />
+                <Column className='Tab__expand__mask absolute left-0 right-0 bottom-0' style={{ top: layout.top }}
+                  onClick={() => {
+                    setShowExpand(false)
+                    setLayout({})
+                  }}
+                />
+                <Space row wrap className='Tab__expand__content absolute left-0 right-0' style={{ top: layout.top }}>
+                  {list.map((item, index) => <TabItem
+                    type={type}
+                    buttonColor='page'
+                    buttonRound={buttonRound}
+                    key={item.paneKey || index}
+                    badgeType={badgeType}
+                    {...item}
+                    isExpand
+                    select={item.paneKey === select}
+                    onClick={change}
+                  />)}
+                </Space>
+              </Absolute>}
+            </Layout> :
+            tabs
       }
       {tabPane.some(v => typeof v.el !== 'undefined') && <View className='Tab__con'>
         {tabPane.map((item, index) => <View key={item.paneKey || index} className={classNames('Tab__con__item', item.paneKey === select && 'Tab__con__item--select')}>

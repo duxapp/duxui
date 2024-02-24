@@ -29,15 +29,18 @@ interface NumberKeyboardProps {
 export const NumberKeyboard: React.FC<NumberKeyboardProps> & {
   /**
    * 使用控制器 用于快速生成键盘输入的值
-   * @param defaultValue 默认值
-   * @param number 是否是数字 默认true
-   * @returns 
+   * @returns
    */
-  useController: (defaultValue?: string, number?: string) => [
-    staring | number,
-    {
-      onKeyPress: (key: string) => void,
-      onBackspace: () => void
-    }
-  ]
+  useController: (option?: {
+    /** 默认值 */
+    defaultValue?: string,
+    /** 是否转换为数字 */
+    number?: boolean
+  }) => [
+      staring | number,
+      {
+        onKeyPress: (key: string) => void,
+        onBackspace: () => void
+      }
+    ]
 }

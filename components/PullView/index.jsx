@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import { View } from '@tarojs/components'
+import { asyncTimeOut } from '@/duxapp'
 import { Absolute } from '../Absolute'
 import './index.scss'
 
@@ -24,10 +25,10 @@ export class PullView extends Component {
   }
 
   async close() {
-    // this.setState({
-    //   show: false
-    // })
-    // await asyncTimeOut(200)
+    this.setState({
+      show: false
+    })
+    await asyncTimeOut(200)
     this.props.onClose?.()
   }
 

@@ -25,7 +25,7 @@ const tabbarContext = createContext({
 const TabbarScreen = ({
   hover,
   index,
-  children: Comp
+  children: child
 }) => {
 
   const [render, setRender] = useState(false)
@@ -38,7 +38,11 @@ const TabbarScreen = ({
 
   return <screenContext.Provider value={{ hover, index }}>
     <View className={['TabBar-page__item', hover && 'TabBar-page__item--hover' || ''].join(' ')}>
-      {render && <Comp />}
+      {
+        render && (React.isValidElement(child.Comp)
+          ? React.cloneElement(child.Comp, { _index: child.index, _key: child.itemKey })
+          : <child.Comp _index={child.index} _key={child.itemKey} />)
+      }
     </View>
   </screenContext.Provider>
 }
@@ -108,10 +112,10 @@ const TabBar = ({
     return React.Children.map(children, ({ props }, index) => {
       const Comp = props.component
       return {
-        Component: () => {
-          return React.isValidElement(Comp)
-            ? React.cloneElement(Comp, { _index: index, _key: props.itemKey })
-            : <Comp _index={index} _key={props.itemKey} />
+        child: {
+          Comp,
+          index,
+          itemKey: props.itemKey
         },
         key: props.itemKey,
         index,
@@ -164,12 +168,12 @@ const TabBar = ({
       {
         childs.map((item, index) => {
           return <TabbarScreen key={item.key || index} hover={select === index} index={index}>
-            {item.Component}
+            {item.child}
           </TabbarScreen>
           // 子元素无法获取到 ctx，无法找到原因
           // return <CustomWrapper key={item.key || index}>
           //   <TabbarScreen hover={select === index} index={index}>
-          //     {item.Component}
+          //     {item.child}
           //   </TabbarScreen>
           // </CustomWrapper>
         })

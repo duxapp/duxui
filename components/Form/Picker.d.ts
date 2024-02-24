@@ -1,101 +1,101 @@
-import { ReactNode } from 'react';
-import { PickerProps as TaroPickerProps } from '@tarojs/components';
-import { DatePickerProps } from '../Picker/Date';
+import { ReactNode } from 'react'
+import { PickerProps as TaroPickerProps } from '@tarojs/components'
+import { DatePickerProps } from '../Picker/Date'
 
 interface PickerValueProps {
   /**
    * 占位符文本
    */
-  placeholder: string;
+  placeholder: string
   /**
    * 当前值
    */
-  value: string;
+  value: string
 }
 
-declare const PickerValue: React.FC<PickerValueProps>;
+declare const PickerValue: React.FC<PickerValueProps>
 
 interface PickerSelectProps extends Omit<TaroPickerProps, 'value'> {
   /**
    * 当前选中的值
    */
-  value: string;
+  value: string
   /**
    * 选项范围
    */
-  range: any[] | object[];
+  range: any[] | object[]
   /**
    * 占位符文本
    */
-  placeholder?: string;
+  placeholder?: string
   /**
    * 选项对象中表示名称的键名
    */
-  nameKey?: string;
+  nameKey?: string
   /**
    * 选项对象中表示值的键名
    */
-  valueKey?: string;
+  valueKey?: string
   /**
    * 值变化回调函数
    */
-  onChange?: (value: string) => void;
+  onChange?: (value: string) => void
   /**
    * 子元素
    */
-  children?: ReactNode;
+  children?: ReactNode
 }
 
-declare const PickerSelect: React.FC<PickerSelectProps>;
+declare const PickerSelect: React.FC<PickerSelectProps>
 
 interface PickerMultiSelectProps {
   /**
    * 当前选中的值数组
    */
-  value: any[];
+  value: any[]
   /**
    * 选项范围数组
    */
-  range: any[][] | object[][];
+  range: any[][] | object[][]
   /**
    * 选项对象中表示名称的键名
    */
-  nameKey?: string;
+  nameKey?: string
   /**
    * 选项对象中表示值的键名
    */
-  valueKey?: string;
+  valueKey?: string
   /**
    * 占位符文本
    */
-  placeholder?: string;
+  placeholder?: string
   /**
    * 值变化回调函数
    */
-  onChange?: (value: any[]) => void;
+  onChange?: (value: any[]) => void
 }
 
-declare const PickerMultiSelect: React.FC<PickerMultiSelectProps>;
+declare const PickerMultiSelect: React.FC<PickerMultiSelectProps>
 
 interface PickerDateProps extends DatePickerProps {
   /**
    * 当前选中的日期值
    */
-  value: string;
+  value: string
   /**
    * 值变化回调函数
    */
-  onChange?: (value: string) => void;
+  onChange?: (value: string) => void
   /**
    * 占位符文本
    */
-  placeholder?: string;
+  placeholder?: string
 }
 
-declare const PickerDate: React.FC<PickerDateProps>;
+declare const PickerDate: React.FC<PickerDateProps>
 
 export {
   PickerSelect,
   PickerMultiSelect,
   PickerDate,
-};
+}

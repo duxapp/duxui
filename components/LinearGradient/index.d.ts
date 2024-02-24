@@ -1,5 +1,5 @@
-import { ReactNode, CSSProperties, HTMLAttributes } from 'react';
-import { CommonEventFunction } from '@tarojs/components/types/common';
+import { ReactNode, CSSProperties, HTMLAttributes } from 'react'
+import { CommonEventFunction } from '@tarojs/components/types/common'
 import { StandardProps } from '@tarojs/components/types/common'
 
 interface LinearGradientProps extends StandardProps {
@@ -10,12 +10,12 @@ interface LinearGradientProps extends StandardProps {
     /**
      * 起点x坐标，取值范围为[0, 1]
      */
-    x: number;
+    x: number
     /**
      * 起点y坐标，取值范围为[0, 1]
      */
-    y: number;
-  };
+    y: number
+  }
   /**
    * 终点坐标
    */
@@ -23,24 +23,24 @@ interface LinearGradientProps extends StandardProps {
     /**
      * 终点x坐标，取值范围为[0, 1]
      */
-    x: number;
+    x: number
     /**
      * 终点y坐标，取值范围为[0, 1]
      */
-    y: number;
-  };
+    y: number
+  }
   /**
    * 渐变色列表
    */
-  colors?: string[];
+  colors?: string[]
   /**
    * 渐变色在渐变中的位置，必须是一个有序数组，取值范围为[0, 1]
    */
-  locations?: number[];
+  locations?: number[]
   /**
    * 是否使用角度控制渐变方向，默认值为false
    */
-  useAngle?: boolean;
+  useAngle?: boolean
   /**
    * 角度中心点
    */
@@ -48,28 +48,28 @@ interface LinearGradientProps extends StandardProps {
     /**
      * 中心点x坐标，取值范围为[0, 1]
      */
-    x: number;
+    x: number
     /**
      * 中心点y坐标，取值范围为[0, 1]
      */
-    y: number;
-  };
+    y: number
+  }
   /**
    * 渐变角度，顺时针方向，单位为度，默认值为0
    */
-  angle?: number;
+  angle?: number
   /**
    * 组件样式对象
    */
-  style?: CSSProperties;
+  style?: CSSProperties
   /**
    * 组件子元素
    */
-  children?: ReactNode;
+  children?: ReactNode
   /**
    * 事件绑定函数，响应点击事件
    */
-  onClick?: CommonEventFunction;
+  onClick?: CommonEventFunction
 }
 
-export const LinearGradient: React.FC<LinearGradientProps>;
+export const LinearGradient: React.FC<LinearGradientProps>

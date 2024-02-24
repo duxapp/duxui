@@ -26,11 +26,11 @@ interface GradeProps {
   /**
    * 当前评分值
    */
-  value: number;
+  value: number
   /**
    * 值变化回调函数
    */
-  onChange?: (value: number) => void;
+  onChange?: (value: number) => void
   /**
    * 图标尺寸
    */
@@ -41,8 +41,4 @@ interface GradeProps {
   type?: keyof type
 }
 
-declare const Grade: React.FC<GradeProps>;
-
-export {
-  Grade
-};
+export const Grade: React.FC<GradeProps>

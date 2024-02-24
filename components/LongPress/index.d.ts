@@ -16,8 +16,4 @@ interface LongPressProps extends StandardProps {
 /**
  * 长按组件，支持长按事件和点击事件
  */
-declare const LongPress: FC<LongPressProps>
-
-export {
-  LongPress
-}
+export const LongPress: FC<LongPressProps>

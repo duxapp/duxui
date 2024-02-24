@@ -25,6 +25,8 @@ interface TabProps extends StandardProps {
   scroll?: boolean
   /** 在右侧显示展开更多按钮 仅在滚动模式下生效 */
   expand?: boolean
+  /** 仅有一个Tab时是否隐藏Tab显示 */
+  oneHidden?: boolean
   /** 子元素 */
   children?: ReactNode
   /** tab的样式 */

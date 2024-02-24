@@ -54,7 +54,7 @@ export const Avatar = ({
   radiusType = duxuiTheme.avatar.radiusType,
   color,
   bgColor,
-  url = duxuiTheme.avatar.url,
+  url,
   icon,
   iconSize,
   className,
@@ -62,6 +62,8 @@ export const Avatar = ({
   children,
   ...props
 }) => {
+
+  url = url || duxuiTheme.avatar.url
 
   const [viewStyle, textStyle] = useMemo(() => {
     const _sty = { ...style }

@@ -3,6 +3,11 @@
     background-color: $duxappPageColor;
     border-radius: 16px;
 
+    &--one {
+      width: 160px;
+      height: 160px;
+    }
+
     &__image {
       border-radius: 16px;
     }

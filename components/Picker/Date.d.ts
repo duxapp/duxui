@@ -1,47 +1,47 @@
-import { ReactNode } from 'react';
+import { ReactNode } from 'react'
 
-type Mode = 'datetime' | 'date' | 'time' | 'month' | 'year';
+type Mode = 'datetime' | 'date' | 'time' | 'month' | 'year'
 
 interface Locale {
   // 年份显示文本
-  year: string;
+  year: string
   // 月份显示文本
-  month: string;
+  month: string
   // 天数显示文本
-  day: string;
+  day: string
   // 小时显示文本
-  hour: string;
+  hour: string
   // 分钟显示文本
-  minute: string;
+  minute: string
 }
 
 interface DatePickerProps {
   // 自定义类名前缀
-  prefixCls?: string;
+  prefixCls?: string
   // 自定义选择器类名前缀
-  pickerPrefixCls?: string;
+  pickerPrefixCls?: string
   // 默认日期
-  defaultValue?: string;
+  defaultValue?: string
   // 当前日期
-  value?: string;
+  value?: string
   // 日期选择的模式
-  mode?: Mode;
+  mode?: Mode
   // 最小时间
   minDate?: string
   // 最大时间
   maxDate?: string
   // 是否禁用
-  disabled?: boolean;
+  disabled?: boolean
   // 日期改变的回调函数
-  onChange?: (date: Date, dateString: string) => void;
+  onChange?: (date: Date, dateString: string) => void
   // 自定义面板的样式
-  style?: React.CSSProperties;
+  style?: React.CSSProperties
   // 自定义面板的类名
-  className?: string;
+  className?: string
   // 是否使用12小时制
-  use12Hours?: boolean;
+  use12Hours?: boolean
   // 本地化配置
-  locale?: Locale;
+  locale?: Locale
 }
 
-export const DatePicker: React.ComponentClass<DatePickerProps>;
+export const DatePicker: React.FC<DatePickerProps>

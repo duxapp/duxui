@@ -116,7 +116,7 @@ export const ModalForm = ({
 
   return <>
     {child}
-    {show && <PullView onClose={() => setShow(false)}>
+    {show && <PullView onClose={() => setShow(false)} side={side}>
       <context.Provider value={{ reset, submit }}>
         <Column className={classNames('ModalForm', ['left', 'right'].includes(side) ? 'ModalForm--full h-full' : 'ModalForm--vertical')}>
           {!!title && <Row items='center' justify='between' className='ModalForm__head'>

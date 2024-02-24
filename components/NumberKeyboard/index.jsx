@@ -124,7 +124,10 @@ const KeyItem = ({ keyText, onClick, render, height = 1 }) => {
   </Column>
 }
 
-NumberKeyboard.useController = (defaultValue = '', number = true) => {
+NumberKeyboard.useController = ({
+  defaultValue = '',
+  number
+} = {}) => {
 
   const [text, setText] = useState(defaultValue)
 

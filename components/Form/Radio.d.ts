@@ -1,51 +1,51 @@
-import { ReactNode, CSSProperties, FC } from 'react';
+import { ReactNode, CSSProperties, FC } from 'react'
 
-type Direction = 'horizontal' | 'vertical';
+type Direction = 'horizontal' | 'vertical'
 
 interface RadioGroupProps {
   /**
    * 单选按钮组件
    */
-  children: ReactNode;
+  children: ReactNode
   /**
    * 当前选中的值
    */
-  value: any;
+  value: any
   /**
    * 值改变时的回调函数
    */
-  onChange?: (value: any) => void;
+  onChange?: (value: any) => void
   /**
    * 单选按钮的布局方向
    */
-  direction?: Direction;
+  direction?: Direction
   /**
    * 附加在单选按钮组容器上的 CSS 类名
    */
-  className?: string;
+  className?: string
   /**
    * 附加在单选按钮组容器上的样式
    */
-  style?: CSSProperties;
+  style?: CSSProperties
   /**
    * 其他属性
    */
-  [key: string]: any;
+  [key: string]: any
 }
 
 interface RadioProps {
   /**
    * 单选按钮的值
    */
-  value: any;
+  value: any
   /**
    * 单选按钮的标签文字
    */
-  label?: ReactNode;
+  label?: ReactNode
   /**
    * 是否选中这个项目
    */
-  checked?: boolean;
+  checked?: boolean
   /**
    * 点击事件
    * @param event
@@ -55,22 +55,20 @@ interface RadioProps {
   /**
    * 附加在单选按钮容器上的 CSS 类名
    */
-  className?: string;
+  className?: string
 }
 
 interface RadioContextValue {
   /**
    * 单选按钮选择函数
    */
-  check: (value: any) => void;
+  check: (value: any) => void
   /**
    * 当前选中的值
    */
-  currentValue: any;
+  currentValue: any
 }
 
-declare const Radio: FC<RadioProps> & {
+export const Radio: FC<RadioProps> & {
   Group: FC<RadioGroupProps>
-};
-
-export { Radio };
+}

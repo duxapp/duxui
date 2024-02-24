@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import './Image.scss'
 
 export const Image = ({ data, onClick, imageSpace }) => {
-  if (!data.src) {
+  if (!data?.src) {
     return null
   }
   return <TaroImage

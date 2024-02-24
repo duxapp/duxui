@@ -1,7 +1,7 @@
-import Taro from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { px } from '@/duxapp'
 import React, { useMemo } from 'react'
 import classNames from 'classnames'
+import { View } from '../common'
 import './index.scss'
 
 export const Grid = ({
@@ -20,8 +20,9 @@ export const Grid = ({
   const group = useMemo(() => {
     const _group = []
     const _childs = []
+    const no = [false, true, null, undefined]
     React.Children.forEach(children, child => {
-      if (![false, true, null, undefined].some(v => v === child)) {
+      if (!no.includes(child)) {
         _childs.push(child)
       }
     })
@@ -40,10 +41,10 @@ export const Grid = ({
     return _group
   }, [children, column])
 
-  return <View className={className} style={{ ...style, rowGap: Taro.pxTransform(rowGap) }} {...props}>
+  return <View className={className} style={{ ...style, rowGap: px(rowGap) }} {...props}>
     {
       group.map((item, index) => {
-        return <View className='Grid__row' key={index} style={{ columnGap: Taro.pxTransform(columnGap) }}>
+        return <View className='Grid__row' key={index} style={{ columnGap: px(columnGap) }}>
           {
             item.map((child, childIndex) => <View
               key={childIndex}

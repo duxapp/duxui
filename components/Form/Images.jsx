@@ -1,6 +1,7 @@
 import { View, Image } from '@tarojs/components'
 import { useCallback, useState } from 'react'
 import { Loading } from '@/duxapp/components'
+import classNames from 'classnames'
 import { formConfig } from './config'
 import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
@@ -36,33 +37,39 @@ export const UploadImages = ({
     }
   }, [max, onChange, value])
 
-  return <Grid column={column} square gap={24}>
-    {value?.map((item, index) => {
-      return (
-        <View className='UIUplodImages__item' key={item}>
-          <Image className='UIUplodImages__item__image w-full h-full' src={item} mode='aspectFit' />
-          <Column className='UIUplodImages__item__icon'>
-            <DuxuiIcon name='close' color='red' size={36} onClick={() => del(index)} />
-          </Column>
-        </View>
-      )
-    })}
-    {(value?.length || 0) < max &&
-      <Column className='UIUplodImages__item' justify='center' items='center' onClick={!~progress && add}>
-        {
-          ~progress ?
-            <>
-              <Loading />
-              <Text color={2} size={2}>{(progress * 100).toFixed(1)}%</Text>
-            </> :
-            <>
-              <Text color={2} size={48}><DuxuiIcon name='add-select' /></Text>
-              <Text color={2} size={2}>{addText}</Text>
-            </>
-        }
+  const isOne = max === 1
 
-      </Column>
-    }
+  const content = [
+    ...value?.map((item, index) => {
+      return <View className={classNames('UIUplodImages__item', isOne && 'UIUplodImages__item--one')} key={item}>
+        <Image className='UIUplodImages__item__image w-full h-full' src={item} mode='aspectFit' />
+        <Column className='UIUplodImages__item__icon'>
+          <DuxuiIcon name='close' color='red' size={36} onClick={() => del(index)} />
+        </Column>
+      </View>
+    }),
+    (value?.length || 0) < max &&
+    <Column grow={!isOne} className={classNames('UIUplodImages__item', isOne && 'UIUplodImages__item--one')} justify='center' items='center' onClick={!~progress && add}>
+      {
+        ~progress ?
+          <>
+            <Loading />
+            <Text color={2} size={2}>{(progress * 100).toFixed(1)}%</Text>
+          </> :
+          <>
+            <Text color={2} size={48}><DuxuiIcon name='add-select' /></Text>
+            <Text color={2} size={2}>{addText}</Text>
+          </>
+      }
+    </Column>
+  ]
+
+  if (isOne) {
+    return content
+  }
+
+  return <Grid column={column} square gap={24}>
+    {content}
   </Grid>
 }
 
