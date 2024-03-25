@@ -14,25 +14,25 @@
 ## Textarea
 统一h5端背景颜色
 
-# HtmlView
+## HtmlView
 修复h5端视频高度错误
 
-# Image
+## Image
 修复无法预览的问题
 
-# Link
+## Link
 新增Link组件，用来跳转链接
 
-# Swiper
+## Swiper
 新增幻灯片组件
 
-# Video
+## Video
 新增视频播放组件
 
-# Types
+## Types
 修复、补全了多个组件的代码提示
 
-# 其他
+## 其他
 - 组件全面支持design设计器
 
 # 1.0.23
