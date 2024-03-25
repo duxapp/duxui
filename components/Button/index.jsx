@@ -33,7 +33,8 @@ export const Button = ({
   className,
   onClick,
   renderContent,
-  children
+  children,
+  ...porps
 }) => {
 
   const linearGradient = color instanceof Array
@@ -61,6 +62,7 @@ export const Button = ({
   }, [color, linearGradient, plain, type])
 
   return <RootView
+    {...porps}
     {...disabled || !onClick ? {} : { onClick }}
     className={classNames(
       'Button',

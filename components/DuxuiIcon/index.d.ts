@@ -1,6 +1,8 @@
 import { ComponentType, Component, CSSProperties } from 'react'
 
 interface names {
+  'roundcheckfill'
+  'roundcheck'
   'backspace'
   'direction_left'
   'pengyouquan'
@@ -15,8 +17,6 @@ interface names {
   'add-select'
   'xuanzekuang'
   'xuanzhong'
-  'add_check1'
-  'option'
   'close'
   'collection'
   'collection-fill'

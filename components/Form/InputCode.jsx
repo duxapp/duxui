@@ -7,7 +7,8 @@ import './InputCode.scss'
 export const InputCode = ({
   value = '', onChange, onClick,
   itemStyle, length = 6, password, focus,
-  className, style
+  className, style,
+  ...props
 }) => {
 
   const arr = useMemo(() => {
@@ -17,7 +18,11 @@ export const InputCode = ({
     })
   }, [length, value])
 
-  return <Row className={classNames('InputCode', className)} style={style} justify='between' onClick={onClick}>
+  return <Row
+    className={classNames('InputCode', className)}
+    style={style} justify='between' onClick={onClick}
+    {...props}
+  >
     {
       arr.map((item, index) => <Item
         style={itemStyle} key={index} value={item} password={password}

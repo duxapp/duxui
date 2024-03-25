@@ -12,7 +12,8 @@ export const NumberKeyboard = ({
   keyLeft,
   keyRight = 'backspace',
   className,
-  style
+  style,
+  ...props
 }) => {
 
   const lines = useMemo(() => {
@@ -56,7 +57,7 @@ export const NumberKeyboard = ({
     }, [])
   }, [keyLeft, keyRight, onBackspace, onKeyPress, random])
 
-  return <Column className={classNames('gap-2 p-2', className)} style={style}>
+  return <Column className={classNames('gap-2 p-2', className)} style={style} {...props}>
     {
       lines.map((line, lineIndex) => <Row className='gap-2' key={lineIndex}>
         {line.map((item) => <KeyItem key={item.key} keyText={item.key} {...item} />)}

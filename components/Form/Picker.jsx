@@ -3,6 +3,7 @@ import { ModalForm } from './Modal'
 
 export const PickerSelect = ({
   placeholder, grow, value, onChange, children, title, showButton, disabled, childPropsValueKey,
+  _designKey,
   ...props
 }) => {
 
@@ -16,11 +17,13 @@ export const PickerSelect = ({
     onChange={onChange}
     disabled={disabled}
     childPropsValueKey={childPropsValueKey}
+    _designKey={_designKey}
   />
 }
 
 export const PickerMultiSelect = ({
   placeholder, grow, value, onChange, children, title, showButton, disabled, childPropsValueKey,
+  _designKey,
   ...props
 }) => {
 
@@ -34,6 +37,7 @@ export const PickerMultiSelect = ({
     onChange={onChange}
     disabled={disabled}
     childPropsValueKey={childPropsValueKey}
+    _designKey={_designKey}
   />
 }
 
@@ -44,6 +48,7 @@ PickerMultiSelect.defaultProps = {
 
 export const PickerDate = ({
   placeholder, grow, value, onChange, children, title, showButton, disabled, childPropsValueKey,
+  _designKey,
   ...props
 }) => {
   return <ModalForm
@@ -56,5 +61,6 @@ export const PickerDate = ({
     onChange={onChange}
     disabled={disabled}
     childPropsValueKey={childPropsValueKey}
+    _designKey={_designKey}
   >{children}</ModalForm>
 }

@@ -1,29 +1,30 @@
 import { View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
 import { useMemo } from 'react'
-import { colorToRgb } from '@/duxapp/utils'
+import { colorToRgb, px } from '@/duxapp/utils'
+import classNames from 'classnames'
 
-export function BoxShadow({
+export const BoxShadow = ({
   color = '#999',
-  border = 10,
+  border = 8,
   radius = 0,
-  opacity = 0.2,
+  opacity = 0.3,
   x = 0,
   y = 0,
   children,
   style,
+  className,
   ...props
-}) {
+}) => {
 
   const rgb = useMemo(() => colorToRgb(color), [color])
 
   return <View
     style={{
-      borderRadius: Taro.pxTransform(radius),
+      ...radius ? { borderRadius: px(radius) } : {},
       ...style,
-      overflow: 'hidden',
-      boxShadow: `${Taro.pxTransform(x)} ${Taro.pxTransform(y)} ${Taro.pxTransform(border)} rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1})`
+      boxShadow: `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1}) ${px(x)} ${px(y)} ${px(border)}`
     }}
+    className={classNames('overflow-hidden bg-white', className)}
     {...props}
   >
     {children}

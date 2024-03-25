@@ -19,7 +19,7 @@ interface NumberKeyboardProps {
   /** 底部左侧按钮自定义 */
   keyLeft?: CustomKey
   /** 底部右侧按钮自定义 此处默认为回退键 */
-  keyLeft?: CustomKey
+  keyRight?: CustomKey
   /** 类名 */
   className?: string
   /** 样式 */

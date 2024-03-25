@@ -47,6 +47,7 @@ export const Calendar = ({
   max,
   min,
   onlyCurrentWeek, // 仅显示当前这周的数据
+  ...props
 }) => {
 
   const [value, setValue] = useState(propsValue)
@@ -369,7 +370,7 @@ export const Calendar = ({
     }
   }, [onlyCurrentWeek, selectDay, month])
 
-  return <View className={classNames('Calendar', className)} style={style}>
+  return <View className={classNames('Calendar', className)} style={style} {...props}>
     {!onlyCurrentWeek && <View className='Calendar__head' style={navStyle}>
       <DuxuiIcon name='direction_left' className='Calendar__head__icon' onClick={prev} />
       <Text className='Calendar__head__text'>{month}</Text>

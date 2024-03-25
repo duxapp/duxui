@@ -7,5 +7,8 @@
     textalignvertical: top;
     width: 100%;
     color: $duxappTextColor1;
+    .taro-textarea {
+      background-color: transparent;
+    }
   }
 }

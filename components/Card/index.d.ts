@@ -29,7 +29,7 @@ interface CardProps extends BoxShadowProps {
 
 interface TitleProps {
   numberOfLines?: number // 标题最大行数，默认为 1
-  line?: boolean // 是否显示标题下方的线，默认为 true
+  line?: boolean // 是否显示标题左侧的线，默认为 true
   children?: ReactNode // 子元素
 }
 

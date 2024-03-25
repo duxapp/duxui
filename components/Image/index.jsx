@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro'
+import { previewImage } from '@tarojs/taro'
 import { Image as BaseImage } from '@tarojs/components'
 import { createContext, useRef, useCallback, useContext, useMemo, useEffect, memo } from 'react'
 import classNames from 'classnames'
@@ -12,7 +12,7 @@ const context = createContext({
   addImage: noop,
   removeImage: noop,
   preview: (url, images = []) => {
-    Taro.previewImage({
+    previewImage({
       current: images.length && !images.includes(url) ? images[0] : url,
       urls: images.length ? images : [url]
     })
@@ -35,7 +35,7 @@ const ImageGroup = ({ children }) => {
   }
 
   const preview = useCallback(url => {
-    Taro.previewImage({
+    previewImage({
       current: url,
       urls: images.current
     })

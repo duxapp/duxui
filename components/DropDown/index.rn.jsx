@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import { TouchableOpacity, View, Text, Dimensions } from 'react-native'
-import { Absolute } from '../Absolute'
-// import { Icon } from '../Icon'
+import { Absolute } from '@/duxapp'
 import './index.scss'
 
 const measureInWindow = ref => {

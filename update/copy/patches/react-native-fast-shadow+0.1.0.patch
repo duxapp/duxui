@@ -1,0 +1,446 @@
+diff --git a/node_modules/react-native-fast-shadow/android/build.gradle b/node_modules/react-native-fast-shadow/android/build.gradle
+index 07f6357..035d1ed 100644
+--- a/node_modules/react-native-fast-shadow/android/build.gradle
++++ b/node_modules/react-native-fast-shadow/android/build.gradle
+@@ -35,6 +35,17 @@ android {
+     targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
+     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+   }
++
++  sourceSets {
++    main {
++      if (isNewArchitectureEnabled()) {
++        java.srcDirs += ['src/newarch']
++      } else {
++        java.srcDirs += ['src/oldarch']
++      }
++    }
++  }
++
+   buildTypes {
+     release {
+       minifyEnabled false
+diff --git a/node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowPackage.java b/node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowPackage.java
+index c778a84..c041c37 100644
+--- a/node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowPackage.java
++++ b/node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowPackage.java
+@@ -5,6 +5,8 @@ import com.facebook.react.bridge.NativeModule;
+ import com.facebook.react.bridge.ReactApplicationContext;
+ import com.facebook.react.uimanager.ViewManager;
+
++import com.reactnativefastshadow.FastShadowViewManager;
++
+ import java.util.Arrays;
+ import java.util.Collections;
+ import java.util.List;
+diff --git a/node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowViewManagerImpl.java b/node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowViewManagerImpl.java
+new file mode 100644
+index 0000000..51f612c
+--- /dev/null
++++ b/node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowViewManagerImpl.java
+@@ -0,0 +1,44 @@
++package com.reactnativefastshadow;
++
++import com.facebook.react.bridge.ReadableMap;
++import com.facebook.react.uimanager.ThemedReactContext;
++
++public class FastShadowViewManagerImpl {
++  public static final String NAME = "FastShadowView";
++
++  public FastShadowView createViewInstance(ThemedReactContext context) {
++    return new FastShadowView(context);
++  }
++
++  public void setShadowColor(FastShadowView view, int color) {
++    view.setColor(color);
++  }
++
++  public void setShadowOpacity(FastShadowView view, float opacity) {
++    view.setOpacity(opacity);
++  }
++
++  public void setShadowRadius(FastShadowView view, float radius) {
++    view.setRadius(radius);
++  }
++
++  public void setShadowOffset(FastShadowView view, ReadableMap offset) {
++    if (offset == null) {
++      view.resetOffset();
++    } else {
++      view.setOffset(
++        (float) offset.getDouble("width"),
++        (float) offset.getDouble("height")
++      );
++    }
++  }
++
++  public void setCornerRadii(FastShadowView view, ReadableMap borderRadius) {
++    view.setCornerRadii(new float[]{
++      (float) borderRadius.getDouble("topLeft"),
++      (float) borderRadius.getDouble("topRight"),
++      (float) borderRadius.getDouble("bottomRight"),
++      (float) borderRadius.getDouble("bottomLeft")
++    });
++  }
++}
+diff --git a/node_modules/react-native-fast-shadow/android/src/newarch/java/com/reactnativefastshadow/FastShadowViewManager.java b/node_modules/react-native-fast-shadow/android/src/newarch/java/com/reactnativefastshadow/FastShadowViewManager.java
+new file mode 100644
+index 0000000..aaebcef
+--- /dev/null
++++ b/node_modules/react-native-fast-shadow/android/src/newarch/java/com/reactnativefastshadow/FastShadowViewManager.java
+@@ -0,0 +1,230 @@
++package com.reactnativefastshadow;
++
++import android.graphics.Color;
++
++import androidx.annotation.NonNull;
++import androidx.annotation.Nullable;
++
++import com.facebook.react.bridge.ReadableMap;
++import com.facebook.react.uimanager.PixelUtil;
++import com.facebook.react.uimanager.Spacing;
++import com.facebook.react.uimanager.ThemedReactContext;
++import com.facebook.react.uimanager.annotations.ReactProp;
++
++import com.facebook.react.uimanager.ViewManagerDelegate;
++
++import com.facebook.react.module.annotations.ReactModule;
++
++import com.facebook.react.viewmanagers.FastShadowViewManagerDelegate;
++import com.facebook.react.viewmanagers.FastShadowViewManagerInterface;
++
++import com.facebook.react.views.view.ReactClippingViewManager;
++import com.facebook.yoga.YogaConstants;
++
++@ReactModule(name = FastShadowViewManagerImpl.NAME)
++public class FastShadowViewManager extends ReactClippingViewManager<FastShadowView>
++    implements FastShadowViewManagerInterface<FastShadowView> {
++
++  private final FastShadowViewManagerDelegate mDelegate;
++  private final FastShadowViewManagerImpl mFastShadowViewManagerImpl;
++
++  private static final int[] SPACING_TYPES = {
++    Spacing.ALL,
++    Spacing.LEFT,
++    Spacing.RIGHT,
++    Spacing.TOP,
++    Spacing.BOTTOM,
++    Spacing.START,
++    Spacing.END,
++  };
++
++  public FastShadowViewManager() {
++    mDelegate = new FastShadowViewManagerDelegate<>(this);
++    mFastShadowViewManagerImpl = new FastShadowViewManagerImpl();
++    setupViewRecycling();
++  }
++
++  @Override
++  protected ViewManagerDelegate<FastShadowView> getDelegate() {
++    return mDelegate;
++  }
++
++  @Override
++  public void onDropViewInstance(@NonNull FastShadowView view) {
++    super.onDropViewInstance(view);
++    view.releaseShadow();
++  }
++
++  @Override
++  @NonNull
++  public String getName() {
++    return FastShadowViewManagerImpl.NAME;
++  }
++
++  @Override
++  public FastShadowView createViewInstance(ThemedReactContext context) {
++    return mFastShadowViewManagerImpl.createViewInstance(context);
++  }
++
++  @Override
++  @ReactProp(name = "shadowColor", customType = "Color", defaultInt = Color.BLACK)
++  public void setShadowColor(FastShadowView view, int color) {
++    mFastShadowViewManagerImpl.setShadowColor(view, color);
++  }
++
++  @Override
++  @ReactProp(name = "shadowOpacity", defaultFloat = 0)
++  public void setShadowOpacity(FastShadowView view, float opacity) {
++    mFastShadowViewManagerImpl.setShadowOpacity(view, opacity);
++  }
++
++  @Override
++  @ReactProp(name = "shadowRadius", defaultFloat = 3)
++  public void setShadowRadius(FastShadowView view, float radius) {
++    mFastShadowViewManagerImpl.setShadowRadius(view, radius);
++  }
++
++  @Override
++  @ReactProp(name = "shadowOffset")
++  public void setShadowOffset(FastShadowView view, ReadableMap offset) {
++    mFastShadowViewManagerImpl.setShadowOffset(view, offset);
++  }
++
++  @Override
++  @ReactProp(name = "cornerRadii")
++  public void setCornerRadii(FastShadowView view, ReadableMap borderRadius) {
++    mFastShadowViewManagerImpl.setCornerRadii(view, borderRadius);
++  }
++
++  public void setBorderRadius(FastShadowView view, int index, float borderRadius) {
++    if (!YogaConstants.isUndefined(borderRadius) && borderRadius < 0) {
++      borderRadius = YogaConstants.UNDEFINED;
++    }
++
++    if (!YogaConstants.isUndefined(borderRadius)) {
++      borderRadius = PixelUtil.toPixelFromDIP(borderRadius);
++    }
++
++    if (index == 0) {
++      view.setBorderRadius(borderRadius);
++    } else {
++      view.setBorderRadius(borderRadius, index - 1);
++    }
++  }
++
++  @Override
++  @ReactProp(name = "borderRadius")
++  public void setBorderRadius(FastShadowView view, float borderRadius) {
++    setBorderRadius(view, 0, borderRadius);
++  }
++
++  @Override
++  @ReactProp(name = "borderTopLeftRadius")
++  public void setBorderTopLeftRadius(FastShadowView view, float borderRadius) {
++    setBorderRadius(view, 1, borderRadius);
++  }
++
++  @Override
++  @ReactProp(name = "borderTopRightRadius")
++  public void setBorderTopRightRadius(FastShadowView view, float borderRadius) {
++    setBorderRadius(view, 2, borderRadius);
++  }
++
++  @Override
++  @ReactProp(name = "borderBottomRightRadius")
++  public void setBorderBottomRightRadius(FastShadowView view, float borderRadius) {
++    setBorderRadius(view, 3, borderRadius);
++  }
++
++  @Override
++  @ReactProp(name = "borderBottomLeftRadius")
++  public void setBorderBottomLeftRadius(FastShadowView view, float borderRadius) {
++    setBorderRadius(view, 4, borderRadius);
++  }
++
++  @Override
++  @ReactProp(name = "borderStyle")
++  public void setBorderStyle(FastShadowView view, @Nullable String borderStyle) {
++    view.setBorderStyle(borderStyle);
++  }
++
++  public void setBorderWidth(FastShadowView view, int index, float width) {
++    if (!YogaConstants.isUndefined(width) && width < 0) {
++      width = YogaConstants.UNDEFINED;
++    }
++
++    if (!YogaConstants.isUndefined(width)) {
++      width = PixelUtil.toPixelFromDIP(width);
++    }
++
++    view.setBorderWidth(SPACING_TYPES[index], width);
++  }
++
++  @Override
++  @ReactProp(name = "borderWidth")
++  public void setBorderWidth(FastShadowView view, float width) {
++    setBorderWidth(view, 0, width);
++  }
++
++  @Override
++  @ReactProp(name = "borderLeftWidth")
++  public void setBorderLeftWidth(FastShadowView view, float width) {
++    setBorderWidth(view, 1, width);
++  }
++
++  @Override
++  @ReactProp(name = "borderRightWidth")
++  public void setBorderRightWidth(FastShadowView view, float width) {
++    setBorderWidth(view, 2, width);
++  }
++
++  @Override
++  @ReactProp(name = "borderTopWidth")
++  public void setBorderTopWidth(FastShadowView view, float width) {
++    setBorderWidth(view, 3, width);
++  }
++
++  @Override
++  @ReactProp(name = "borderBottomWidth")
++  public void setBorderBottomWidth(FastShadowView view, float width) {
++    setBorderWidth(view, 4, width);
++  }
++
++  public void setBorderColor(FastShadowView view, int index, Integer color) {
++    float rgbComponent =
++      color == null ? YogaConstants.UNDEFINED : (float) ((int) color & 0x00FFFFFF);
++    float alphaComponent = color == null ? YogaConstants.UNDEFINED : (float) ((int) color >>> 24);
++    view.setBorderColor(SPACING_TYPES[index], rgbComponent, alphaComponent);
++  }
++
++  @Override
++  @ReactProp(name = "borderColor")
++  public void setBorderColor(FastShadowView view, int color) {
++    setBorderColor(view, 0, color);
++  }
++
++  @Override
++  @ReactProp(name = "borderLeftColor")
++  public void setBorderLeftColor(FastShadowView view, int color) {
++    setBorderColor(view, 1, color);
++  }
++
++  @Override
++  @ReactProp(name = "borderRightColor")
++  public void setBorderRightColor(FastShadowView view, int color) {
++    setBorderColor(view, 2, color);
++  }
++
++  @Override
++  @ReactProp(name = "borderTopColor")
++  public void setBorderTopColor(FastShadowView view, int color) {
++    setBorderColor(view, 3, color);
++  }
++
++  @Override
++  @ReactProp(name = "borderBottomColor")
++  public void setBorderBottomColor(FastShadowView view, int color) {
++    setBorderColor(view, 4, color);
++  }
++
++}
+diff --git a/node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowViewManager.java b/node_modules/react-native-fast-shadow/android/src/oldarch/java/com/reactnativefastshadow/FastShadowViewManager.java
+similarity index 68%
+rename from node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowViewManager.java
+rename to node_modules/react-native-fast-shadow/android/src/oldarch/java/com/reactnativefastshadow/FastShadowViewManager.java
+index 8341ad3..f0e03cd 100644
+--- a/node_modules/react-native-fast-shadow/android/src/main/java/com/reactnativefastshadow/FastShadowViewManager.java
++++ b/node_modules/react-native-fast-shadow/android/src/oldarch/java/com/reactnativefastshadow/FastShadowViewManager.java
+@@ -11,17 +11,22 @@ import com.facebook.react.views.view.ReactViewGroup;
+ import com.facebook.react.views.view.ReactViewManager;
+
+ public class FastShadowViewManager extends ReactViewManager {
+-  public static final String REACT_CLASS = "FastShadowView";
++
++  private final FastShadowViewManagerImpl mFastShadowViewManagerImpl;
++
++  public FastShadowViewManager() {
++    mFastShadowViewManagerImpl = new FastShadowViewManagerImpl();
++  }
+
+   @Override
+   @NonNull
+   public String getName() {
+-    return REACT_CLASS;
++    return FastShadowViewManagerImpl.NAME;
+   }
+
+   @Override
+   public FastShadowView createViewInstance(ThemedReactContext context) {
+-    return new FastShadowView(context);
++    return mFastShadowViewManagerImpl.createViewInstance(context);
+   }
+
+   @Override
+@@ -32,38 +37,26 @@ public class FastShadowViewManager extends ReactViewManager {
+
+   @ReactProp(name = "shadowColor", customType = "Color", defaultInt = Color.BLACK)
+   public void setShadowColor(FastShadowView view, int color) {
+-    view.setColor(color);
++    mFastShadowViewManagerImpl.setShadowColor(view, color);
+   }
+
+   @ReactProp(name = "shadowOpacity", defaultFloat = 0)
+   public void setShadowOpacity(FastShadowView view, float opacity) {
+-    view.setOpacity(opacity);
++    mFastShadowViewManagerImpl.setShadowOpacity(view, opacity);
+   }
+
+   @ReactProp(name = "shadowRadius", defaultFloat = 3)
+   public void setShadowRadius(FastShadowView view, float radius) {
+-    view.setRadius(radius);
++    mFastShadowViewManagerImpl.setShadowRadius(view, radius);
+   }
+
+   @ReactProp(name = "shadowOffset")
+   public void setShadowOffset(FastShadowView view, ReadableMap offset) {
+-    if (offset == null) {
+-      view.resetOffset();
+-    } else {
+-      view.setOffset(
+-        (float) offset.getDouble("width"),
+-        (float) offset.getDouble("height")
+-      );
+-    }
++    mFastShadowViewManagerImpl.setShadowOffset(view, offset);
+   }
+
+   @ReactProp(name = "cornerRadii")
+   public void setCornerRadii(FastShadowView view, ReadableMap borderRadius) {
+-    view.setCornerRadii(new float[]{
+-      (float) borderRadius.getDouble("topLeft"),
+-      (float) borderRadius.getDouble("topRight"),
+-      (float) borderRadius.getDouble("bottomRight"),
+-      (float) borderRadius.getDouble("bottomLeft")
+-    });
++    mFastShadowViewManagerImpl.setCornerRadii(view, borderRadius);
+   }
+ }
+diff --git a/node_modules/react-native-fast-shadow/src/FastShadowViewNativeComponent.ts b/node_modules/react-native-fast-shadow/src/FastShadowViewNativeComponent.ts
+new file mode 100644
+index 0000000..6c42b16
+--- /dev/null
++++ b/node_modules/react-native-fast-shadow/src/FastShadowViewNativeComponent.ts
+@@ -0,0 +1,42 @@
++import type { HostComponent, ViewProps } from 'react-native'
++import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent'
++import { Int32, Float } from 'react-native/Libraries/Types/CodegenTypes'
++
++export interface FastShadowViewProps extends ViewProps {
++  shadowColor?: Int32
++  shadowOpacity?: Float
++  shadowRadius?: Float
++  shadowOffset?: {
++    width: Float
++    height: Float
++  }
++  cornerRadii?: {
++    topLeft: Float
++    topRight: Float
++    bottomLeft: Float
++    bottomRight: Float
++  },
++  borderRadius?: Float,
++  borderTopLeftRadius?: Float,
++  borderTopRightRadius?: Float,
++  borderBottomLeftRadius?: Float,
++  borderBottomRightRadius?: Float,
++
++  borderColor?: Int32,
++  borderLeftColor?: Int32,
++  borderRightColor?: Int32,
++  borderTopColor?: Int32,
++  borderBottomColor?: Int32
++
++  borderWidth?: Float,
++  borderLeftWidth?: Float,
++  borderRightWidth?: Float,
++  borderTopWidth?: Float,
++  borderBottomWidth?: Float
++
++  borderStyle?: string
++}
++
++export default codegenNativeComponent<FastShadowViewProps>(
++  'FastShadowView'
++) as HostComponent<FastShadowViewProps>

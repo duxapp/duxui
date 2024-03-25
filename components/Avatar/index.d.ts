@@ -46,6 +46,10 @@ interface AvatarGroupProps {
   max?: number
   /** 当头像数量超出时，用于替代超出部分的头像 */
   maxProps?: Omit<AvatarProps, 'children'>
+  /** 添加类名 */
+  className?: string
+  /** 添加样式 */
+  style?: React.CSSProperties
 }
 
 export const Avatar: React.FC<AvatarProps> & {

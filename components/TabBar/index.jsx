@@ -37,7 +37,7 @@ const TabbarScreen = ({
   }, [hover, render])
 
   return <screenContext.Provider value={{ hover, index }}>
-    <View className={['TabBar-page__item', hover && 'TabBar-page__item--hover' || ''].join(' ')}>
+    <View className={classNames('TabBar-page__item', hover && 'TabBar-page__item--hover')}>
       {
         render && (React.isValidElement(child.Comp)
           ? React.cloneElement(child.Comp, { _index: child.index, _key: child.itemKey })

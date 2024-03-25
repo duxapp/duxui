@@ -1,8 +1,6 @@
 import { useCallback, useState, createContext, useContext, useRef, forwardRef, useImperativeHandle, useMemo } from 'react'
-import { Layout } from '@/duxapp'
-import { duxappTheme } from '@/duxapp/utils'
+import { Layout, Absolute, duxappTheme } from '@/duxapp'
 import classNames from 'classnames'
-import { Absolute } from '../Absolute'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -206,7 +204,7 @@ export const Menu = ({
       <menuContext.Provider value={{ itemClick, showIndex: show, onIndex, onSetClick }}>
         {children}
       </menuContext.Provider>
-    </Layout >
+    </Layout>
     {!!~show && <Absolute>
       <Column
         className='absolute left-0 top-0 right-0'

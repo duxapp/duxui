@@ -13,6 +13,7 @@ const CheckboxGroup = ({
   onChange,
   disabled,
   direction = 'horizontal',
+  style,
   className,
   ...props
 }) => {
@@ -34,7 +35,7 @@ const CheckboxGroup = ({
   }, [onChange, value, disabled])
 
   return <context.Provider value={{ check, currentValue: value }}>
-    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} {...props} className={classNames('flex-grow', className)}>
+    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} {...props} style={style} className={classNames('flex-grow', className)}>
       {children}
     </Space>
   </context.Provider>
@@ -54,7 +55,7 @@ CheckboxGroup.defaultProps = {
 //   console.log('12323',value, props)
 // }
 
-export const Checkbox = ({ value, label, checked, children: Child, ...props }) => {
+export const Checkbox = ({ value, label, checked, children: Child, className, style, ...props }) => {
   const { check, currentValue } = useContext(context)
 
   const isCheck = checked || currentValue?.includes(value)
@@ -69,7 +70,7 @@ export const Checkbox = ({ value, label, checked, children: Child, ...props }) =
     />
   }
 
-  return <Space row items='center' size={8} onClick={() => check(value)}  {...props}>
+  return <Space row items='center' size={8} onClick={() => check(value)} className={className} style={style}  {...props}>
     <Text size={32} type={isCheck ? 'primary' : void 0} color={isCheck ? void 0 : 3}>
       <DuxuiIcon name={isCheck ? 'xuanzhong' : 'xuanzekuang'} />
     </Text>

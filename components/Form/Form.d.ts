@@ -1,4 +1,3 @@
-import { ImageProps } from '@tarojs/components/types/Image'
 import { CSSProperties, ReactNode } from 'react'
 import { SchemaRuleType } from 'b-validate'
 import { TextProps } from '../Text'

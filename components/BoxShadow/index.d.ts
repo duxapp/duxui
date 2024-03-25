@@ -6,8 +6,6 @@ interface BoxShadowProps extends StandardProps {
   color?: string
   /** 阴影边框大小，默认值为 10 */
   border?: number
-  /** 边框圆角大小，默认值为 0，如果你需要圆角，必须要指定这个属性 */
-  radius?: number
   /** 阴影不透明度，默认值为 0.1 */
   opacity?: number
   /** 阴影 x 轴偏移量，默认值为 0 */

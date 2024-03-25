@@ -1,7 +1,6 @@
 import { useCallback, useState, forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
 import { View, Text } from '@tarojs/components'
-import { Layout, getRect } from '@/duxapp'
-import { Absolute } from '../Absolute'
+import { Layout, getRect, Absolute } from '@/duxapp'
 import './index.scss'
 
 let classKey = 0

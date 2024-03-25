@@ -3,6 +3,8 @@ import { CSSProperties, LegacyRef, ComponentType, ReactElement } from 'react'
 
 /** 圆角类型 */
 interface type {
+  /** 默认样式 */
+  default
   /** 主色 */
   primary
   /** 辅色 */

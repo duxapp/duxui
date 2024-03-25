@@ -1,4 +1,4 @@
-import { deepCopy, noop } from '@/duxapp'
+import { deepCopy, noop, PullView } from '@/duxapp'
 import { cloneElement, useMemo, isValidElement, useCallback, createContext, useContext, useState, useRef } from 'react'
 import classNames from 'classnames'
 import { Button } from '../Button'
@@ -6,7 +6,6 @@ import { Row, Column } from '../Flex'
 import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
 import { Divider } from '../Divider'
-import { PullView } from '../PullView'
 import { Space } from '../Space'
 import { useFormContext, formContext } from './Form'
 

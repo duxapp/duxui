@@ -7,5 +7,9 @@
     text-align: center;
     align-items: center;
     justify-content: center;
+    /*  #ifndef rn */
+    flex-shrink: 0;
+    height: 100px;
+    /*  #endif  */
   }
 }

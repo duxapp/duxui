@@ -12,7 +12,8 @@ const BadgeNumber = ({
   maxCount = 99,
   child,
   outside,
-  layout
+  layout,
+  ...props
 }) => {
 
   const style = useMemo(() => {
@@ -38,6 +39,7 @@ const BadgeNumber = ({
                     left: layout.width - 4,
                   } : {}
                 }}
+                {...props}
               >
                 <Text className='Badge__count__text'>{text || (count > maxCount ? maxCount + '+' : count)}</Text>
               </View>}
@@ -45,6 +47,7 @@ const BadgeNumber = ({
             <View
               className={classNames('Badge__dot', child && 'Badge__dot--child')}
               style={style}
+              {...props}
             />
         }
       </>
@@ -78,6 +81,6 @@ export const Badge = ({
       <BadgeNumber count={count} dot={dot} color={color} text={text} maxCount={maxCount} child />
     </View>
   } else {
-    return <BadgeNumber count={count} dot={dot} color={color} text={text} maxCount={maxCount} />
+    return <BadgeNumber count={count} dot={dot} color={color} text={text} maxCount={maxCount} {...props} />
   }
 }

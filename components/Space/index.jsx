@@ -23,8 +23,8 @@ export const Space = ({
 
   return <View
     className={classNames(
-      justify ? 'justify-' + justify : '',
-      items ? 'items-' + items : '',
+      justify && 'justify-' + justify,
+      items && 'items-' + items,
       row && 'flex-row',
       wrap && 'flex-wrap',
       grow && 'w-0 flex-grow',

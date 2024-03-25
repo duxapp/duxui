@@ -1,8 +1,7 @@
 import { useState, useCallback, useMemo, Children, useRef } from 'react'
 import { View } from '@tarojs/components'
 import classNames from 'classnames'
-import { ScrollView, Layout } from '@/duxapp'
-import { Absolute } from '../Absolute'
+import { ScrollView, Layout, Absolute } from '@/duxapp'
 import { Text } from '../Text'
 import { Column, Row } from '../Flex'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -50,13 +49,13 @@ export const Tab = ({
       }
       _tabPane[index] = {
         paneKey,
-        el: _child?.props.children
+        el: _child
       }
       return {
         ..._child?.props,
         paneKey
       }
-    })
+    }) || []
     return [_list, _tabPane, _badgeType]
   }, [children])
 
@@ -88,21 +87,23 @@ export const Tab = ({
   }, [onChange, disabled])
 
   const tabs = <Scroll scroll={scroll} style={expand && scroll ? undefined : tabStyle}>
-    {list.map((item, index) => <TabItem
-      type={type}
-      buttonColor={buttonColor}
-      buttonRound={buttonRound}
-      key={item.paneKey || index}
-      scroll={scroll}
-      badgeType={badgeType}
-      {...item}
-      select={item.paneKey === select}
-      onClick={change}
-    />)}
+    {
+      list.map((item, index) => <TabItem
+        type={type}
+        buttonColor={buttonColor}
+        buttonRound={buttonRound}
+        key={item.paneKey || index}
+        scroll={scroll}
+        badgeType={badgeType}
+        {...item}
+        select={item.paneKey === select}
+        onClick={change}
+      />)
+    }
   </Scroll>
 
   return (
-    <View className={classNames(Tab, className, justify && 'flex-grow')} style={style} {...props}>
+    <View className={classNames('Tab', className, justify && 'flex-grow')} style={style} {...props}>
       {
         oneHidden && list.length < 2 ?
           null : expand && scroll ?
@@ -198,7 +199,11 @@ const TabItem = ({
   </Column>
 }
 
-Tab.Item = TabItem
+const Item = ({ children }) => {
+  return children
+}
+
+Tab.Item = Item
 
 const BadgeText = ({ children, badgeProps, outside }) => {
   if (!badgeProps || (!badgeProps.count && !badgeProps.dot)) {
@@ -215,7 +220,7 @@ const Scroll = ({
   children
 }) => {
   if (scroll) {
-    return <ScrollView.Horizontal style={style}>
+    return <ScrollView.Horizontal style={style} className='Tab__row'>
       {children}
     </ScrollView.Horizontal>
   }

@@ -11,10 +11,11 @@ export const Grade = ({
   value,
   onChange,
   size = 'm',
-  type = 'primary'
+  type = 'primary',
+  ...props
 }) => {
 
-  return <Space row items='center' size={16}>
+  return <Space row items='center' size={16} {...props}>
     <Row items='center'>
       {arr.map((item, index) => {
         return <Text

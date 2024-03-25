@@ -1,11 +1,10 @@
 import { Text } from '@tarojs/components'
-import Taro from '@tarojs/taro'
 import { useMemo } from 'react'
-import { font } from '@/duxapp/utils'
+import { font, px } from '@/duxapp/utils'
 import icons from './icons.json'
 import './index.scss'
 
-font.load('DuxuiIcon', 'https://pictcdn.client.jujiang.me/fonts/DuxuiIcon.1706693517548.ttf')
+font.load('DuxuiIcon', 'https://pictcdn.client.jujiang.me/fonts/DuxuiIcon.1709522237756.ttf')
 
 export const DuxuiIcon = ({ name, color, size, style, className, ...props }) => {
 
@@ -15,16 +14,16 @@ export const DuxuiIcon = ({ name, color, size, style, className, ...props }) => 
       sty.color = color
     }
     if (size) {
-      sty.fontSize = Taro.pxTransform(size)
+      sty.fontSize = px(size)
     }
     return sty
   }, [color, size, style])
 
+  const status = font.useFont('DuxuiIcon')
+
   if (!icons[name]) {
     return console.log(`DuxuiIcon的${name}图标不存在`)
   }
-
-  const status = font.useFont('DuxuiIcon')
 
   if (!status) {
     return null

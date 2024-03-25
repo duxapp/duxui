@@ -4,8 +4,8 @@ import { useCallback } from 'react'
 import classNames from 'classnames'
 import { duxappTheme } from '@/duxapp'
 import { Column } from '../Flex'
-import './Textarea.scss'
 import { Text } from '../Text'
+import './Textarea.scss'
 
 export const Textarea = ({
   value,
@@ -19,6 +19,7 @@ export const Textarea = ({
   align,
   maxlength,
   showLength = true,
+  _designKey,
   ...porps
 }) => {
 
@@ -34,6 +35,7 @@ export const Textarea = ({
       align && 'text-' + align,
       className
     )}
+    _designKey={_designKey}
   >
     <TextareaTaro
       value={value}
@@ -42,8 +44,8 @@ export const Textarea = ({
       style={{ height: Taro.pxTransform(36 * line) }}
       placeholderTextColor={duxappTheme.textColor3}
       placeholderStyle={`color: ${duxappTheme.textColor3}`}
-      {...porps}
       onInput={input}
+      {...porps}
     />
     {!!maxlength && showLength && <Text>{value?.length || 0}/{maxlength}</Text>}
   </Column>

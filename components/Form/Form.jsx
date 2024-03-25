@@ -197,7 +197,8 @@ const FormItem = ({
   triggerPropName,
   field,
   // 当有的表单一个需要编辑多个字段时，指定此方式
-  fields
+  fields,
+  ...props
 }) => {
 
   const form = useFormContext()
@@ -269,7 +270,7 @@ const FormItem = ({
     {!!subLabel && <Text size={1} color={3} bold={false}> {subLabel}</Text>}
   </Text>
 
-  return <Column style={style} className={classNames('FormItem', className)}>
+  return <Column {...props} style={style} className={classNames('FormItem', className)}>
     <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} style={_containerProps.style} {..._containerProps} >
       {
         renderLabelRight ? <Space row justify='between'>

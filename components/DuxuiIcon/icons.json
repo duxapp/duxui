@@ -1,4 +1,6 @@
 {
+  "roundcheckfill": 58966,
+  "roundcheck": 58967,
   "backspace": 58930,
   "direction_left": 59061,
   "pengyouquan": 58880,
@@ -13,8 +15,6 @@
   "add-select": 59554,
   "xuanzekuang": 58957,
   "xuanzhong": 58958,
-  "add_check1": 59099,
-  "option": 59104,
   "close": 59124,
   "collection": 59523,
   "collection-fill": 59525,

@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext } from 'react'
 import { noop } from '@/duxapp/utils'
+import classNames from 'classnames'
 import { Space } from '../Space'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -12,6 +13,8 @@ const RadioGroup = ({
   onChange,
   disabled,
   direction = 'horizontal',
+  className,
+  style,
   ...props
 }) => {
 
@@ -25,13 +28,13 @@ const RadioGroup = ({
   }, [onChange, value, disabled])
 
   return <context.Provider value={{ check, currentValue: value }}>
-    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} {...props} className='flex-grow'>
+    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} style={style} {...props} className={classNames('flex-grow', className)}>
       {children}
     </Space>
   </context.Provider>
 }
 
-export const Radio = ({ value, label, checked, onClick, children: Child, ...props }) => {
+export const Radio = ({ value, label, checked, onClick, children: Child, className, style, ...props }) => {
   const { check, currentValue } = useContext(context)
 
   const _checked = typeof checked === 'boolean' ? checked : currentValue === value
@@ -51,10 +54,12 @@ export const Radio = ({ value, label, checked, onClick, children: Child, ...prop
       check(value)
       onClick?.(e)
     }}
+    className={className}
+    style={style}
     {...props}
   >
     <Text size={42} type={_checked ? 'primary' : void 0} color={_checked ? void 0 : 3}>
-      <DuxuiIcon name={_checked ? 'add_check1' : 'option'} />
+      <DuxuiIcon name={_checked ? 'roundcheckfill' : 'roundcheck'} />
     </Text>
     {!!label && <Text>{label}</Text>}
   </Space>

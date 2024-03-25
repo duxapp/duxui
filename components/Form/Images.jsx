@@ -14,7 +14,9 @@ export const UploadImages = ({
   column = 4,
   addText = '添加图片',
   onChange,
-  max = 9
+  max = 9,
+  _designKey,
+  ...props
 }) => {
 
   const del = useCallback((index) => {
@@ -41,7 +43,11 @@ export const UploadImages = ({
 
   const content = [
     ...value?.map((item, index) => {
-      return <View className={classNames('UIUplodImages__item', isOne && 'UIUplodImages__item--one')} key={item}>
+      return <View
+        className={classNames('UIUplodImages__item', isOne && 'UIUplodImages__item--one')}
+        key={item}
+        {...isOne ? { _designKey } : {}}
+      >
         <Image className='UIUplodImages__item__image w-full h-full' src={item} mode='aspectFit' />
         <Column className='UIUplodImages__item__icon'>
           <DuxuiIcon name='close' color='red' size={36} onClick={() => del(index)} />
@@ -49,7 +55,14 @@ export const UploadImages = ({
       </View>
     }),
     (value?.length || 0) < max &&
-    <Column grow={!isOne} className={classNames('UIUplodImages__item', isOne && 'UIUplodImages__item--one')} justify='center' items='center' onClick={!~progress && add}>
+    <Column
+      grow={!isOne}
+      className={classNames('UIUplodImages__item', isOne && 'UIUplodImages__item--one')}
+      justify='center'
+      items='center'
+      onClick={!~progress && add}
+      {...isOne ? { _designKey } : {}}
+    >
       {
         ~progress ?
           <>
@@ -68,7 +81,7 @@ export const UploadImages = ({
     return content
   }
 
-  return <Grid column={column} square gap={24}>
+  return <Grid column={column} square gap={24} _designKey={_designKey} {...props}>
     {content}
   </Grid>
 }
@@ -77,7 +90,7 @@ UploadImages.defaultProps = {
   value: []
 }
 
-export const UploadImage = ({ onChange, value, addText }) => {
+export const UploadImage = ({ onChange, value, ...props }) => {
 
-  return <UploadImages max={1} onChange={val => onChange(val[0])} value={value ? [value] : []} addText={addText} />
+  return <UploadImages max={1} onChange={val => onChange(val[0])} value={value ? [value] : []}  {...props} />
 }

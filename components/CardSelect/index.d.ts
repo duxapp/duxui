@@ -48,6 +48,6 @@ interface CardSelectProps extends StandardProps {
   children?: ReactNode
 }
 
-export const Card: React.FC<CardSelect> & {
+export const CardSelect: React.FC<CardSelectProps> & {
   Group: React.FC<CardSelectGroupProps>
 }
