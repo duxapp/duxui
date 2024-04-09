@@ -15,6 +15,7 @@ export const UploadImages = ({
   addText = '添加图片',
   onChange,
   max = 9,
+  disabled,
   _designKey,
   ...props
 }) => {
@@ -49,12 +50,12 @@ export const UploadImages = ({
         {...isOne ? { _designKey } : {}}
       >
         <Image className='UIUplodImages__item__image w-full h-full' src={item} mode='aspectFit' />
-        <Column className='UIUplodImages__item__icon'>
+        {!disabled && <Column className='UIUplodImages__item__icon'>
           <DuxuiIcon name='close' color='red' size={36} onClick={() => del(index)} />
-        </Column>
+        </Column>}
       </View>
     }),
-    (value?.length || 0) < max &&
+    (value?.length || 0) < max && !disabled &&
     <Column
       grow={!isOne}
       className={classNames('UIUplodImages__item', isOne && 'UIUplodImages__item--one')}

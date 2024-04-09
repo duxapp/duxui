@@ -22,6 +22,8 @@ interface UploadImagesProps {
    * 默认 9
    */
   max?: number
+  /** 是否禁用 */
+  disabled?: boolean
 }
 
 interface UploadImageProps {
@@ -38,6 +40,8 @@ interface UploadImageProps {
    * 默认 添加图片
    */
   addText?: string
+  /** 是否禁用 */
+  disabled?: boolean
 }
 
 export const UploadImages: React.FC<UploadImagesProps>

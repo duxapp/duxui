@@ -115,8 +115,7 @@ interface SubmitProps {
 /**
  * ModalForm组件的类型定义
  */
-export
-3 const ModalForm: React.FC<ModalFormProps> & {
+export const ModalForm: React.FC<ModalFormProps> & {
   /**
    * Reset组件类型定义
    */

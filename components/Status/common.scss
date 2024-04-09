@@ -63,6 +63,7 @@
 .StatusCommon {
   align-items: center;
   justify-content: center;
+  padding: 0 16px;
   &--top-left {
     border-bottom-right-radius: 16px;
   }
@@ -78,17 +79,17 @@
 
   &--s {
     height: 42px;
-    width: 120px;
+    min-width: 120px;
   }
 
   &--m {
     height: 56px;
-    width: 140px;
+    min-width: 140px;
   }
 
   &--l {
     height: 72px;
-    width: 156px;
+    min-width: 156px;
   }
 
   &--primary {

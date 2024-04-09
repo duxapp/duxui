@@ -1,6 +1,7 @@
-import {px, Column, Row } from '@/duxui'
+import { px } from '@/duxapp'
 import { Swiper as TaroSwiper, SwiperItem as TaroSwiperItem } from '@tarojs/components'
 import { useState } from 'react'
+import { Column, Row } from '../Flex'
 
 export const Swiper = ({
   children,

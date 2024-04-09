@@ -1,0 +1,225 @@
+import { px, PullView, noop } from '@/duxapp'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { Column, Row } from '../Flex'
+import { Text } from '../Text'
+import { Grid } from '../Grid'
+import { DuxuiIcon } from '../DuxuiIcon'
+import { InputCode } from '../Form/InputCode'
+import { BoxShadow } from '../BoxShadow'
+import carCity from './carCity.json'
+
+const Keyboard = ({ onInput, onBackspace: onBackspaceInput }) => {
+
+  const [{ length, value = '' }, setState] = useContext(context)
+
+  const [keys, setKeys] = useState(value.split(''))
+
+  useEffect(() => {
+    setState(old => ({ ...old, value: keys.join('') }))
+  }, [keys, setState])
+
+  const onKey = key => {
+    onInput?.(key)
+    setKeys(old => {
+      if (old.length >= length) {
+        return old
+      }
+      return [...old, key]
+    })
+  }
+
+  const onBackspace = () => {
+    onBackspaceInput?.()
+    setKeys(old => {
+      old.pop()
+      return [...old]
+    })
+  }
+
+  return <>
+    {!keys.length && <Province onKey={onKey} onBackspace={onBackspace} />}
+    {keys.length === 1 && <City province={keys[0]} onKey={onKey} onBackspace={onBackspace} />}
+    {keys.length > 1 && <Key onKey={onKey} onBackspace={onBackspace} />}
+  </>
+}
+
+const Province = ({ onKey, onBackspace }) => {
+  return <Grid column={7} square gap={16}>
+    {
+      carCity.map(item => <TouchItem key={item.name} className='r-1 items-center justify-center bg-white'
+        onClick={() => onKey(item.name)}
+      >
+        <Text bold>{item.name}</Text>
+      </TouchItem>)
+    }
+    <Column />
+    <Column />
+    <Column />
+    <Del onBackspace={onBackspace} />
+  </Grid>
+}
+
+const City = ({ province, onKey, onBackspace }) => {
+  const citys = carCity.find(v => v.name === province).list
+
+  const empty = useMemo(() => {
+    const _empty = 5 - (citys.length % 5) - 1
+    return Array(_empty < 0 ? 4 : _empty).fill(1)
+  }, [citys.length])
+
+  return <Grid column={5} square gap={16}>
+    {
+      citys.map(item => <TouchItem key={item} className='r-1 items-center justify-center bg-white'
+        onClick={() => onKey(item)}
+      >
+        <Text bold>{item}</Text>
+      </TouchItem>)
+    }
+    {
+      empty.map((_v, i) => <Column key={i} />)
+    }
+    <Del onBackspace={onBackspace} />
+  </Grid>
+}
+
+const Key = ({ onKey, onBackspace }) => {
+  const [az, num] = useMemo(() => {
+    return [
+      [...Array(26).keys()].map(i => String.fromCharCode(i + 65)),
+      [...Array(10).keys()]
+    ]
+  }, [])
+
+  return <Column>
+    <Row className='gap-1'>
+      {
+        num.map(item => <TouchItem
+          className='flex-grow bg-white r-1 items-center justify-center'
+          key={item}
+          style={{ height: px(80) }}
+          onClick={() => onKey(item)}
+        >
+          <Text bold>{item}</Text>
+        </TouchItem>)
+      }
+    </Row>
+    <Grid column={9} gap={10} square className='mt-1'>
+      {
+        az.map(item => <TouchItem key={item}
+          className='r-1 items-center justify-center bg-white'
+          onClick={() => onKey(item)}
+        >
+          <Text bold>{item}</Text>
+        </TouchItem>)
+      }
+      <Del onBackspace={onBackspace} />
+    </Grid>
+  </Column>
+}
+
+const Del = ({ style, onBackspace }) => {
+  return <TouchItem className='items-center justify-center' style={style} onClick={onBackspace}>
+    <DuxuiIcon name='backspace' size={62} />
+  </TouchItem>
+}
+
+
+const TouchItem = ({ style, ...props }) => {
+
+  const [touch, setTouch] = useState({ status: false, time: null })
+
+  const start = useCallback(() => {
+    setTouch({ status: true, time: Date.now() })
+  }, [])
+
+  const stop = useCallback(() => {
+    setTouch(old => {
+      if (old.stoping || !old.status) {
+        return old
+      }
+      if (old.time && old.time + 100 > Date.now()) {
+        setTimeout(() => {
+          setTouch({ status: false })
+        }, 100 - (Date.now() - old.time))
+        return {
+          status: true,
+          stoping: true
+        }
+      }
+      return {
+        status: false
+      }
+    })
+  }, [])
+
+  return <Column
+    {...props}
+    style={{
+      opacity: touch.status ? 0.1 : 1,
+      ...style,
+    }}
+    onTouchEnd={stop}
+    onTouchMove={stop}
+    onTouchCancel={stop}
+    onTouchStart={start}
+  />
+}
+
+const Input = ({ length = 7, ...props }) => {
+
+  const [value, setVal] = useContext(context)
+
+  useMemo(() => {
+    setVal(old => ({ ...old, length }))
+  }, [length, setVal])
+
+  return <InputCode value={value.value} focus length={length} {...props} />
+}
+
+const context = createContext([{ value: '', length: 7 }, noop])
+
+const Provider = ({ children }) => {
+
+  const state = useState({ value: '', length: 7 })
+
+  return <context.Provider value={state}>
+    {children}
+  </context.Provider>
+}
+
+export const LicensePlate = ({ length, onChange }) => {
+
+  const pullView = useRef()
+
+  const [show, setShow] = useState(false)
+
+  const state = useState({ value: '', length: 7 })
+
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+
+  const [value] = state
+
+  useEffect(() => {
+    onChangeRef.current?.(value.value)
+  }, [value.value])
+
+  return <context.Provider value={state}>
+    <Input length={length} onClick={() => setShow(true)} />
+    {show && <PullView ref={pullView} masking={false} onClose={() => setShow(false)}>
+      <context.Provider value={state}>
+        <BoxShadow className='p-3 bg-page gap-3 rt-3' style={{ backgroundColor: '#f5f5f5' }}>
+          <Row justify='end'>
+            <Text type='primary' onClick={() => pullView.current.close()}>关闭</Text>
+          </Row>
+          <Keyboard />
+        </BoxShadow>
+      </context.Provider>
+    </PullView>}
+  </context.Provider>
+}
+
+LicensePlate.Keyboard = Keyboard
+LicensePlate.Input = Input
+LicensePlate.Provider = Provider
+LicensePlate.context = context

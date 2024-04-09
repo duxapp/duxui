@@ -37,7 +37,7 @@ export const Card = ({
   )
 
   if (shadow) {
-    return <BoxShadow className={cn} radius={radius} style={style} opacity={0.3} {...props}>
+    return <BoxShadow className={cn} radius={radius} style={style} {...props}>
       {children}
     </BoxShadow>
   } else {

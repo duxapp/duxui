@@ -1,7 +1,7 @@
 {
   "name": "duxui",
   "description": "DUXUI库",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "dependencies": [
     "duxapp"
   ],
@@ -9,7 +9,8 @@
     "dependencies": {
       "b-validate": "^1.5.2",
       "react-native-view-shot": "^3.8.0",
-      "react-native-fast-shadow": "^0.1.0"
+      "react-native-fast-shadow": "^0.1.0",
+      "array-tree-filter": "^2.1.0"
     }
   }
 }

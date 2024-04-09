@@ -1,3 +1,11 @@
+# 1.0.25
+
+## LicensePlate
+新增车牌号码输入键盘组件
+```jsx
+<LicensePlate length={7} onChange={val => console.log(val)} />
+```
+
 # 1.0.24
 
 ## Absolute

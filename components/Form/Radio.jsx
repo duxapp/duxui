@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext } from 'react'
 import { noop } from '@/duxapp/utils'
-import classNames from 'classnames'
 import { Space } from '../Space'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -28,7 +27,7 @@ const RadioGroup = ({
   }, [onChange, value, disabled])
 
   return <context.Provider value={{ check, currentValue: value }}>
-    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} style={style} {...props} className={classNames('flex-grow', className)}>
+    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} style={style} {...props} className={className}>
       {children}
     </Space>
   </context.Provider>
