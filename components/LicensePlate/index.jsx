@@ -1,11 +1,12 @@
 import { px, PullView, noop } from '@/duxapp'
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { Grid } from '../Grid'
 import { DuxuiIcon } from '../DuxuiIcon'
 import { InputCode } from '../Form/InputCode'
 import { BoxShadow } from '../BoxShadow'
+import { TouchableOpacity } from '../TouchableOpacity'
 import carCity from './carCity.json'
 
 const Keyboard = ({ onInput, onBackspace: onBackspaceInput }) => {
@@ -46,11 +47,11 @@ const Keyboard = ({ onInput, onBackspace: onBackspaceInput }) => {
 const Province = ({ onKey, onBackspace }) => {
   return <Grid column={7} square gap={16}>
     {
-      carCity.map(item => <TouchItem key={item.name} className='r-1 items-center justify-center bg-white'
+      carCity.map(item => <TouchableOpacity key={item.name} className='r-1 items-center justify-center bg-white'
         onClick={() => onKey(item.name)}
       >
         <Text bold>{item.name}</Text>
-      </TouchItem>)
+      </TouchableOpacity>)
     }
     <Column />
     <Column />
@@ -69,11 +70,11 @@ const City = ({ province, onKey, onBackspace }) => {
 
   return <Grid column={5} square gap={16}>
     {
-      citys.map(item => <TouchItem key={item} className='r-1 items-center justify-center bg-white'
+      citys.map(item => <TouchableOpacity key={item} className='r-1 items-center justify-center bg-white'
         onClick={() => onKey(item)}
       >
         <Text bold>{item}</Text>
-      </TouchItem>)
+      </TouchableOpacity>)
     }
     {
       empty.map((_v, i) => <Column key={i} />)
@@ -93,24 +94,24 @@ const Key = ({ onKey, onBackspace }) => {
   return <Column>
     <Row className='gap-1'>
       {
-        num.map(item => <TouchItem
+        num.map(item => <TouchableOpacity
           className='flex-grow bg-white r-1 items-center justify-center'
           key={item}
           style={{ height: px(80) }}
           onClick={() => onKey(item)}
         >
           <Text bold>{item}</Text>
-        </TouchItem>)
+        </TouchableOpacity>)
       }
     </Row>
     <Grid column={9} gap={10} square className='mt-1'>
       {
-        az.map(item => <TouchItem key={item}
+        az.map(item => <TouchableOpacity key={item}
           className='r-1 items-center justify-center bg-white'
           onClick={() => onKey(item)}
         >
           <Text bold>{item}</Text>
-        </TouchItem>)
+        </TouchableOpacity>)
       }
       <Del onBackspace={onBackspace} />
     </Grid>
@@ -118,51 +119,9 @@ const Key = ({ onKey, onBackspace }) => {
 }
 
 const Del = ({ style, onBackspace }) => {
-  return <TouchItem className='items-center justify-center' style={style} onClick={onBackspace}>
+  return <TouchableOpacity className='items-center justify-center' style={style} onClick={onBackspace}>
     <DuxuiIcon name='backspace' size={62} />
-  </TouchItem>
-}
-
-
-const TouchItem = ({ style, ...props }) => {
-
-  const [touch, setTouch] = useState({ status: false, time: null })
-
-  const start = useCallback(() => {
-    setTouch({ status: true, time: Date.now() })
-  }, [])
-
-  const stop = useCallback(() => {
-    setTouch(old => {
-      if (old.stoping || !old.status) {
-        return old
-      }
-      if (old.time && old.time + 100 > Date.now()) {
-        setTimeout(() => {
-          setTouch({ status: false })
-        }, 100 - (Date.now() - old.time))
-        return {
-          status: true,
-          stoping: true
-        }
-      }
-      return {
-        status: false
-      }
-    })
-  }, [])
-
-  return <Column
-    {...props}
-    style={{
-      opacity: touch.status ? 0.1 : 1,
-      ...style,
-    }}
-    onTouchEnd={stop}
-    onTouchMove={stop}
-    onTouchCancel={stop}
-    onTouchStart={start}
-  />
+  </TouchableOpacity>
 }
 
 const Input = ({ length = 7, ...props }) => {

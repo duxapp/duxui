@@ -1,3 +1,7 @@
+# 1.0.26
+## TouchableOpacity
+新增触摸反馈组件
+
 # 1.0.25
 
 ## LicensePlate
