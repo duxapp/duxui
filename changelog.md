@@ -1,3 +1,39 @@
+# 1.0.27
+## Badeg
+新增style支持
+
+## Calendar
+新增 `onMonthChange` 事件，在用户切换月份的时候触发，默认月份也会触发  
+优化文本颜色为为主题色
+
+## Checkbox
+新增 `virtual` 属性，可以把多选组设置为虚拟组件，不会生成实体dom
+
+## Radio
+新增 `virtual` 属性，可以把多选组设置为虚拟组件，不会生成实体dom
+
+## From
+优化当未设置 field 属性时，其功能将不起作用
+
+## HtmlView
+优化H5端间距及行高  
+修复RN端可能会闪烁的问题
+
+## PikcerDate
+当未设置时，设置默认值为当天
+
+## Sign
+小程序端用2d模式重写  
+新增未签名验证 当笔画过少时会抛出错误  
+修复小程序清除功能无效
+
+## TabBar
+新增 `onChange` 属性，当切换TabBar项目时触发
+新增 `style` `className` 属性
+
+## Video
+修复Video显示问题
+
 # 1.0.26
 ## TouchableOpacity
 新增触摸反馈组件

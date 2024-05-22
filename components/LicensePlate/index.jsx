@@ -146,7 +146,7 @@ const Provider = ({ children }) => {
   </context.Provider>
 }
 
-export const LicensePlate = ({ length, onChange }) => {
+export const LicensePlate = ({ onChange, ...props }) => {
 
   const pullView = useRef()
 
@@ -164,7 +164,7 @@ export const LicensePlate = ({ length, onChange }) => {
   }, [value.value])
 
   return <context.Provider value={state}>
-    <Input length={length} onClick={() => setShow(true)} />
+    <Input onClick={() => setShow(true)} {...props} />
     {show && <PullView ref={pullView} masking={false} onClose={() => setShow(false)}>
       <context.Provider value={state}>
         <BoxShadow className='p-3 bg-page gap-3 rt-3' style={{ backgroundColor: '#f5f5f5' }}>

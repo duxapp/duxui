@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect, isValidElement } from 'react'
+import { useCallback, useMemo, useState, useEffect, isValidElement, useRef } from 'react'
 import { View, Text } from '@tarojs/components'
 import { toast } from '@/duxapp'
 import classNames from 'classnames'
@@ -41,6 +41,7 @@ export const Calendar = ({
   style,
   className,
   onChange,
+  onMonthChange,
   disabledDate,
   customDate,
   customSelect,
@@ -55,6 +56,13 @@ export const Calendar = ({
   const [month, setMonth] = useState(value && value[0] ? (typeof value === 'object' ? value[0] : value).split('-').filter((v, i) => i < 2).join('-') : dateToStr('yyyy-MM'))
 
   const [scopeStart, setScopeStart] = useState('')
+
+  const onMonthChangeRef = useRef(onMonthChange)
+  onMonthChangeRef.current = onMonthChange
+
+  useEffect(() => {
+    onMonthChangeRef.current?.(month)
+  }, [month])
 
   useEffect(() => {
     setValue(old => {
@@ -383,7 +391,13 @@ export const Calendar = ({
         }
         return <View className='Calendar__row' key={index} style={!index ? headStyle : undefined}>
           {
-            week.map((day, dayIndex) => <Day header={!index} key={day.text} week={dayIndex + 1} {...day} onClick={click} />)
+            week.map((day, dayIndex) => <Day
+              header={!index}
+              key={day.text}
+              week={dayIndex + 1}
+              {...day}
+              onClick={click}
+            />)
           }
         </View>
       })

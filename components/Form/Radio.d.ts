@@ -20,6 +20,10 @@ interface RadioGroupProps {
    */
   direction?: Direction
   /**
+   * 虚拟节点
+   */
+  virtual?: boolean
+  /**
    * 附加在单选按钮组容器上的 CSS 类名
    */
   className?: string

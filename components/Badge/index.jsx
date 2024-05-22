@@ -63,6 +63,7 @@ export const Badge = ({
   maxCount,
   outside,
   children,
+  style,
   className,
   ...props
 }) => {
@@ -71,12 +72,12 @@ export const Badge = ({
 
   if (children) {
     if (outside) {
-      return <Layout className={`Badge${className ? ' ' + className : ''}`} {...props} onLayout={setLayout}>
+      return <Layout style={style} className={`Badge${className ? ' ' + className : ''}`} {...props} onLayout={setLayout}>
         {children}
         <BadgeNumber count={count} dot={dot} color={color} text={text} maxCount={maxCount} child outside layout={layout} />
       </Layout>
     }
-    return <View className={`Badge${className ? ' ' + className : ''}`} {...props}>
+    return <View style={style} className={`Badge${className ? ' ' + className : ''}`} {...props}>
       {children}
       <BadgeNumber count={count} dot={dot} color={color} text={text} maxCount={maxCount} child />
     </View>

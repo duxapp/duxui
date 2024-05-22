@@ -107,12 +107,12 @@
       }
 
       &__text {
-        color: #333;
+        color: $duxappTextColor1;
         font-size: 28px;
         z-index: 1;
 
         &--disable {
-          color: #999;
+          color: $duxappTextColor3;
         }
       }
     }

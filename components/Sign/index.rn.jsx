@@ -59,6 +59,8 @@ export class Sign extends Component {
     })
   }
 
+  touchCount = 0
+
   _onPanResponderGrant(evt, gestureState) {
     let drawType = this.state.drawType
     this.setState({
@@ -79,6 +81,8 @@ export class Sign extends Component {
   _onPanResponderMove(evt, gestureState) {
     let drawType = this.state.drawType
     // console.log('手指移动中')
+
+    this.touchCount++
 
     /**画线**/
     if (drawType === 4) {
@@ -134,6 +138,7 @@ export class Sign extends Component {
       drawPath: '', //这是清除已经刚刚画好的
       myAllList: [],
     })
+    this.touchCount = 0
   }
 
   //保存画板内容
@@ -150,6 +155,9 @@ export class Sign extends Component {
     // ).catch(err => {
     //   console.error('截取图片失败', err)
     // })
+    if (this.touchCount < 30) {
+      throw '笔画太少了'
+    }
     const uploadTempFile = formConfig.getUploadTempFile('uploadTempFile')
 
     const uri = await captureRef(this.viewShotRef, {

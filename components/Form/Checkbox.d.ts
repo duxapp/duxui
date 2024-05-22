@@ -24,6 +24,10 @@ interface CheckboxGroupProps {
    */
   className?: string
   /**
+   * 虚拟节点
+   */
+  virtual?: boolean
+  /**
    * 附加在复选框组容器上的样式
    */
   style?: CSSProperties

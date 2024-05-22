@@ -50,6 +50,7 @@ const TabbarScreen = ({
 const TabbarButton = ({
   text,
   number,
+  select,
   hover,
   index,
   onClick,
@@ -65,7 +66,7 @@ const TabbarButton = ({
       {
         React.isValidElement(Icon)
           ? Icon
-          : <Icon hover={hover} index={index} />
+          : <Icon hover={hover} index={index} select={select} />
       }
       {!!text && <Text className={`TabBar-menu__item__name${hover ? ' TabBar-menu__item__name--hover' : ''}`}>{text}</Text>}
     </Badge>
@@ -97,6 +98,9 @@ const ItemIcon = ({
 }
 
 const TabBar = ({
+  onChange,
+  style,
+  className,
   children,
   beforeEvent,
   afterEvent,
@@ -126,6 +130,11 @@ const TabBar = ({
   }, [children])
 
   const [select, setSelect] = useState(0)
+
+  useEffect(() => {
+    onChange?.(select)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [select])
 
   const itemClick = useCallback(async ({ index }) => {
     for (let i = 0; i < beforeEvent.callbacks.length; i++) {
@@ -179,13 +188,17 @@ const TabBar = ({
         })
       }
     </View>
-    <View className='TabBar-menu'>
+    <View
+      style={style}
+      className={classNames('TabBar-menu', className)}
+    >
       {
         childs.map((item, index) => <TabbarButton
           icon={item.icon}
           number={numbers[index]}
           text={item.text}
           key={index}
+          select={select}
           hover={index === select}
           length={childs.length}
           index={index}
@@ -208,9 +221,20 @@ export const createTabBar = (() => {
     const actionEvent = new QuickEvent()
 
     const _TabBar = ({
-      children
+      children,
+      onChange,
+      style,
+      className
     }) => {
-      return <TabBar tabbarKey={key} beforeEvent={beforeEvent} afterEvent={afterEvent} actionEvent={actionEvent} >
+      return <TabBar
+        tabbarKey={key}
+        beforeEvent={beforeEvent}
+        afterEvent={afterEvent}
+        actionEvent={actionEvent}
+        onChange={onChange}
+        style={style}
+        className={className}
+      >
         {children}
       </TabBar>
     }

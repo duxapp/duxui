@@ -64,8 +64,9 @@ const AutoHeightWebView = React.memo(
             scrollEnabledWithZoomedin &&
             setScrollable(!!zoomedin);
           const { height: previousHeight, width: previousWidth } = size;
-          isSizeChanged({ height, previousHeight, width, previousWidth }) &&
-            setSize({
+          isSizeChanged({ height, previousHeight, width, previousWidth })
+            && Math.abs(height - size.height) > 5
+            && setSize({
               height,
               width,
             });

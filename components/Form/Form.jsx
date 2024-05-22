@@ -241,7 +241,7 @@ const FormItem = ({
         // reset: form.reset
       })
     }
-    if (isValidElement(_child)) {
+    if (isValidElement(_child) && (typeof field !== 'undefined' || fields)) {
       _child = cloneElement(_child, {
         [trigger]: _value => {
           _child[trigger]?.(_value)
@@ -265,7 +265,11 @@ const FormItem = ({
   }
   const err = form.validateErrors?.[field]
 
-  const _label = <Text {..._labelProps} className={classNames(horizontal && 'FormItem__label', _labelProps.className)}>
+  const _label = <Text
+    {..._labelProps}
+    className={classNames(horizontal && 'FormItem__label', _labelProps.className)}
+    style={_labelProps.style}
+  >
     {label}{required && <Text className='FormItem__label__required'>*</Text>}
     {!!subLabel && <Text size={1} color={3} bold={false}> {subLabel}</Text>}
   </Text>

@@ -14,6 +14,7 @@ const RadioGroup = ({
   direction = 'horizontal',
   className,
   style,
+  virtual,
   ...props
 }) => {
 
@@ -27,9 +28,13 @@ const RadioGroup = ({
   }, [onChange, value, disabled])
 
   return <context.Provider value={{ check, currentValue: value }}>
-    <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} style={style} {...props} className={className}>
-      {children}
-    </Space>
+    {
+      virtual ?
+        children :
+        <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} style={style} {...props} className={className}>
+          {children}
+        </Space>
+    }
   </context.Provider>
 }
 

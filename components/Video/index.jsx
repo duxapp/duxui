@@ -21,6 +21,7 @@ export const Video = ({
   return <Column className={classNames('overflow-hidden', className)} style={style} {...props}>
     <TaroVideo
       src={src}
+      className='w-full h-full'
       controls={controls}
       autoplay={autoplay}
       loop={loop}

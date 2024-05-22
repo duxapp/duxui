@@ -15,7 +15,7 @@ interface TextareaProps extends TaroTextareaProps {
    */
   maxlength?: number
   /**
-   * 是否显示输入进入 默认 开启
+   * 是否显示输入文字长度 默认 开启
    * 在设置maxlength的时候生效
    */
   showLength?: boolean

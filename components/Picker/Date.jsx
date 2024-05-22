@@ -1,5 +1,6 @@
 import React from 'react'
 import { View } from '@tarojs/components'
+import dayjs from 'dayjs'
 import { PickerView, PickerViewColumn, PickerViewColumnItem } from './PickerView'
 import './common.scss'
 
@@ -34,6 +35,9 @@ function setMonth(date, month) {
 function formatTimeStr(str = '', mode) {
   let date = ''
   let time = ''
+  if (!str) {
+    str = dayjs().format('YYYY-MM-DD HH:mm:ss')
+  }
   if (mode === DATETIME) {
     const times = str.split(' ')
     date = times[0]
@@ -97,7 +101,7 @@ export class DatePicker extends React.Component {
 
   componentDidMount() {
     // 设置一个默认值
-    if (!(this.props.value || this.props.defaultValue)) {
+    if (!this.props.value) {
       this.propsChangeValue(this.state.date)
     }
   }

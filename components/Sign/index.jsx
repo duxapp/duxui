@@ -12,18 +12,52 @@ export class Sign extends Component {
     show: false,
   }
 
-  layout = (res) => {
+  static key = 0
+
+  // eslint-disable-next-line no-use-before-define
+  canvasID = `ui-sign-${++Sign.key}`
+
+  layout = res => {
     this.setState({
       width: res.width,
       height: res.height,
       show: true,
+    }, () => {
+      Taro.nextTick(() => {
+        const query = Taro.createSelectorQuery()
+        query.select(`#${this.canvasID}`)
+          .fields({ node: true, size: true })
+          .exec((_res) => {
+            const canvas = _res[0].node
+            const ctx = canvas.getContext('2d')
+
+            const dpr = Taro.getSystemInfoSync().pixelRatio
+            canvas.width = _res[0].width * dpr
+            canvas.height = _res[0].height * dpr
+            ctx.scale(dpr, dpr)
+
+            this.ctx = ctx
+            this.canvas = canvas
+
+            const { color = '#333333' } = this.props
+            //设置线的颜色
+            ctx.strokeStyle = color
+            //设置线的宽度
+            ctx.lineWidth = 5
+            //设置线两端端点样式更加圆润
+            ctx.lineCap = 'round'
+            //设置两条线连接处更加圆润
+            ctx.lineJoin = 'round'
+          })
+      })
     })
   }
 
-  sign = null
+  ctx = null
   touchs = []
+  touchCount = 0
 
-  touchStart(e) {
+  touchStart = e => {
     e.preventDefault()
     this.touchs.push({
       x: e.touches[0].x,
@@ -31,69 +65,64 @@ export class Sign extends Component {
     })
   }
 
-  touchMove(e) {
+  touchMove = e => {
     e.preventDefault()
     this.touchs.push({
       x: e.touches[0].x,
       y: e.touches[0].y,
     })
+    this.touchCount++
     if (this.touchs.length >= 2) {
       this.draw()
     }
   }
 
-  touchEnd(e) {
+  touchEnd = e => {
     e.preventDefault()
-    //清空轨迹数组
-    this.touchs.length = 0
+    this.touchs.splice(0, this.touchs.length)
   }
 
-  touchCancel() {
-    //清空轨迹数组
-    this.touchs.length = 0
+  touchCancel = () => {
+    this.touchs.splice(0, this.touchs.length)
   }
 
   draw() {
-    if (this.sign === null) {
-      const { color = '#333333' } = this.props
-      this.sign = Taro.createCanvasContext(
-        'sign',
-        process.env.TARO_ENV === 'h5' ? this : this.$scope
-      )
-      //设置线的颜色
-      this.sign.setStrokeStyle(color)
-      //设置线的宽度
-      this.sign.setLineWidth(5)
-      //设置线两端端点样式更加圆润
-      this.sign.setLineCap('round')
-      //设置两条线连接处更加圆润
-      this.sign.setLineJoin('round')
+    const ctx = this.ctx
+    if (!ctx) {
+      return
     }
     const point1 = this.touchs[0]
     const point2 = this.touchs[1]
     // 删除第一个元素
     this.touchs.shift()
-    const sign = this.sign
-    sign.moveTo(point1.x, point1.y)
-    sign.lineTo(point2.x, point2.y)
-    sign.stroke()
-    sign.draw(true)
+    ctx.moveTo(point1.x, point1.y)
+    ctx.lineTo(point2.x, point2.y)
+    ctx.stroke()
   }
 
   clear() {
-    const sign = this.sign
-    sign.clearRect(0, 0, this.state.width, this.state.height)
-    sign.draw(true)
+    const ctx = this.ctx
+    if (!ctx) {
+      return
+    }
+    this.touchCount = 0
+    ctx.clearRect(0, 0, this.state.width, this.state.height)
+    ctx.beginPath()
   }
 
   async save() {
+
+    if (this.touchCount < 30) {
+      throw '笔画太少了'
+    }
+
     const uploadTempFile = formConfig.getUploadTempFile('uploadTempFile')
 
     const res = await Taro.canvasToTempFilePath(
       {
-        canvasId: 'sign',
-      },
-      this
+        canvas: this.canvas,
+        fileType: 'png'
+      }
     )
 
     const [url] = await uploadTempFile([{ path: res.tempFilePath }])
@@ -102,23 +131,19 @@ export class Sign extends Component {
   }
 
   render() {
-    const { style, tip = '请在屏幕范围内书写签名' } = this.props
+    const { style } = this.props
     const { width, height, show } = this.state
     return (
       <Layout className='Sign' onLayout={this.layout}>
-        {/* <View className='Sign__tip'>
-          <Text className='Sign__tip__txt'>{tip}</Text>
-        </View> */}
-
         {show && (
           <Canvas
-            // type='2d'
+            type='2d'
+            id={this.canvasID}
             style={{ ...style, width: width + 'px', height: height + 'px' }}
-            canvasId='sign'
-            onTouchStart={this.touchStart.bind(this)}
-            onTouchMove={this.touchMove.bind(this)}
-            onTouchEnd={this.touchEnd.bind(this)}
-            onTouchCancel={this.touchCancel.bind(this)}
+            onTouchStart={this.touchStart}
+            onTouchMove={this.touchMove}
+            onTouchEnd={this.touchEnd}
+            onTouchCancel={this.touchCancel}
           />
         )}
       </Layout>

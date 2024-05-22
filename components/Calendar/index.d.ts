@@ -77,6 +77,8 @@ interface CalendarProps {
   headStyle?: CSSProperties
   /** 当选择发生改变是触发的时事件 */
   onChange?: (value: string | string[]) => void
+  /** 月份切换的时候触发 */
+  onMonthChange?: (value: string) => void
   /** 允许选择的最大日期 如2020-01-01 */
   max?: string
   /** 允许选择的最小日期 如2020-01-01 */
