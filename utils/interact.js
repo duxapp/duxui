@@ -37,8 +37,11 @@ export const confirm = ({
   cancelText,
   confirmText
 } = {}) => {
-  return new Promise((resolve, reject) => {
-    const action = TopView.add([
+  let action
+  let callback = []
+  const promise = new Promise((resolve, reject) => {
+    callback = [resolve, reject]
+    action = TopView.add([
       ShowConfirm,
       {
         title,
@@ -67,6 +70,16 @@ export const confirm = ({
       }
     ])
   })
+
+  promise.confirm = () => {
+    callback[0](true)
+    action.remove()
+  }
+  promise.close = () => {
+    callback[0](false)
+    action.remove()
+  }
+  return promise
 }
 
 

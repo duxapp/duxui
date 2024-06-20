@@ -27,6 +27,7 @@ export const Tab = ({
   className,
   children,
   oneHidden,
+  getItemStyle,
   ...props
 }) => {
 
@@ -98,6 +99,7 @@ export const Tab = ({
         {...item}
         select={item.paneKey === select}
         onClick={change}
+        getItemStyle={getItemStyle}
       />)
     }
   </Scroll>
@@ -137,6 +139,7 @@ export const Tab = ({
                     isExpand
                     select={item.paneKey === select}
                     onClick={change}
+                    getItemStyle={getItemStyle}
                   />)}
                 </Space>
               </Absolute>}
@@ -163,8 +166,11 @@ const TabItem = ({
   isExpand,
   scroll,
   badgeType,
-  badgeProps
+  badgeProps,
+  getItemStyle
 }) => {
+
+  const { text, line, container } = getItemStyle?.({ select }) || {}
 
   if (type === 'button') {
     return <Column
@@ -178,9 +184,10 @@ const TabItem = ({
         isExpand && 'Tab__item--button-expand',
       )}
       onClick={() => onClick(paneKey)}
+      style={container}
     >
       <BadgeText badgeProps={badgeProps} outside>
-        <Text color={select ? 4 : 1} size={4}>{title}</Text>
+        <Text style={text} color={select ? 4 : 1} size={4}>{title}</Text>
       </BadgeText>
     </Column>
   }
@@ -191,11 +198,12 @@ const TabItem = ({
     items='center'
     justify='center'
     onClick={() => onClick(paneKey)}
+    style={container}
   >
     <BadgeText badgeProps={badgeProps}>
-      <Text type={select ? 'primary' : void 0} color={select ? void 0 : 2} bold size={4}>{title}</Text>
+      <Text style={text} type={select ? 'primary' : void 0} color={select ? void 0 : 2} bold size={4}>{title}</Text>
     </BadgeText>
-    <View className={classNames('Tab__item__line', select && 'Tab__item__line--hover')} />
+    <View style={line} className={classNames('Tab__item__line', select && 'Tab__item__line--hover')} />
   </Column>
 }
 

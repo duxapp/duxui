@@ -1,15 +1,13 @@
 import { Textarea as TextareaTaro } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { useCallback } from 'react'
 import classNames from 'classnames'
 import { duxappTheme } from '@/duxapp'
 import { Column } from '../Flex'
 import { Text } from '../Text'
+import { Form } from './Form'
 import './Textarea.scss'
 
 export const Textarea = ({
-  value,
-  onChange,
   className,
   style,
   line = 5,
@@ -20,10 +18,12 @@ export const Textarea = ({
   maxlength,
   showLength = true,
   _designKey,
-  ...porps
+  value,
+  onChange,
+  ...props
 }) => {
 
-  const input = useCallback(e => onChange?.(e.detail.value), [onChange])
+  const [val, setVal] = Form.useFormItemProxy({ value, onChange })
 
   return <Column
     style={style}
@@ -38,15 +38,15 @@ export const Textarea = ({
     _designKey={_designKey}
   >
     <TextareaTaro
-      value={value}
       maxlength={maxlength}
       className='Textarea__input'
       style={{ height: Taro.pxTransform(36 * line) }}
       placeholderTextColor={duxappTheme.textColor3}
       placeholderStyle={`color: ${duxappTheme.textColor3}`}
-      onInput={input}
-      {...porps}
+      onInput={setVal}
+      value={val}
+      {...props}
     />
-    {!!maxlength && showLength && <Text>{value?.length || 0}/{maxlength}</Text>}
+    {!!maxlength && showLength && <Text>{val?.length || 0}/{maxlength}</Text>}
   </Column>
 }

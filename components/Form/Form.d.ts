@@ -230,4 +230,10 @@ export const Form: React.FC<FormProps> & {
    * @returns
    */
   useFormContext: () => FormRef
+  /**
+   * 给表单代理值和事件
+   * @param props
+   * @returns
+   */
+  useFormItemProxy: (props: { value?: any, onChange: (val: any) => void }) => [any, (val: any) => void]
 }

@@ -31,6 +31,15 @@ interface TabProps extends StandardProps {
   children?: ReactNode
   /** tab的样式 */
   tabStyle?: React.CSSProperties
+  /** 自定义样式函数 */
+  getItemStyle?: (option: {
+    /** 是否选中 */
+    select: boolean
+  }) => {
+    line?: React.CSSProperties
+    text?: React.CSSProperties
+    container?: React.CSSProperties
+  }
 }
 
 interface TabItemProps {

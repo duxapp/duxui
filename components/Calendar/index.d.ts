@@ -62,11 +62,16 @@ interface CalendarProps {
     scope
   }
   /**
+   * 多选模式
+   */
+  checkbox?: boolean
+  /**
    * 选中的值
    * 当为日期选择时需要传入字符串 格式为 2020-01-01
    * 当为周或者范围选择时需要传入数组，数字第一项为开始日期，第二项为结束日期 如 ['2020-01-01', '2020-01-05']
+   * 多选模式时，将会在以上基础上再套一层数组
    */
-  value?: string | string[]
+  value?: string | string[] | string[][]
   /** 样式 */
   style?: CSSProperties
   /** 样式类名 */

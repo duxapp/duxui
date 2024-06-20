@@ -2,6 +2,7 @@ import { Input as TaroInput } from '@tarojs/components'
 import classNames from 'classnames'
 import { duxappTheme } from '@/duxapp'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Form } from './Form'
 import './Input.scss'
 
 export const Input = ({
@@ -11,16 +12,15 @@ export const Input = ({
   align,
   className,
   style,
-  onChange,
   value,
+  onChange,
   ...props
 }) => {
 
+  const [val, setVal] = Form.useFormItemProxy({ value, onChange })
+
   return <TaroInput
-    onInput={e => {
-      onChange?.(e.detail.value)
-    }}
-    {...typeof value !== 'undefined' ? { value } : {}}
+    onInput={setVal}
     className={classNames(
       'DuxInput',
       grow && 'flex-grow',
@@ -33,6 +33,7 @@ export const Input = ({
     placeholderTextColor={duxappTheme.textColor3}
     placeholderStyle={`color: ${duxappTheme.textColor3}`}
     {...props}
+    value={val}
   />
 }
 

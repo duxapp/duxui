@@ -1,3 +1,59 @@
+# 1.0.29
+
+## 在UI库新增duxuiHook的渲染钩子
+首先用在Button组建中，钩子的作用是拦截、插入一些渲染到指定的位置，使用的示例：
+```jsx
+import { Text, duxappTheme, duxuiHook } from '@/duxui'
+import { cloneElement } from 'react'
+
+const ButtonHook = ({ props, children }) => {
+  if (props.type !== 'primary') {
+    return children
+  }
+  return cloneElement(children, {
+    style: {
+      ...children.props?.style,
+      backgroundColor: duxappTheme.textColor1
+    },
+    children: <Text type='primary' className={`${'Button--fs-' + (props.size || 'm')}`}>{props.children}</Text>
+  })
+}
+
+duxuiHook.add('Button', ButtonHook)
+```
+在这个示例中，拦截了Button的渲染，当指定属性 type 为 primary时，将以另外一个样式进行渲染  
+
+现在仅在按钮组建中加入了钩子，后面会考虑加入更多钩子
+
+## Calendar
+日历新增 `checkbox` 参数，用于指定多选，单日、范围、星期都支持多选
+
+## Tab
+新增 `getItemStyle` 属性，可以通过回调的方式指定一些样式，使用示例
+```jsx
+const getItemStyle = useCallback(({ select }) => {
+  if (isShop) {
+    return {}
+  }
+  if (select) {
+    return {
+      line: {
+        backgroundColor: '#fff'
+      },
+      text: {
+        color: '#fff'
+      }
+    }
+  } else {
+    return {
+      text: {
+        color: 'rgba(255,255,255,0.7)'
+      }
+    }
+  }
+}, [isShop])
+```
+
 # 1.0.27
 ## Badeg
 新增style支持

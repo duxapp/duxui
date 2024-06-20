@@ -227,38 +227,38 @@ const FormItem = ({
 
   const value = form.values[field]
 
-  const child = useMemo(() => {
-    let _child = children
-    if (typeof children === 'function') {
-      _child = children({
-        value,
-        ...form,
-        // data: form.data,
-        // values: form.values,
-        // setValue: form.setValue,
-        // setValues: form.setValues,
-        // submit: form.submit,
-        // reset: form.reset
-      })
-    }
-    if (isValidElement(_child) && (typeof field !== 'undefined' || fields)) {
-      _child = cloneElement(_child, {
-        [trigger]: _value => {
-          _child[trigger]?.(_value)
-          if (fields) {
-            form.setValues(_value)
-          } else {
-            form.setValue(field, _value)
-          }
-        },
-        field: _child.props.field || field,
-        [triggerPropName]: _child[triggerPropName] ?? (fields ? form.values : value),
-        disabled: disabled ?? form.disabled
-      })
-    }
+  let child = children
+  if (typeof children === 'function') {
+    child = children({
+      value,
+      ...form
+    })
+  }
 
-    return _child
-  }, [children, value, form, trigger, triggerPropName, fields, disabled, field])
+  // 缓存子元素的值更改函数
+  const triggerEvent = child.props?.[trigger]
+  const triggerEventRef = useRef(triggerEvent)
+  triggerEventRef.current = triggerEvent
+
+  const { setValues, setValue } = form
+
+  const change = useCallback(val => {
+    triggerEventRef.current?.(val)
+    if (fields) {
+      setValues(val)
+    } else {
+      setValue(field, val)
+    }
+  }, [fields, setValues, setValue, field])
+
+  if (isValidElement(child) && (typeof field !== 'undefined' || fields)) {
+    child = cloneElement(child, {
+      [trigger]: change,
+      field: child.props.field || field,
+      [triggerPropName]: child[triggerPropName] ?? (fields ? form.values : value),
+      disabled: disabled ?? form.disabled
+    })
+  }
 
   if (!label) {
     return child
@@ -437,6 +437,41 @@ const ObjectForm = ({
   </formContext.Provider>
 }
 
+const useFormItemProxy = ({ value, onChange, defaultValue } = {}) => {
+
+  const [val, setVal] = useState(value ?? defaultValue)
+
+  const valRef = useRef(val)
+  valRef.current = val
+
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+
+  const input = useCallback(e => {
+    const _val = e?.detail?.value ?? e
+    setVal(_val)
+    valRef.current = _val
+    onChangeRef.current?.(_val)
+  }, [])
+
+  useMemo(() => {
+    // 反向更新值
+    if (valRef.current !== value) {
+      setVal(value)
+    }
+  }, [value])
+
+  useMemo(() => {
+    // 更新默认值
+    if (typeof value === 'undefined' && typeof defaultValue !== 'undefined') {
+      onChangeRef.current(defaultValue)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return [val, input]
+}
+
 Form.Item = FormItem
 Form.Submit = Submit
 Form.Reset = Reset
@@ -444,3 +479,4 @@ Form.Object = ObjectForm
 Form.Array = ArrayForm
 Form.ArrayAction = ArrayAction
 Form.useFormContext = useFormContext
+Form.useFormItemProxy = useFormItemProxy

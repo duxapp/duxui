@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, useEffect, isValidElement, useRef } from 'react'
 import { View, Text } from '@tarojs/components'
-import { toast } from '@/duxapp'
+import { dayjs, deepEqua, toast } from '@/duxapp'
 import classNames from 'classnames'
 import { dateAdd, dateToStr, getMaxDay, strFormatToDate } from './date'
 import './index.scss'
@@ -36,6 +36,7 @@ const weeks = ['一', '二', '三', '四', '五', '六', '日']
 export const Calendar = ({
   mode, // day日期选择 week周选择 scope范围选择
   value: propsValue = '',// 周或者范围选择传入数组，第一项开始时间，第二项结束时间
+  checkbox,
   navStyle,
   headStyle,
   style,
@@ -51,9 +52,18 @@ export const Calendar = ({
   ...props
 }) => {
 
-  const [value, setValue] = useState(propsValue)
+  const [value, setValue] = useState(checkbox && !propsValue ? [] : propsValue)
 
-  const [month, setMonth] = useState(value && value[0] ? (typeof value === 'object' ? value[0] : value).split('-').filter((v, i) => i < 2).join('-') : dateToStr('yyyy-MM'))
+  const valueRef = useRef(value)
+  valueRef.current = value
+
+  // 将单选和多选统一按照多选处理 单日选择处理为范围 当天到当天的范围
+  const values = useMemo(() => (checkbox ? value : value ? [value] : []).map(item => typeof item === 'string' ? [item, item] : item), [checkbox, value])
+
+  const [month, setMonth] = useState(() => {
+    const _value = checkbox ? value[0] : value
+    return _value && _value[0] ? (typeof _value === 'object' ? _value[0] : _value).split('-').filter((v, i) => i < 2).join('-') : dateToStr('yyyy-MM')
+  })
 
   const [scopeStart, setScopeStart] = useState('')
 
@@ -64,14 +74,12 @@ export const Calendar = ({
     onMonthChangeRef.current?.(month)
   }, [month])
 
-  useEffect(() => {
-    setValue(old => {
-      if (old === propsValue || old.toString() === propsValue.toString()) {
-        return old
-      }
-      return propsValue
-    }, [])
-  }, [propsValue])
+  useMemo(() => {
+    if (deepEqua(valueRef.current, propsValue) || !propsValue) {
+      return
+    }
+    setValue(checkbox && !propsValue ? [] : propsValue)
+  }, [checkbox, propsValue])
 
   /**
    * 序列化禁用日期数据
@@ -223,63 +231,41 @@ export const Calendar = ({
       return false
     }
 
-    if (scopeStart) {
-      // 判断是value所在的月份
-      const dates = scopeStart.split('-')
+    const scopes = values.map(val => val.map(str => dayjs(str).unix()))
 
-      for (let i = 0; i < maxDay; i++) {
-        const isSelect = +dates[2] === i + 1 && dates.slice(0, 2).join('-') === month
-        const config = {
-          text: i + 1,
-          select: isSelect,
-          selectType: isSelect ? 'start' : '',
-          disable: beyond || isDsiable(i + 1)
-        }
-        arr.push({
-          ...config,
-          ...getCustomConfig(config)
-        })
+    const getSelectType = unix => {
+      const scope = scopes.find(item => item[0] <= unix && item[1] >= unix)
+      if (!scope) {
+        return ''
       }
-    } else if (typeof value === 'object') {
-      const scope = value.map(str => strFormatToDate('yyyy-MM-dd', str).getTime())
-      for (let i = 0; i < maxDay; i++) {
-        const currentDate = strFormatToDate('yyyy-MM-dd', `${month}-${i + 1}`).getTime()
-        const isSelect = scope.length === 2 && currentDate >= scope[0] && currentDate <= scope[1]
-        const config = {
-          text: i + 1,
-          select: isSelect,
-          selectType: currentDate === scope[0] && currentDate === scope[1] ?
-            'select' : currentDate === scope[0] ?
-              'start' : currentDate === scope[1] ?
-                'end' : isSelect ?
-                  'center'
-                  : '',
-          disable: beyond || isDsiable(i + 1)
-        }
-        arr.push({
-          ...config,
-          ...getCustomConfig(config)
-        })
-      }
-      // console.log(JSON.stringify(arr, null, 2))
-    } else {
-      // 判断是value所在的月份
-      const dates = value.split('-')
-      const isCurrentMouth = !!value && dates.filter((v, i) => i < 2).join('-') === month
+      return unix === scope[0] && unix === scope[1] ?
+        'select' : unix === scope[0] ?
+          'start' : unix === scope[1] ?
+            'end' : 'center'
+    }
+    // 范围选择时，判断是value所在的月份
+    const scopeDates = scopeStart ? scopeStart.split('-') : null
 
-      for (let i = 0; i < maxDay; i++) {
-        const isSelect = isCurrentMouth && +dates[2] === i + 1
-        const config = {
-          text: i + 1,
-          select: isSelect,
-          selectType: isSelect ? 'select' : '',
-          disable: beyond || isDsiable(i + 1)
-        }
-        arr.push({
-          ...config,
-          ...getCustomConfig(config)
-        })
+    for (let i = 0; i < maxDay; i++) {
+      const currentDate = dayjs(`${month}-${i + 1}`).unix()
+      const selectType = getSelectType(currentDate)
+      const config = {
+        text: i + 1,
+        select: !!selectType,
+        selectType: selectType,
+        disable: beyond || isDsiable(i + 1)
       }
+      if (scopeStart) {
+        const isSelect = +scopeDates[2] === i + 1 && scopeDates.slice(0, 2).join('-') === month
+        if (isSelect) {
+          config.select = true
+          config.selectType = 'start'
+        }
+      }
+      arr.push({
+        ...config,
+        ...getCustomConfig(config)
+      })
     }
 
     if (nextMonthDys < 7) {
@@ -298,7 +284,7 @@ export const Calendar = ({
       return prev
     }, [])
 
-  }, [month, scopeStart, value, max, min, disabledDateCache, getCustomConfig])
+  }, [month, scopeStart, max, min, disabledDateCache, values, getCustomConfig])
 
   const prev = useCallback(() => {
     setMonth(old => dateToStr('yyyy-MM', getMouth(old, -1)))
@@ -316,9 +302,22 @@ export const Calendar = ({
       return
     }
     const day = `${month}-${+text < 10 ? '0' + text : text}`
+
     if (mode === 'day') {
-      setValue(day)
-      onChange?.(day)
+      if (checkbox) {
+        const _value = [...value]
+        const i = _value.indexOf(day)
+        if (~i) {
+          _value.splice(i, 1)
+        } else {
+          _value.push(day)
+        }
+        setValue(_value)
+        onChange?.(_value)
+      } else {
+        setValue(day)
+        onChange?.(day)
+      }
     } else if (mode === 'week') {
       // 判断当前周所有日期是否被禁用
       const val = Calendar.getWeekScopeForDay(day)
@@ -328,12 +327,34 @@ export const Calendar = ({
           return toast('范围不可选')
         }
       }
-      setValue(val)
-      onChange?.(val)
+      if (checkbox) {
+        const _value = [...value]
+        const i = _value.findIndex(v => v.toString() === val.toString())
+        if (~i) {
+          _value.splice(i, 1)
+        } else {
+          _value.push(val)
+        }
+        setValue(_value)
+        onChange?.(_value)
+      } else {
+        setValue(val)
+        onChange?.(val)
+      }
     } else if (mode === 'scope') {
       if (!scopeStart) {
+        if (checkbox) {
+          // 检查点击的是不是已经被选中的范围，是的话取消此选中
+          const i = value.findIndex(v => Calendar.checkDatesOverlap([day, day], v))
+          if (~i) {
+            const _value = [...value]
+            _value.splice(i, 1)
+            setValue(_value)
+            return
+          }
+        }
         setScopeStart(day)
-        onChange?.([])
+        !checkbox && onChange?.([])
       } else {
         let val = [scopeStart, day]
         if (strFormatToDate('yyyy-MM-dd', val[0]) > strFormatToDate('yyyy-MM-dd', val[1])) {
@@ -345,28 +366,37 @@ export const Calendar = ({
             return toast('范围不可选')
           }
         }
-        setValue(val)
-        onChange?.(val)
+        if (checkbox) {
+          // 检查是否和当前选中的日期有重叠
+          if (value.some(v => Calendar.checkDatesOverlap(val, v))) {
+            return toast('范围有重叠')
+          }
+          const _value = [...value]
+          _value.push(val)
+          setValue(_value)
+          onChange?.(_value)
+        } else {
+          setValue(val)
+          onChange?.(val)
+        }
         setScopeStart('')
       }
     }
-  }, [month, mode, onChange, disabledDateCache, scopeStart])
+  }, [month, mode, checkbox, value, onChange, disabledDateCache, scopeStart])
 
   const [selectDay, selelctOfWeekIndex] = useMemo(() => {
     let val
-    if (!value) {
+    if (!values.length) {
       val = dateToStr('yyyy-MM-dd')
-    } else if (typeof value === 'string') {
-      val = value
     } else {
-      val = value[0]
+      val = values[0][0]
     }
     if (!onlyCurrentWeek) {
       return [val, 0]
     }
     const [y, m, w] = Calendar.getMonthWeekForDay(val)
     return [`${y}-${(m > 9 ? 0 : '0') + m}`, w]
-  }, [value, onlyCurrentWeek])
+  }, [values, onlyCurrentWeek])
 
   useEffect(() => {
     if (onlyCurrentWeek) {
@@ -495,4 +525,18 @@ Calendar.getMouthScopeForDay = day => {
   const lastMaxDay = getMaxDay(...month.split('-').map(v => +v))
 
   return [`${month}-01`, `${month}-${lastMaxDay}`]
+}
+
+/**
+ * 检查两个日期范围是否有重叠
+ * @param {*} range1
+ * @param {*} range2
+ */
+Calendar.checkDatesOverlap = (range1, range2) => {
+  const [
+    a, b,
+    c, d
+  ] = [...range1, ...range2].map(v => dayjs(v).unix())
+
+  return a <= d && b >= c
 }
