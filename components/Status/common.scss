@@ -3,26 +3,35 @@
   width: 200px;
   align-items: center;
   justify-content: center;
+
   &--top-left {
     transform: rotateZ(315deg);
     left: -60px;
     top: 20px;
   }
+
   &--top-right {
     transform: rotateZ(45deg);
     right: -60px;
     top: 20px;
   }
+
   &--bottom-left {
     transform: rotateZ(45deg);
     left: -60px;
     bottom: 20px;
   }
+
   &--bottom-right {
     transform: rotateZ(315deg);
     right: -60px;
     bottom: 20px;
   }
+
+  &--default {
+    background-color: $duxappTextColor3;
+  }
+
   &--primary {
     background-color: $duxappPrimaryColor;
   }
@@ -54,6 +63,7 @@
   &--custom3 {
     background-color: $duxappCustomColor3;
   }
+
   &__text {
     color: #fff;
     font-size: 22px;
@@ -64,15 +74,19 @@
   align-items: center;
   justify-content: center;
   padding: 0 16px;
+
   &--top-left {
     border-bottom-right-radius: 16px;
   }
+
   &--top-right {
     border-bottom-left-radius: 16px;
   }
+
   &--bottom-left {
     border-top-right-radius: 16px;
   }
+
   &--bottom-right {
     border-top-left-radius: 16px;
   }

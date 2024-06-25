@@ -1,3 +1,57 @@
+# 1.0.30
+## TopView
+add 方法新增分组属性，多次调用add时，指定了同一个分组的元素，将会以队列的形式展示，即同时只会展示一个，当移除当前展示的内容后，会立即展示下一个
+```jsx
+TopView.add(element, { group: '分组' })
+```
+对应的以下组件都新增了此属性
+- PullView
+- Absolute
+- Modal  
+当这些组件指定了相同的属性时，将会加入展示队列
+```jsx
+<PullView group='group'>
+  <Text>内容</Text>
+</PullView>
+<Modal show group='group'>
+  <Text>内容</Text>
+</Modal>
+<Absolute group='group'>
+  <Text>内容</Text>
+</Absolute>
+```
+
+## confirm
+- 新增 `renderTop` `renderBottom` 属性，用于自定义渲染弹窗顶部和底部的内容
+- 返回的task新增 `confirm` `cancel` `close` 方法，分别用于触发确定、取消、reject
+```js
+try {
+  const task = confirm({
+    title: '提示',
+    content: '这是一个任务',
+    renderBottom: <Text onClick={() => task.close()}>关闭</Text>
+  })
+  const status = await task
+  if(status) {
+    console.log('用户点击了确定')
+  } else {
+    console.log('用户点击了取消')
+  }
+} catch (error) {
+  console.log('用户点击了关闭')
+}
+
+```
+
+## Calendar
+新增 `enabledDate` 属性，表示可用的日期 除了传入的日期或者范围，其他的日期将被禁用，当 enabledDate 的日期在 disabledDate 里面时 此日期将不可用
+
+## TabBar
+删除不必要的 dom 节点
+
+## ModalForms
+修复设置多个值时，设置不成功
+
 # 1.0.29
 
 ## 在UI库新增duxuiHook的渲染钩子

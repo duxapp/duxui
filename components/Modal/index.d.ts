@@ -6,6 +6,10 @@ interface ModalProps {
    */
   show: boolean
   /**
+   * 分组 同一个分组的弹框将会以队列的形式显示
+   */
+  group?: string
+  /**
    * 是否开启动画 默认开启
    */
   animation?: boolean

@@ -16,15 +16,15 @@ const uploadFile = process.env.TARO_ENV === 'rn'
       return data
     }
 
-    return (opts) => {
-      const { url, timeout = 60000, filePath, name, header, formData } = opts
+    return opts => {
+      const { url, timeout = 60000 * 10, filePath, name, header, formData } = opts
       const xhr = new XMLHttpRequest()
       const execFetch = new Promise((resolve, reject) => {
         xhr.open('POST', url)
         xhr.responseType = 'text'
         // 上传进度
         xhr.upload.onprogress = e => {
-          progressFunc && progressFunc({
+          progressFunc?.({
             progress: e.lengthComputable ? e.loaded / e.total * 100 : 0,
             totalBytesSent: e.loaded,
             totalBytesExpectedToSend: e.total
@@ -42,6 +42,7 @@ const uploadFile = process.env.TARO_ENV === 'rn'
         }
         // 请求成功
         xhr.onload = () => {
+          clearTimeout(timer)
           if (xhr.status === 200) {
             resolve({
               data: xhr.response,
@@ -54,11 +55,12 @@ const uploadFile = process.env.TARO_ENV === 'rn'
         }
         // 请求失败
         xhr.onerror = e => {
+          clearTimeout(timer)
           reject({ errMsg: 'uploadFile fail: ' + e.type })
         }
         xhr.send(createFormData(filePath, formData, name))
 
-        setTimeout(() => {
+        const timer = setTimeout(() => {
           xhr.abort()
           reject({ errMsg: 'uploadFile fail: 请求超时' })
         }, timeout)
@@ -129,7 +131,8 @@ export default (() => {
         filePath,
         progress,
         cancelTask,
-        getKey
+        getKey,
+        formData
       }) => {
         await initToken()
         if (!isReady()) {
@@ -143,15 +146,14 @@ export default (() => {
           filePath,
           name: 'file',
           formData: {
+            ...formData,
             token: config.token,
             key: getKey?.() || md5(new Date().getTime() + '') + '.' + filePath.split('.').reverse()[0]
           }
         })
 
         // 文件上传进度
-        uploadTask.progress(res => {
-          progress?.(res)
-        })
+        uploadTask.progress(progress)
 
         // 中断文件上传
         cancelTask && cancelTask(() => {

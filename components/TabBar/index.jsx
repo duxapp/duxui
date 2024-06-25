@@ -173,21 +173,11 @@ const TabBar = ({
   const show = usePageShow()
 
   return <tabbarContext.Provider value={{ show }}>
-    <View className='TabBar-page'>
-      {
-        childs.map((item, index) => {
-          return <TabbarScreen key={item.key || index} hover={select === index} index={index}>
-            {item.child}
-          </TabbarScreen>
-          // 子元素无法获取到 ctx，无法找到原因
-          // return <CustomWrapper key={item.key || index}>
-          //   <TabbarScreen hover={select === index} index={index}>
-          //     {item.child}
-          //   </TabbarScreen>
-          // </CustomWrapper>
-        })
-      }
-    </View>
+    {
+      childs.map((item, index) => <TabbarScreen key={item.key || index} hover={select === index} index={index}>
+        {item.child}
+      </TabbarScreen>)
+    }
     <View
       style={style}
       className={classNames('TabBar-menu', className)}

@@ -11,6 +11,8 @@ export const ShowConfirm = ({
   cancel = true,
   cancelText = '取消',
   confirmText = '确定',
+  renderTop,
+  renderBottom,
   onConfirm,
   onCancel,
   onClose
@@ -23,8 +25,9 @@ export const ShowConfirm = ({
 
   return (
     <View className='DuxuiShowConfirm'>
+      {renderTop}
       <View className='DuxuiShowConfirm__main'>
-        <Text size={6} bold align='center'>{title}</Text>
+        {!!title && <Text size={6} bold align='center'>{title}</Text>}
         {content && <>{isValidElement(content) ? content : <Text className='DuxuiShowConfirm__content' color={2} size={3} align='center'>{content}</Text>}</>}
         <Divider padding={0} className='DuxuiShowConfirm__divider' />
         <Row className='DuxuiShowConfirm__btns'>
@@ -39,6 +42,7 @@ export const ShowConfirm = ({
           </Column>
         </Row>
       </View>
+      {renderBottom}
     </View>
   )
 }

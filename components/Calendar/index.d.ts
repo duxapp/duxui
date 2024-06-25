@@ -92,6 +92,8 @@ interface CalendarProps {
   onlyCurrentWeek?: boolean
   /** 禁用的日期 日期或者日期范围组成的数组 */
   disabledDate?: (string | [string, string])[]
+  /** 可用的日期 除了传入的日期或者范围，其他的日期将被禁用，当 enabledDate 的日期在 disabledDate 里面时 此日期将不可用 */
+  enabledDate?: (string | [string, string])[]
   /** 自定义日期日历数据 */
   customDate?: CalendarCustom[]
   /** 自定义选中的部分的日历数据 */

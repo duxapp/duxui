@@ -32,7 +32,7 @@ const ModalContent = forwardRef(({ children, animation, overlayOpacity = 0.2, on
   </View>
 })
 
-export const Modal = ({ children, show, animation = true, maskClosable = true, overlayOpacity, onClose }) => {
+export const Modal = ({ children, show, animation = true, maskClosable = true, overlayOpacity, onClose, group }) => {
 
   const action = useRef(null)
 
@@ -67,7 +67,7 @@ export const Modal = ({ children, show, animation = true, maskClosable = true, o
       if (action.current) {
         action.current.update(ele)
       } else {
-        action.current = TopView.add(ele)
+        action.current = TopView.add(ele, { group })
       }
     } else if (!show && action.current) {
       if (animation) {

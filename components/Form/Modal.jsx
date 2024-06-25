@@ -202,6 +202,13 @@ export const ModalForms = ({
     autoSubmit && setValues?.({ ...selfValue, [field]: value })
   }, [autoSubmit, selfValue, setValues])
 
+  const selfSetValues = useCallback(data => {
+    setSelfValue(old => ({
+      ...old,
+      ...data
+    }))
+  }, [])
+
   // 收集子表单的字段
   const fields = useRef([])
   const onGetField = useCallback((field, oldField) => {
@@ -257,7 +264,7 @@ export const ModalForms = ({
   return <>
     {child}
     {show && <PullView onClose={() => setShow(false)} side={side}>
-      <formContext.Provider value={{ ...contextData, onGetField, defaultValues, setValue, setValues, values: selfValue }}>
+      <formContext.Provider value={{ ...contextData, onGetField, defaultValues, setValue, setValues: selfSetValues, values: selfValue }}>
         <context.Provider value={{ reset, submit }}>
           <Column className={classNames('ModalForm', ['left', 'right'].includes(side) ? 'ModalForm--full h-full' : 'ModalForm--vertical')}>
             {!!title && <Row items='center' justify='between' className='ModalForm__head'>

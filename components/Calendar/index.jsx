@@ -1,37 +1,10 @@
 import { useCallback, useMemo, useState, useEffect, isValidElement, useRef } from 'react'
 import { View, Text } from '@tarojs/components'
-import { dayjs, deepEqua, toast } from '@/duxapp'
+import { dayjs, deepEqua, toast, useDeepObject } from '@/duxapp'
 import classNames from 'classnames'
 import { dateAdd, dateToStr, getMaxDay, strFormatToDate } from './date'
-import './index.scss'
 import { DuxuiIcon } from '../DuxuiIcon'
-
-/**
- * 获取上月或者下月 的日期对象 会返回那个月一号的日期对象
- * @param {*} current
- * @param {*} num
- */
-const getMouth = (current, num) => {
-  const day = (current + '-01').split('-')
-  if (num > 0) {
-    if (+day[1] === 11) {
-      day[1] = 0
-      day[0] = +day[0] + 1
-    } else {
-      day[1] = +day[1] + 1
-    }
-  } else {
-    if (+day[1] === 0) {
-      day[1] = 11
-      day[0] = +day[0] - 1
-    } else {
-      day[1] = +day[1] - 1
-    }
-  }
-  return strFormatToDate('yyyy-MM-dd', day.join('-'))
-}
-
-const weeks = ['一', '二', '三', '四', '五', '六', '日']
+import './index.scss'
 
 export const Calendar = ({
   mode, // day日期选择 week周选择 scope范围选择
@@ -44,6 +17,7 @@ export const Calendar = ({
   onChange,
   onMonthChange,
   disabledDate,
+  enabledDate,
   customDate,
   customSelect,
   max,
@@ -81,22 +55,32 @@ export const Calendar = ({
     setValue(checkbox && !propsValue ? [] : propsValue)
   }, [checkbox, propsValue])
 
+  const deepData = useDeepObject({
+    disabledDate,
+    enabledDate
+  })
+
   /**
    * 序列化禁用日期数据
    */
-  const disabledDateCache = useMemo(() => {
-    return disabledDate?.reduce((prev, current) => {
-      if (Array.isArray(current) && current.length === 2) {
-        const dates = current.map(v => strFormatToDate('yyyy-MM-dd', v).getTime()).sort((a, b) => a - b)
-        for (let i = dates[0]; i <= dates[1]; i += 24 * 60 * 60 * 1000) {
-          prev.push(i)
+  const [disabledDateCache, enanledDateCache] = useMemo(() => {
+    return [deepData.disabledDate || [], deepData.enabledDate || []].map(item => {
+      return item.reduce((prev, current) => {
+        if (Array.isArray(current) && current.length === 2) {
+          prev.push(current.map(v => strFormatToDate('yyyy-MM-dd', v).getTime()).sort((a, b) => a - b))
+        } else if(typeof current === 'string') {
+          const time = strFormatToDate('yyyy-MM-dd', current).getTime()
+          prev.push([time, time])
         }
-      } else {
-        prev.push(strFormatToDate('yyyy-MM-dd', current).getTime())
-      }
-      return prev
-    }, []) || []
-  }, [disabledDate])
+        return prev
+      }, [])
+    })
+  }, [deepData.disabledDate, deepData.enabledDate])
+
+  const isDisabled = useCallback(dayTime => {
+    return disabledDateCache.some(([start, end]) => dayTime >= start && dayTime <= end)
+    || (enabledDate && !enanledDateCache.some(([start, end]) => dayTime >= start && dayTime <= end))
+  }, [disabledDateCache, enabledDate, enanledDateCache])
 
   /**
    * 序列化自定义数据
@@ -218,7 +202,7 @@ export const Calendar = ({
     const isDsiable = day => {
       const time = strFormatToDate('yyyy-MM-dd', `${month}-${day}`)
       // 用户禁用
-      if (disabledDateCache.includes(time.getTime())) {
+      if (isDisabled(time.getTime())) {
         return true
       }
 
@@ -284,7 +268,7 @@ export const Calendar = ({
       return prev
     }, [])
 
-  }, [month, scopeStart, max, min, disabledDateCache, values, getCustomConfig])
+  }, [month, values, scopeStart, max, min, isDisabled, getCustomConfig])
 
   const prev = useCallback(() => {
     setMonth(old => dateToStr('yyyy-MM', getMouth(old, -1)))
@@ -323,7 +307,7 @@ export const Calendar = ({
       const val = Calendar.getWeekScopeForDay(day)
       const dates = val.map(v => strFormatToDate('yyyy-MM-dd', v).getTime())
       for (let i = dates[0]; i <= dates[1]; i += 24 * 60 * 60 * 1000) {
-        if (disabledDateCache.includes(i)) {
+        if (isDisabled(i)) {
           return toast('范围不可选')
         }
       }
@@ -362,7 +346,7 @@ export const Calendar = ({
         }
         const dates = val.map(v => strFormatToDate('yyyy-MM-dd', v).getTime())
         for (let i = dates[0]; i <= dates[1]; i += 24 * 60 * 60 * 1000) {
-          if (disabledDateCache.includes(i)) {
+          if (isDisabled(i)) {
             return toast('范围不可选')
           }
         }
@@ -382,7 +366,7 @@ export const Calendar = ({
         setScopeStart('')
       }
     }
-  }, [month, mode, checkbox, value, onChange, disabledDateCache, scopeStart])
+  }, [month, mode, checkbox, value, onChange, isDisabled, scopeStart])
 
   const [selectDay, selelctOfWeekIndex] = useMemo(() => {
     let val
@@ -434,6 +418,33 @@ export const Calendar = ({
     }
   </View>
 }
+
+/**
+ * 获取上月或者下月 的日期对象 会返回那个月一号的日期对象
+ * @param {*} current
+ * @param {*} num
+ */
+const getMouth = (current, num) => {
+  const day = (current + '-01').split('-')
+  if (num > 0) {
+    if (+day[1] === 11) {
+      day[1] = 0
+      day[0] = +day[0] + 1
+    } else {
+      day[1] = +day[1] + 1
+    }
+  } else {
+    if (+day[1] === 0) {
+      day[1] = 11
+      day[0] = +day[0] - 1
+    } else {
+      day[1] = +day[1] - 1
+    }
+  }
+  return strFormatToDate('yyyy-MM-dd', day.join('-'))
+}
+
+const weeks = ['一', '二', '三', '四', '五', '六', '日']
 
 const Day = ({
   text,

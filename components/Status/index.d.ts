@@ -12,7 +12,7 @@ interface StatusProps extends ViewProps {
 
 interface StatusInclineProps {
   /** 颜色类型 默认primary */
-  type?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
+  type?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
   /** 文本的样式 */
   textStyle?: CSSProperties
   /** 样式 */

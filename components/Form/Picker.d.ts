@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { PickerProps as TaroPickerProps } from '@tarojs/components'
 import { DatePickerProps } from '../Picker/Date'
+import { ModalFormProps } from './Modal'
 
 interface PickerValueProps {
   /**
@@ -44,6 +45,10 @@ interface PickerSelectProps extends Omit<TaroPickerProps, 'value'> {
    * 子元素
    */
   children?: ReactNode
+  /**
+   * 传递给modalForm的属性
+   */
+  modalFormProps?: ModalFormProps
 }
 
 declare const PickerSelect: React.FC<PickerSelectProps>
@@ -73,6 +78,10 @@ interface PickerMultiSelectProps {
    * 值变化回调函数
    */
   onChange?: (value: any[]) => void
+  /**
+   * 传递给modalForm的属性
+   */
+  modalFormProps?: ModalFormProps
 }
 
 declare const PickerMultiSelect: React.FC<PickerMultiSelectProps>
@@ -90,6 +99,10 @@ interface PickerDateProps extends DatePickerProps {
    * 占位符文本
    */
   placeholder?: string
+  /**
+   * 传递给modalForm的属性
+   */
+  modalFormProps?: ModalFormProps
 }
 
 declare const PickerDate: React.FC<PickerDateProps>

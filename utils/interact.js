@@ -35,7 +35,9 @@ export const confirm = ({
   content,
   cancel,
   cancelText,
-  confirmText
+  confirmText,
+  renderTop,
+  renderBottom
 } = {}) => {
   let action
   let callback = []
@@ -49,6 +51,8 @@ export const confirm = ({
         cancel,
         cancelText,
         confirmText,
+        renderTop,
+        renderBottom,
         onCancel: () => {
           setTimeout(() => {
             resolve(false)
@@ -63,7 +67,7 @@ export const confirm = ({
         },
         onClose: () => {
           setTimeout(() => {
-            reject('组件被卸载')
+            reject('confirm:组件被卸载')
           }, 10)
           action.remove()
         }
@@ -75,9 +79,13 @@ export const confirm = ({
     callback[0](true)
     action.remove()
   }
-  promise.close = () => {
+  promise.cancel = () => {
     callback[0](false)
     action.remove()
+  }
+  promise.close = () => {
+    callback[1]()
+    action.remove('confirm:主动关闭')
   }
   return promise
 }
