@@ -107,34 +107,34 @@
   }
 
   &--primary {
-    background-color: lighten($duxappPrimaryColor, 40%);
+    background-color: lighten($duxappPrimaryColor, 30%);
   }
 
   &--secondary {
-    background-color: lighten($duxappSecondaryColor, 40%);
+    background-color: lighten($duxappSecondaryColor, 30%);
   }
 
   &--success {
-    background-color: lighten($duxappSuccessColor, 40%);
+    background-color: lighten($duxappSuccessColor, 30%);
   }
 
   &--danger {
-    background-color: lighten($duxappDangerColor, 40%);
+    background-color: lighten($duxappDangerColor, 30%);
   }
 
   &--warning {
-    background-color: lighten($duxappWarningColor, 40%);
+    background-color: lighten($duxappWarningColor, 30%);
   }
 
   &--custom1 {
-    background-color: lighten($duxappCustomColor1, 40%);
+    background-color: lighten($duxappCustomColor1, 30%);
   }
 
   &--custom2 {
-    background-color: lighten($duxappCustomColor2, 40%);
+    background-color: lighten($duxappCustomColor2, 30%);
   }
 
   &--custom3 {
-    background-color: lighten($duxappCustomColor3, 40%);
+    background-color: lighten($duxappCustomColor3, 30%);
   }
 }

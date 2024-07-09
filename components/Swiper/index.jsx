@@ -21,7 +21,7 @@ export const Swiper = ({
 
   const [current, setCurrent] = useState(defaultCurrent)
 
-  return <Column style={style} className={className} {...props}>
+  return <Column style={style} className={className}>
     <TaroSwiper
       className='h-full w-full'
       autoplay={autoplay}
@@ -31,6 +31,7 @@ export const Swiper = ({
       current={current}
       onAnimationFinish={e => setCurrent(e.detail.current)}
       indicatorDots={false}
+      {...props}
     >
       {children}
     </TaroSwiper>

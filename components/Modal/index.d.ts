@@ -23,7 +23,7 @@ interface ModalProps {
    */
   overlayOpacity?: boolean
   /**
-   * 是否可以点击阴影关闭modal 默认false
+   * 是否可以点击阴影关闭modal 默认true
    */
   maskClosable?: boolean
   /** 引用 */

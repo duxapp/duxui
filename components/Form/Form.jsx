@@ -236,7 +236,7 @@ const FormItem = ({
   }
 
   // 缓存子元素的值更改函数
-  const triggerEvent = child.props?.[trigger]
+  const triggerEvent = child?.props?.[trigger]
   const triggerEventRef = useRef(triggerEvent)
   triggerEventRef.current = triggerEvent
 
