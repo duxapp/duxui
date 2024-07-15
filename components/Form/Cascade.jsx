@@ -367,7 +367,7 @@ const FillRender = ({
   anyLevel
 }) => {
 
-  return <Divider.Group row padding={0}>
+  return <Divider.Group vertical>
     {
       list.map((group, groupIndex) => {
         const last = groupIndex == list.length - 1

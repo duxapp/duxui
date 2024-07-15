@@ -1,66 +1,59 @@
 import { View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import { px } from '@/duxapp'
 import { useMemo, Children } from 'react'
 import classNames from 'classnames'
 import './index.scss'
 
-const Horizontal = ({ size, padding, type, className, style }) => {
+const Horizontal = ({ size, type, className, style }) => {
 
-  const [style1, style2] = useMemo(() => {
-    const styles = [{}, {}]
-    if (typeof padding === 'number') {
-      const _padding = Taro.pxTransform(padding)
-      styles[0].paddingTop = _padding
-      styles[0].paddingBottom = _padding
-    }
+  const style1 = useMemo(() => {
+    const _styles = {}
     if (size) {
-      styles[1].borderTopWidth = Taro.pxTransform(size)
+      _styles.borderTopWidth = px(size)
     }
     if (type) {
-      styles[1].borderStyle = type
+      _styles.borderStyle = type
     }
-    return styles
-  }, [padding, size, type])
+    return _styles
+  }, [size, type])
 
-  return <View className={classNames('DividerHorizontal', className)} style={{ ...style1, ...style }}>
-    <View className={classNames('DividerHorizontal__child', 'DividerHorizontal__child--' + type)} style={style2} />
-  </View>
+  return <View
+    className={classNames('Divider-Horizontal', className)}
+    style={{ ...style1, ...style }}
+  />
 }
 
-const Vertical = ({ size, padding, type, className, style }) => {
-  const [style1, style2] = useMemo(() => {
-    const styles = [{}, {}]
-    if (typeof padding === 'number') {
-      const _padding = Taro.pxTransform(padding)
-      styles[0].paddingLeft = _padding
-      styles[0].paddingRight = _padding
-    }
+const Vertical = ({ size, type, className, style }) => {
+  const style1 = useMemo(() => {
+    const _styles = {}
     if (size) {
-      styles[1].borderLeftWidth = Taro.pxTransform(size)
+      _styles.borderLeftWidth = px(size)
     }
     if (type) {
-      styles[1].borderStyle = type
+      _styles.borderStyle = type
     }
-    return styles
-  }, [padding, size, type])
+    return _styles
+  }, [size, type])
 
-  return <View className={classNames('DividerVertical', className)} style={{ ...style1, ...style }}>
-    <View className={classNames('DividerVertical__child', 'DividerVertical__child--' + type)} style={style2} />
-  </View>
+  return <View
+    className={classNames('Divider-Vertical', className)}
+    style={{ ...style1, ...style }}
+  />
 }
 
 export const Divider = ({
   direction = 'horizontal',
+  vertical,
   ...props
 }) => {
-  return direction === 'horizontal'
+  return direction === 'horizontal' && !vertical
     ? <Horizontal {...props} />
     : <Vertical {...props} />
 }
 
 
 const DividerGroup = ({
-  row,
+  vertical,
   children,
   ...props
 }) => {
@@ -68,7 +61,7 @@ const DividerGroup = ({
     return <>
       {index > 0 && <>
         {
-          row
+          vertical
             ? <Vertical {...props} />
             : <Horizontal {...props} />
         }

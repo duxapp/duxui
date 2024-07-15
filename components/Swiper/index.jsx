@@ -35,7 +35,7 @@ export const Swiper = ({
     >
       {children}
     </TaroSwiper>
-    {dot && children?.length && <Row className='gap-1 absolute w-full z-1' justify='center' style={{ bottom: px(dotDistance) }}>
+    {dot && !!children?.length && <Row className='gap-1 absolute w-full z-1' justify='center' style={{ bottom: px(dotDistance) }}>
       {
         children.map((v, i) => <Column
           key={i}

@@ -48,7 +48,7 @@ interface CalendarSelect {
 
 interface CalendarCustom extends CalendarSelect {
   /** 日期或者日期范围组成的数组 */
-  data: (string | [string, string])[]
+  date: (string | [string, string])[]
 }
 
 interface CalendarProps {

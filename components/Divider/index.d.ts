@@ -2,25 +2,19 @@ import { View, ViewProps } from '@tarojs/components'
 
 interface DividerProps {
   /**
-   * 分割线的方向
-   * @default 'horizontal'
+   * 是否垂直布局
    */
-  direction?: 'horizontal' | 'vertical',
+  vertical?: boolean
   /**
    * 线的粗细
    * @default 1
    */
-  size?: number,
+  size?: number
   /**
    * 线的样式，支持'dotted','dashed','solid'三种
    * @default 'solid'
    */
-  type?: 'dotted' | 'dashed' | 'solid',
-  /**
-   * 两端的内边距
-   * @default 0
-   */
-  padding?: number
+  type?: 'dotted' | 'dashed' | 'solid'
 }
 
 interface DividerGruopProps {
@@ -33,12 +27,11 @@ interface DividerGruopProps {
    * 线的样式，支持'dotted','dashed','solid'三种
    * @default 'solid'
    */
-  type?: 'dotted' | 'dashed' | 'solid',
+  type?: 'dotted' | 'dashed' | 'solid'
   /**
-   * 两端的内边距
-   * @default 0
+   * 是否垂直布局
    */
-  padding?: number
+  vertical?: boolean
 }
 
 export const Divider: React.FC<DividerProps> & {
