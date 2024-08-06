@@ -2,6 +2,7 @@
 ## Calendar
 - 新增onDayClick属性，点击某一天的事件，可以返回 true 阻止默认操作，如选中日历
 - 修复RN端显示错乱
+- 修复types
 
 ## Grade
 修复分数有小数时，显示错误的问题
@@ -9,9 +10,15 @@
 ## UploadImages
 图片上传在RN端支持权限提示说明，此功能在华为APP上架时强制需求
 
+## Divider
+- [破坏性更新]移除了padding属性，后续将不支持此属性
+- 修改 direction 属性为 vertical 属性
+- 修改Group组件 row 属性为 vertical 属性
+
 ## 其他优化
 - 优化confirm显示
-- 优化Divider显示
+- 修复H5端Picker相关组件失效问题
+- 修复Swiper可能显示0的问题
 
 # 1.0.31
 ## HorseLanternLottery
