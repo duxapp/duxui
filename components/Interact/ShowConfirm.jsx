@@ -27,7 +27,7 @@ export const ShowConfirm = ({
     <View className='DuxuiShowConfirm'>
       {renderTop}
       <View className='DuxuiShowConfirm__main'>
-        {!!title && <Text size={6} bold align='center'>{title}</Text>}
+        {!!title && <Text size={6} bold align='center' className='mh-3'>{title}</Text>}
         {content && <>{isValidElement(content) ? content : <Text className='DuxuiShowConfirm__content' color={2} size={3} align='center'>{content}</Text>}</>}
         <Divider padding={0} className='DuxuiShowConfirm__divider' />
         <Row className='DuxuiShowConfirm__btns'>

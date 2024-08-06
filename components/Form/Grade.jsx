@@ -15,6 +15,8 @@ export const Grade = ({
   ...props
 }) => {
 
+  const values = value ? ('' + value).split('.') : []
+
   return <Space row items='center' size={16} {...props}>
     <Row items='center'>
       {arr.map((item, index) => {
@@ -34,6 +36,6 @@ export const Grade = ({
         </Text>
       })}
     </Row>
-    {!!value && <Text type={type}>{value}.0</Text>}
+    {!!value && <Text type={type}>{values[0]}.{values[1] || 0}</Text>}
   </Space>
 }

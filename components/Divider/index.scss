@@ -6,8 +6,8 @@
 }
 
 .Divider-Vertical {
-  height: 100%;
+  align-self: stretch;
   flex-shrink: 0;
   border-left-width: 1Px;
-  border-color: #e5e5e5;
+  border-color: #f5f5f5;
 }

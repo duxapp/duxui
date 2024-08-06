@@ -84,6 +84,12 @@ interface CalendarProps {
   onChange?: (value: string | string[]) => void
   /** 月份切换的时候触发 */
   onMonthChange?: (value: string) => void
+  /** 日期天点击事件 如果返回true将会阻止默认操作 如选中日期 */
+  onDayClick?: (option: {
+    day: string
+    /** 范围选择的开始日期 不存在就是第一次选择 */
+    scopeStart: string
+  }) => boolean
   /** 允许选择的最大日期 如2020-01-01 */
   max?: string
   /** 允许选择的最小日期 如2020-01-01 */

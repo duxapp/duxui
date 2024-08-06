@@ -9,6 +9,11 @@ import { Grid } from '../Grid'
 import { Column } from '../Flex'
 import './Images.scss'
 
+let requestPermissionMessage
+if (process.env.TARO_ENV === 'rn') {
+  requestPermissionMessage = require('@/duxappReactNative/utils/rn/index.rn').requestPermissionMessage
+}
+
 export const UploadImages = ({
   value,
   column = 4,
@@ -30,6 +35,9 @@ export const UploadImages = ({
   const add = useCallback(async () => {
     const upload = formConfig.getUpload()
     try {
+      if (requestPermissionMessage) {
+        await requestPermissionMessage(requestPermissionMessage.types.image)
+      }
       const urls = await upload('image', { count: max - (value?.length || 0), sizeType: ['compressed'] }).start(() => {
         setProgress(0)
       }).progress(setProgress)

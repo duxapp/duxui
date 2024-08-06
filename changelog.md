@@ -1,3 +1,18 @@
+# 1.0.34
+## Calendar
+- 新增onDayClick属性，点击某一天的事件，可以返回 true 阻止默认操作，如选中日历
+- 修复RN端显示错乱
+
+## Grade
+修复分数有小数时，显示错误的问题
+
+## UploadImages
+图片上传在RN端支持权限提示说明，此功能在华为APP上架时强制需求
+
+## 其他优化
+- 优化confirm显示
+- 优化Divider显示
+
 # 1.0.31
 ## HorseLanternLottery
 新增跑马灯抽奖组件，使用示例如下，请安装ui库示例查看详情

@@ -15,6 +15,7 @@ export const Calendar = ({
   style,
   className,
   onChange,
+  onDayClick,
   onMonthChange,
   disabledDate,
   enabledDate,
@@ -30,6 +31,10 @@ export const Calendar = ({
 
   const valueRef = useRef(value)
   valueRef.current = value
+
+  const refs = useRef({})
+  refs.current.onChange = onChange
+  refs.current.onDayClick = onDayClick
 
   // 将单选和多选统一按照多选处理 单日选择处理为范围 当天到当天的范围
   const values = useMemo(() => (checkbox ? value : value ? [value] : []).map(item => typeof item === 'string' ? [item, item] : item), [checkbox, value])
@@ -68,7 +73,7 @@ export const Calendar = ({
       return item.reduce((prev, current) => {
         if (Array.isArray(current) && current.length === 2) {
           prev.push(current.map(v => strFormatToDate('yyyy-MM-dd', v).getTime()).sort((a, b) => a - b))
-        } else if(typeof current === 'string') {
+        } else if (typeof current === 'string') {
           const time = strFormatToDate('yyyy-MM-dd', current).getTime()
           prev.push([time, time])
         }
@@ -79,7 +84,7 @@ export const Calendar = ({
 
   const isDisabled = useCallback(dayTime => {
     return disabledDateCache.some(([start, end]) => dayTime >= start && dayTime <= end)
-    || (enabledDate && !enanledDateCache.some(([start, end]) => dayTime >= start && dayTime <= end))
+      || (enabledDate && !enanledDateCache.some(([start, end]) => dayTime >= start && dayTime <= end))
   }, [disabledDateCache, enabledDate, enanledDateCache])
 
   /**
@@ -282,10 +287,13 @@ export const Calendar = ({
     text,
     disable
   }) => {
-    if (disable) {
+    const day = `${month}-${+text < 10 ? '0' + text : text}`
+    if (refs.current.onDayClick?.({
+      day,
+      scopeStart
+    }) || disable) {
       return
     }
-    const day = `${month}-${+text < 10 ? '0' + text : text}`
 
     if (mode === 'day') {
       if (checkbox) {
@@ -297,10 +305,10 @@ export const Calendar = ({
           _value.push(day)
         }
         setValue(_value)
-        onChange?.(_value)
+        refs.current.onChange?.(_value)
       } else {
         setValue(day)
-        onChange?.(day)
+        refs.current.onChange?.(day)
       }
     } else if (mode === 'week') {
       // 判断当前周所有日期是否被禁用
@@ -320,10 +328,10 @@ export const Calendar = ({
           _value.push(val)
         }
         setValue(_value)
-        onChange?.(_value)
+        refs.current.onChange?.(_value)
       } else {
         setValue(val)
-        onChange?.(val)
+        refs.current.onChange?.(val)
       }
     } else if (mode === 'scope') {
       if (!scopeStart) {
@@ -336,9 +344,11 @@ export const Calendar = ({
             setValue(_value)
             return
           }
+        } else {
+          setValue([])
+          refs.current.onChange?.([])
         }
         setScopeStart(day)
-        !checkbox && onChange?.([])
       } else {
         let val = [scopeStart, day]
         if (strFormatToDate('yyyy-MM-dd', val[0]) > strFormatToDate('yyyy-MM-dd', val[1])) {
@@ -358,15 +368,15 @@ export const Calendar = ({
           const _value = [...value]
           _value.push(val)
           setValue(_value)
-          onChange?.(_value)
+          refs.current.onChange?.(_value)
         } else {
           setValue(val)
-          onChange?.(val)
+          refs.current.onChange?.(val)
         }
         setScopeStart('')
       }
     }
-  }, [month, mode, checkbox, value, onChange, isDisabled, scopeStart])
+  }, [month, mode, checkbox, value, isDisabled, scopeStart])
 
   const [selectDay, selelctOfWeekIndex] = useMemo(() => {
     let val
@@ -407,7 +417,7 @@ export const Calendar = ({
           {
             week.map((day, dayIndex) => <Day
               header={!index}
-              key={day.text}
+              key={day.text + '-' + dayIndex}
               week={dayIndex + 1}
               {...day}
               onClick={click}
