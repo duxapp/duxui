@@ -1,3 +1,31 @@
+# 1.0.37
+## LinearGradient
+修复RN设置rgba不显示透明度的问题
+
+## Cell
+Cell.Group 添加样式属性支持
+
+## Checkbox Radio
+新增 disabled 用于禁用选项
+
+## FormItem
+- label属性如果为传入，则和原来逻辑一致，label传入空字符串则会按照传入的逻辑，但是不显示label内容，即可以显示desc，可以显示验证错误等
+- 修复 rules 在组件卸载之后不清除的问题
+- 新增 itemPadding 属性，boolean类型，可以设置开启或者关闭当前项目的内边距，默认开启
+- 将 direction 属性更改为 vertical，用于指定是否竖向布局
+- 新增两个主题配置，用于配置项目内边距和label的宽度
+
+## Form
+- 新增 itemPadding 属性，boolean类型，可以设置开启或者关闭项目的内边距，默认开启
+- 将 direction 属性更改为 vertical，用于指定是否竖向布局
+
+## UploadImages UploadImage
+新增 option 属性，将会传入到上传函数的参数属性
+
+## 其他修复
+- 修复Input值可能不正确的问题
+- Status type 属性新增 default
+
 # 1.0.34
 ## Calendar
 - 新增onDayClick属性，点击某一天的事件，可以返回 true 阻止默认操作，如选中日历

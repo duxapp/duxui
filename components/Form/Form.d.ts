@@ -39,8 +39,8 @@ interface FormChildProps extends FormRef {
   labelProps?: TextProps
   /** 全局传递给项目容器的属性 */
   containerProps?: SpaceProps
-  /** 表单方向 */
-  direction?: keyof Direction
+  /** 是否垂直布局 */
+  vertical?: boolean
   /** 是否禁用表单 */
   disabled?: boolean
   /** 验证错误信息 */
@@ -58,12 +58,14 @@ interface FormProps {
   onSubmit?: (values: Values) => void
   /** 是否禁用表单 */
   disabled?: boolean
-  /** 方向 */
-  direction?: keyof Direction
+  /** 是否垂直布局 */
+  vertical?: boolean
   /** 全局传递给标签的属性 */
   labelProps?: TextProps
   /** 全局传递给项目容器的属性 */
   containerProps?: SpaceProps
+  /** 是否使用项目的内边距 默认为开启 */
+  itemPadding?: boolean
   /** 子元素 */
   children?: ReactNode | FormChild
   /** 表单操作 */
@@ -86,7 +88,10 @@ interface FormItemProps {
    * 开启之后 子表单 value将是整个表单的值 onChange 相当于 setValues
    */
   fields?: boolean
-  /** 标题 */
+  /** 标题
+   * 如果未传入属性则只会显示子元素
+   * 如果传入一个空字符串怎不会显示label 但是会显示 错误提示 desc 项目内边距
+   */
   label?: string
   /** 标题属性 */
   labelProps?: TextProps
@@ -98,8 +103,8 @@ interface FormItemProps {
   renderLabelRight?: ReactNode
   /** 简介 渲染在表单下面 */
   desc?: string
-  /** 排列方向 默认为 horizontal */
-  direction?: keyof Direction
+  /** 是否垂直布局 */
+  vertical?: boolean
   /** 是否显示红色星号 不作为验证规则 */
   required?: boolean
   /** 表单默认值 */
@@ -235,5 +240,9 @@ export const Form: React.FC<FormProps> & {
    * @param props
    * @returns
    */
-  useFormItemProxy: (props: { value?: any, onChange: (val: any) => void }) => [any, (val: any) => void]
+  useFormItemProxy: (props: {
+    value?: string
+    onChange: (val: string) => void,
+    defaultValue?: string
+  }) => [any, (val: any) => void]
 }

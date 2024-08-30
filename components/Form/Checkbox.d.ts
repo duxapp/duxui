@@ -16,9 +16,9 @@ interface CheckboxGroupProps {
    */
   onChange?: (value: any[]) => void
   /**
-   * 复选框的布局方向
+   * 是否垂直布局
    */
-  direction?: Direction
+  vertical?: boolean
   /**
    * 附加在复选框组容器上的 CSS 类名
    */
@@ -31,6 +31,10 @@ interface CheckboxGroupProps {
    * 附加在复选框组容器上的样式
    */
   style?: CSSProperties
+  /**
+   * 禁用选项
+   */
+  disabled?: boolean
   /**
    * 其他属性
    */

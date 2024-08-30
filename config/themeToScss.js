@@ -36,7 +36,11 @@ $duxuiCardRadius: #{$duxappCommonRadius};
 $duxuiCardMargin: 24px;`],
   divider: [`
 // Divider组件
-$duxuiDividerPadding: 16px;`]
+$duxuiDividerPadding: 16px;`],
+  formItem: [`
+// Form.Item组件
+$duxuiFormItemPadding: 24px;
+$duxuiFormItemLabelWidth: 140px;`]
 }
 
 module.exports = theme => {
@@ -106,11 +110,23 @@ module.exports = theme => {
         if (value.radius !== undefined) {
           scssData.card.push(`$duxuiCardRadius: ${value.radius}px;`)
         }
+        if (value.margin !== undefined) {
+          scssData.card.push(`$duxuiCardMargin: ${value.margin}px;`)
+        }
         break
       }
       case 'divider': {
         if (value.padding !== undefined) {
           scssData.divider.push(`$duxuiDividerPadding: ${value.padding}px;`)
+        }
+        break
+      }
+      case 'formItem': {
+        if (value.padding !== undefined) {
+          scssData.formItem.push(`$duxuiFormItemPadding: ${value.padding}px;`)
+        }
+        if (value.labelWidth !== undefined) {
+          scssData.formItem.push(`$duxuiFormItemLabelWidth: ${value.labelWidth}px;`)
         }
         break
       }

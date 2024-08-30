@@ -18,7 +18,9 @@ export const formContext = createContext({
   labelProps: {},
   containerProps: {},
   direction: 'horizontal',
+  vertical: false,
   disabled: false,
+  itemPadding: true,
   addItem: noop,
   /**
    * FormItem会触发此事件 用来收集子元素中的字段
@@ -36,6 +38,8 @@ export const Form = forwardRef(({
   labelProps,
   containerProps,
   direction = 'horizontal',
+  vertical,
+  itemPadding = true,
   disabled,
   children,
   onChange,
@@ -133,6 +137,12 @@ export const Form = forwardRef(({
    */
   const addItem = useCallback(({ field, rules }) => {
     validateSchemas.current[field] = rules
+
+    return {
+      remove: () => {
+        delete validateSchemas.current[field]
+      }
+    }
   }, [])
 
   const submit = useCallback(async () => {
@@ -159,14 +169,14 @@ export const Form = forwardRef(({
       setValues,
       submit,
       reset,
-      validate
+      validate,
     }
   }, [resultData, defaultValues, values, reset, setValue, setValues, submit, validate])
 
   const result = {
     data: resultData, defaultValues, values,
-    setValue, setValues, submit, reset, validate, addItem,
-    labelProps, containerProps, direction, disabled, validateErrors
+    setValue, setValues, submit, reset, validate, addItem, itemPadding,
+    labelProps, containerProps, direction, vertical, disabled, validateErrors
   }
 
   return <formContext.Provider value={result}>
@@ -186,6 +196,7 @@ const FormItem = ({
   renderLabelRight,
   desc,
   direction,
+  vertical,
   required,
   initialValue,
   style,
@@ -205,13 +216,17 @@ const FormItem = ({
 
   const fieldOld = useRef(null)
 
-  useMemo(() => {
-    rules?.length && form.addItem({
+  const addTask = useMemo(() => {
+    return rules?.length && form.addItem({
       field,
       rules
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field])
+
+  useEffect(() => {
+    return () => addTask?.remove?.()
+  }, [addTask])
 
   useMemo(() => {
     form.onGetField?.(field, fieldOld.current)
@@ -219,7 +234,7 @@ const FormItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field])
 
-  const horizontal = (direction || form.direction) === 'horizontal'
+  const horizontal = (direction || form.direction) === 'horizontal' && !vertical && (!form.vertical || vertical === false)
 
   const _labelProps = { ...form.labelProps, ...labelProps }
 
@@ -240,7 +255,7 @@ const FormItem = ({
   const triggerEventRef = useRef(triggerEvent)
   triggerEventRef.current = triggerEvent
 
-  const { setValues, setValue } = form
+  const { setValues, setValue, itemPadding } = form
 
   const change = useCallback(val => {
     triggerEventRef.current?.(val)
@@ -260,10 +275,23 @@ const FormItem = ({
     })
   }
 
-  if (!label) {
+  if (typeof label === 'undefined') {
     return child
   }
+
   const err = form.validateErrors?.[field]
+
+  const footer = <>
+    {!!desc && <Text size={2} color={2}>{desc}</Text>}
+    {err && <Text type='danger' size={1}>{err.message}</Text>}
+  </>
+
+  if (!label) {
+    return <Column {...props} style={style} className={classNames('FormItem', !itemPadding && 'FormItem--no-padding', className)}>
+      {child}
+      {footer}
+    </Column>
+  }
 
   const _label = <Text
     {..._labelProps}
@@ -274,7 +302,7 @@ const FormItem = ({
     {!!subLabel && <Text size={1} color={3} bold={false}> {subLabel}</Text>}
   </Text>
 
-  return <Column {...props} style={style} className={classNames('FormItem', className)}>
+  return <Column {...props} style={style} className={classNames('FormItem', !itemPadding && 'FormItem--no-padding', className)}>
     <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} style={_containerProps.style} {..._containerProps} >
       {
         renderLabelRight ? <Space row justify='between'>
@@ -285,8 +313,7 @@ const FormItem = ({
       }
       {child}
     </Space>
-    {!!desc && <Text className='FormItem__desc' size={2} color={2}>{desc}</Text>}
-    {err && <Text className='FormItem__verify' type='danger' size={1}>{err.message}</Text>}
+    {footer}
   </Column>
 }
 
@@ -454,8 +481,15 @@ const useFormItemProxy = ({ value, onChange, defaultValue } = {}) => {
     onChangeRef.current?.(_val)
   }, [])
 
+  const mark = useRef({
+    first: true
+  })
   useMemo(() => {
     // 反向更新值
+    if (mark.current.first) {
+      mark.current.first = false
+      return
+    }
     if (valRef.current !== value) {
       setVal(value)
     }

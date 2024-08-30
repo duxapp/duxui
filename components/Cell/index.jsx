@@ -1,6 +1,7 @@
 import { Text, View } from '@tarojs/components'
 import React, { createContext, useContext } from 'react'
 import { duxappTheme } from '@/duxui/utils'
+import classNames from 'classnames'
 import { Divider } from '../Divider'
 import { BoxShadow } from '../BoxShadow'
 import './index.scss'
@@ -28,10 +29,12 @@ const Root = ({
 const Group = ({
   line = true,
   radius = duxappTheme.common.radiusValue,
-  children
+  children,
+  className,
+  style
 }) => {
   return <>
-    <BoxShadow className='CellGroup' radius={radius}>
+    <BoxShadow className={classNames('CellGroup', className)} style={style} radius={radius}>
       <context.Provider value={{ group: true }}>
         {
           line

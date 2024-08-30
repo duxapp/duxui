@@ -13,13 +13,14 @@ const CheckboxGroup = ({
   onChange,
   disabled,
   direction = 'horizontal',
+  vertical,
   style,
   className,
   virtual,
   ...props
 }) => {
 
-  const horizontal = direction === 'horizontal'
+  const horizontal = direction === 'horizontal' && !vertical
 
   const check = useCallback(val => {
     if (disabled) {
@@ -60,7 +61,7 @@ CheckboxGroup.defaultProps = {
 //   console.log('12323',value, props)
 // }
 
-export const Checkbox = ({ value, label, checked, children: Child, className, style, ...props }) => {
+export const Checkbox = ({ value, label, checked, disabled, children: Child, className, style, ...props }) => {
   const { check, currentValue } = useContext(context)
 
   const isCheck = checked || currentValue?.includes(value)
@@ -71,11 +72,11 @@ export const Checkbox = ({ value, label, checked, children: Child, className, st
       value={value}
       label={label}
       checked={isCheck}
-      onCheck={() => check(value)}
+      onCheck={() => !disabled && check(value)}
     />
   }
 
-  return <Space row items='center' size={8} onClick={() => check(value)} className={className} style={style}  {...props}>
+  return <Space row items='center' size={8} onClick={() => !disabled && check(value)} className={className} style={style}  {...props}>
     <Text size={32} type={isCheck ? 'primary' : void 0} color={isCheck ? void 0 : 3}>
       <DuxuiIcon name={isCheck ? 'xuanzhong' : 'xuanzekuang'} />
     </Text>

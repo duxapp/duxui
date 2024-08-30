@@ -101,7 +101,13 @@ export const LinearGradient = ({
         {
           colors.map((color, index) => {
             const offset = locations[index] || (index / (colors.length - 1))
-            return <Stop key={index} offset={`${offset * 100}%`} stopColor={color} />
+            let stopOpacity = 1
+            // 计算rgba不透明度
+            if (color.startsWith('rgba(')) {
+              stopOpacity = color.split(',')[3].trim()
+              stopOpacity = +stopOpacity.substring(0, stopOpacity.length - 1)
+            }
+            return <Stop key={index} offset={`${offset * 100}%`} stopColor={color} stopOpacity={stopOpacity} />
           })
         }
       </SvgLinearGradient>

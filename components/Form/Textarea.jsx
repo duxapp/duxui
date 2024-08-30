@@ -20,10 +20,11 @@ export const Textarea = ({
   _designKey,
   value,
   onChange,
+  defaultValue,
   ...props
 }) => {
 
-  const [val, setVal] = Form.useFormItemProxy({ value, onChange })
+  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
 
   return <Column
     style={style}

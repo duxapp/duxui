@@ -22,6 +22,7 @@ export const UploadImages = ({
   max = 9,
   disabled,
   _designKey,
+  option,
   ...props
 }) => {
 
@@ -38,7 +39,7 @@ export const UploadImages = ({
       if (requestPermissionMessage) {
         await requestPermissionMessage(requestPermissionMessage.types.image)
       }
-      const urls = await upload('image', { count: max - (value?.length || 0), sizeType: ['compressed'] }).start(() => {
+      const urls = await upload('image', { count: max - (value?.length || 0), ...option, sizeType: ['compressed'] }).start(() => {
         setProgress(0)
       }).progress(setProgress)
       setProgress(-1)
@@ -46,7 +47,7 @@ export const UploadImages = ({
     } catch (error) {
       setProgress(-1)
     }
-  }, [max, onChange, value])
+  }, [max, onChange, option, value])
 
   const isOne = max === 1
 

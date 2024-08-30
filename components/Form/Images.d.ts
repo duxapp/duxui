@@ -24,6 +24,8 @@ interface UploadImagesProps {
   max?: number
   /** 是否禁用 */
   disabled?: boolean
+  /** 传递给上传函数的选项 */
+  option?: { [key]: any }
 }
 
 interface UploadImageProps {
@@ -42,6 +44,8 @@ interface UploadImageProps {
   addText?: string
   /** 是否禁用 */
   disabled?: boolean
+  /** 传递给上传函数的选项 */
+  option?: { [key]: any }
 }
 
 export const UploadImages: React.FC<UploadImagesProps>

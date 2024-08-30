@@ -12,13 +12,14 @@ const RadioGroup = ({
   onChange,
   disabled,
   direction = 'horizontal',
+  vertical,
   className,
   style,
   virtual,
   ...props
 }) => {
 
-  const horizontal = direction === 'horizontal'
+  const horizontal = direction === 'horizontal' && !vertical
 
   const check = useCallback(val => {
     if (value === val || disabled) {
@@ -38,7 +39,7 @@ const RadioGroup = ({
   </context.Provider>
 }
 
-export const Radio = ({ value, label, checked, onClick, children: Child, className, style, ...props }) => {
+export const Radio = ({ value, label, disabled, checked, onClick, children: Child, className, style, ...props }) => {
   const { check, currentValue } = useContext(context)
 
   const _checked = typeof checked === 'boolean' ? checked : currentValue === value
@@ -49,12 +50,15 @@ export const Radio = ({ value, label, checked, onClick, children: Child, classNa
       value={value}
       label={label}
       checked={_checked}
-      onCheck={() => check(value)}
+      onCheck={() => !disabled && check(value)}
     />
   }
 
   return <Space row items='center' size={8}
     onClick={e => {
+      if (disabled) {
+        return
+      }
       check(value)
       onClick?.(e)
     }}

@@ -16,9 +16,9 @@ interface RadioGroupProps {
    */
   onChange?: (value: any) => void
   /**
-   * 单选按钮的布局方向
+   * 是否垂直布局
    */
-  direction?: Direction
+  vertical?: boolean
   /**
    * 虚拟节点
    */
@@ -50,6 +50,10 @@ interface RadioProps {
    * 是否选中这个项目
    */
   checked?: boolean
+  /**
+   * 是否禁用这个项目
+   */
+  disabled?: boolean
   /**
    * 点击事件
    * @param event

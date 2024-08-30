@@ -106,6 +106,10 @@
     min-width: 156px;
   }
 
+  &--default {
+    background-color: $duxappTextColor3;
+  }
+
   &--primary {
     background-color: lighten($duxappPrimaryColor, 30%);
   }

@@ -35,7 +35,7 @@ export const ShowConfirm = ({
             <Column grow items='center' justify='center' onClick={onCancel}>
               <Text size={6} align='center'>{cancelText}</Text>
             </Column>
-            <Divider direction='vertical' />
+            <Divider vertical />
           </>}
           <Column grow items='center' justify='center' onClick={onConfirm}>
             <Text type='primary' size={6} align='center'>{confirmText}</Text>

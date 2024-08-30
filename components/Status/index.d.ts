@@ -25,7 +25,7 @@ interface StatusInclineProps {
 
 interface StatusCommonProps {
   /** 颜色类型 默认primary */
-  type?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
+  type?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
   /** 尺寸 默认s */
   size?: 's' | 'm' | 'l'
   /** 显示内测的圆角 */
