@@ -1,15 +1,16 @@
-import { ReactNode, CSSProperties } from 'react'
+import { ReactElement, CSSProperties } from 'react'
+import { ColumnProps } from '../Flex'
 
 interface CustomKey {
   /** 按键key 如果未指定 onClick 则会通过 onKeyPress 事件传递这个key */
   key: string
   /** 自定义渲染内容 */
-  render?: ReactNode,
+  render?: ReactElement,
   /** 自定义点击事件 */
   onClick?: () => void
 }
 
-interface NumberKeyboardProps {
+interface NumberKeyboardProps extends ColumnProps {
   /** 按键点击事件 */
   onKeyPress: (key: string) => void
   /** 删除键事件 */
@@ -20,10 +21,6 @@ interface NumberKeyboardProps {
   keyLeft?: CustomKey
   /** 底部右侧按钮自定义 此处默认为回退键 */
   keyRight?: CustomKey
-  /** 类名 */
-  className?: string
-  /** 样式 */
-  style?: CSSProperties
 }
 
 export const NumberKeyboard: React.FC<NumberKeyboardProps> & {

@@ -1,12 +1,11 @@
-import { ReactNode, CSSProperties } from 'react'
+import { CSSProperties } from 'react'
+import { RowProps } from '../Flex'
 
-interface InputCodeProps {
+interface InputCodeProps extends RowProps {
   /** 组件值 */
   value?: string,
   /** 值改变回调 此功能待实现 */
-  onChange?: (value: string | number) => void
-  /** 按键点击事件 */
-  onClick: () => void
+  onChange?: (value: string) => void
   /** 输入长度 默认6 */
   length?: number
   /** 是否隐藏输入内容 */
@@ -15,10 +14,6 @@ interface InputCodeProps {
   focus?: boolean
   /** 每个输入框的样式 */
   itemStyle?: CSSProperties
-  /** 类名 */
-  className?: string
-  /** 样式 */
-  style?: CSSProperties
 }
 
 export const InputCode: React.FC<InputCodeProps>

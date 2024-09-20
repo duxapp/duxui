@@ -1,5 +1,5 @@
 import { View } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import { px } from '@/duxapp'
 import { useMemo, Children } from 'react'
 import classNames from 'classnames'
 import './index.scss'
@@ -9,12 +9,12 @@ const Horizontal = ({ size, padding, type, className, style }) => {
   const [style1, style2] = useMemo(() => {
     const styles = [{}, {}]
     if (typeof padding === 'number') {
-      const _padding = Taro.pxTransform(padding)
+      const _padding = px(padding)
       styles[0].paddingTop = _padding
       styles[0].paddingBottom = _padding
     }
     if (size) {
-      styles[1].borderTopWidth = Taro.pxTransform(size)
+      styles[1].borderTopWidth = px(size)
     }
     if (type) {
       styles[1].borderStyle = type
@@ -31,12 +31,12 @@ const Vertical = ({ size, padding, type, className, style }) => {
   const [style1, style2] = useMemo(() => {
     const styles = [{}, {}]
     if (typeof padding === 'number') {
-      const _padding = Taro.pxTransform(padding)
+      const _padding = px(padding)
       styles[0].paddingLeft = _padding
       styles[0].paddingRight = _padding
     }
     if (size) {
-      styles[1].borderLeftWidth = Taro.pxTransform(size)
+      styles[1].borderLeftWidth = px(size)
     }
     if (type) {
       styles[1].borderStyle = type

@@ -1,3 +1,19 @@
+# 1.0.41
+
+## 主要更改
+- Taro更新到4.0.5 RN更新到0.75
+- 完善大量组件类型提示
+- 完善开发文档[http://duxapp.cn/](http://duxapp.cn/)
+- 完善多个组件
+- 优化从Taro导入组件的防止兼容新版本RN
+
+## UploadImage
+
+将上传图片的组件统一更换为Upload，支持图片和视频上传
+
+## Sign
+去除组件的flex:1属性，需要手动设置组件的高度
+
 # 1.0.37
 ## LinearGradient
 修复RN设置rgba不显示透明度的问题

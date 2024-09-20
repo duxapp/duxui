@@ -1,4 +1,5 @@
-import { ComponentType, Component, CSSProperties } from 'react'
+import { Component, CSSProperties } from 'react'
+import { ViewProps } from '@tarojs/components'
 
 interface CunstomCallbackConfig {
   /** 当前日期的字符串格式 如：2024-01-01 */
@@ -51,7 +52,7 @@ interface CalendarCustom extends CalendarSelect {
   date: (string | [string, string])[]
 }
 
-interface CalendarProps {
+interface CalendarProps extends ViewProps {
   /** 日历功能类型 默认不支持选择 */
   mode?: keyof {
     /** 日期选择 */
@@ -72,10 +73,6 @@ interface CalendarProps {
    * 多选模式时，将会在以上基础上再套一层数组
    */
   value?: string | string[] | string[][]
-  /** 样式 */
-  style?: CSSProperties
-  /** 样式类名 */
-  className?: string
   /** 导航部分的样式 */
   navStyle?: CSSProperties
   /** 头部的容器样式 */
@@ -104,8 +101,6 @@ interface CalendarProps {
   customDate?: CalendarCustom[]
   /** 自定义选中的部分的日历数据 */
   customSelect?: CalendarSelect
-  /** 引用 */
-  ref?: string | ((node: any) => any)
 }
 
 interface SelectTast extends Promise<SelectTast> {

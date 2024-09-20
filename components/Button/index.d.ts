@@ -1,5 +1,5 @@
-import { CSSProperties, LegacyRef, ComponentType, ReactElement } from 'react'
-
+import { CSSProperties, ComponentType, ReactElement } from 'react'
+import { ViewProps, ButtonProps } from '@tarojs/components'
 
 /** 圆角类型 */
 interface type {
@@ -26,7 +26,7 @@ interface type {
 /** 圆角类型 */
 interface radiusType {
   /** 直角 */
-  'square'
+  square
   /** 圆角 */
   round
   /** 较小的圆角 */
@@ -44,7 +44,7 @@ interface size {
 }
 
 
-interface ButtonProps {
+interface ButtonProps extends ViewProps {
   /** 按钮类型 */
   type?: keyof type
   /** 按钮颜色 设置多个颜色可以渐变 此属性优先级低于type */
@@ -64,8 +64,6 @@ interface ButtonProps {
   disabled?: boolean
   /** 显示loading */
   loading?: boolean
-  /** 按钮样式 */
-  style?: CSSProperties
   /** 按钮文字样式 */
   textStyle?: CSSProperties
   /** 自定义渲染按钮内容 当你的内容是图片或者图标以外的内容时，使用此属性替换 */
@@ -74,6 +72,8 @@ interface ButtonProps {
   onClick?: () => any
   /** 按钮内容 支持文本或者图标 */
   children?: string
+  /** 小程序端 openType 属性 */
+  openType?: keyof ButtonProps.OpenType
 }
 
 /**

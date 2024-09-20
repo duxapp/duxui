@@ -1,4 +1,5 @@
-import { ReactNode, CSSProperties } from 'react'
+import { ReactNode } from 'react'
+import { ViewProps } from '@tarojs/components'
 
 interface CascadeData {
   value: string | number
@@ -6,17 +7,15 @@ interface CascadeData {
   children?: CascadeData[]
 }
 
-type CascadeMode = 'radio' | 'checkbox'
-
 type CascadeTheme = 'default' | 'fill'
 
-interface CascadeProps {
+interface CascadeProps extends ViewProps {
   /**
    * 数据源，包含级联数据的数组
    */
   data: CascadeData[]
   /**
-   * 异步加载子分类数据的回调函数
+   * 当没有一次性返回全部数据时，加载子分类数据的回调函数
    */
   getData?: (current: CascadeData, level: number) => Promise<CascadeData[]>
   /**
@@ -28,14 +27,13 @@ interface CascadeProps {
    */
   onChange?: (value: string | number | (string | number)[]) => void
   /**
-   * 值改变时的回调函数，返回选中的项或多项数据
+   * 会把选中项的对象，而不是值传回去
    */
   onChangeItem?: (item: CascadeData | CascadeData[]) => void
   /**
-   * 选择模式，单选或多选
-   * @default 'radio'
+   * 是否多选模式
    */
-  mode?: CascadeMode
+  checkbox?: boolean
   /**
    * 是否允许选择任何一级分类
    * @default false
@@ -66,14 +64,6 @@ interface CascadeProps {
    * @default 'value'
    */
   valueKey?: string
-  /**
-   * 自定义类名
-   */
-  className?: string
-  /**
-   * 自定义样式
-   */
-  style?: CSSProperties
 }
 
 /**

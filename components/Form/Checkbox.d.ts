@@ -1,12 +1,7 @@
-import { ReactNode, CSSProperties, FC } from 'react'
+import { ReactNode, FC } from 'react'
+import { SpaceProps } from '../Space'
 
-type Direction = 'horizontal' | 'vertical'
-
-interface CheckboxGroupProps {
-  /**
-   * 复选框组件
-   */
-  children: ReactNode
+interface CheckboxGroupProps extends SpaceProps {
   /**
    * 当前选中的值
    */
@@ -20,28 +15,16 @@ interface CheckboxGroupProps {
    */
   vertical?: boolean
   /**
-   * 附加在复选框组容器上的 CSS 类名
-   */
-  className?: string
-  /**
    * 虚拟节点
    */
   virtual?: boolean
   /**
-   * 附加在复选框组容器上的样式
-   */
-  style?: CSSProperties
-  /**
-   * 禁用选项
+   * 禁用选择
    */
   disabled?: boolean
-  /**
-   * 其他属性
-   */
-  [key: string]: any
 }
 
-interface CheckboxProps {
+interface CheckboxProps extends SpaceProps {
   /**
    * 复选框的值
    */
@@ -55,24 +38,9 @@ interface CheckboxProps {
    */
   checked?: boolean
   /**
-   * 附加在复选框容器上的 CSS 类名
+   * 禁用这个选项
    */
-  className?: string
-  /**
-   * 其他属性
-   */
-  [key: string]: any
-}
-
-interface CheckboxContextValue {
-  /**
-   * 复选框选择函数
-   */
-  check: (value: any) => void
-  /**
-   * 当前选中的值
-   */
-  currentValue: any[]
+  disabled?: boolean
 }
 
 export const Checkbox: FC<CheckboxProps> & {

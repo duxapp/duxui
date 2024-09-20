@@ -32,7 +32,6 @@ export const LinearGradient = memo(({
   colors = defaultProps.colors,
   locations = defaultProps.locations,
   useAngle = false,
-  angleCenter,
   angle = 0,
   style,
   className,

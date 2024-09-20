@@ -1,18 +1,15 @@
-import { ReactNode } from 'react'
+import { ReactElement } from 'react'
+import { ViewProps } from '@tarojs/components'
 
-interface EmptyProps {
+interface EmptyProps extends ViewProps {
   /** 标题 */
   title?: string
-  /** 图片链接 */
+  /** 用于替换默认的图片 */
   url?: string
   /** 替换图片区域 */
-  icon?: ReactNode
+  renderIcon?: ReactElement
   /** 底部自定义渲染 */
-  renderFooter?: ReactNode
-  /** 自定义样式名 */
-  className?: string
-  /** 自定义样式 */
-  style?: string
+  renderFooter?: ReactElement
 }
 
 export const Empty: React.FC<EmptyProps>

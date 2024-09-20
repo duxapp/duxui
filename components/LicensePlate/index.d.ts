@@ -16,7 +16,7 @@ interface KeyboardProps {
 }
 
 interface InputProps extends InputCodeProps {
-  /** 车牌长度 默认7 新能源为8 */
+  /** 车牌长度 默认7 新能源为8 默认7 */
   length?: number
 }
 

@@ -1,5 +1,4 @@
 import { TextareaProps as TaroTextareaProps } from '@tarojs/components'
-import { CSSProperties, ReactNode } from 'react'
 
 type Align = 'left' | 'center' | 'right'
 
@@ -39,10 +38,6 @@ interface TextareaProps extends TaroTextareaProps {
    * 值变化回调函数
    */
   onChange?: (value: string) => void
-  /**
-   * 输入框的值
-   */
-  value?: string
 }
 
 export const Textarea: React.FC<TextareaProps>

@@ -5,7 +5,7 @@ import { Text } from '../Text'
 import './InputCode.scss'
 
 export const InputCode = ({
-  value = '', onChange, onClick,
+  value = '', onChange,
   itemStyle, length = 6, password, focus,
   className, style,
   ...props
@@ -20,7 +20,7 @@ export const InputCode = ({
 
   return <Row
     className={classNames('InputCode', className)}
-    style={style} justify='between' onClick={onClick}
+    style={style} justify='between'
     {...props}
   >
     {

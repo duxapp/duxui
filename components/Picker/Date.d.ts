@@ -16,10 +16,6 @@ interface Locale {
 }
 
 interface DatePickerProps {
-  // 自定义类名前缀
-  prefixCls?: string
-  // 自定义选择器类名前缀
-  pickerPrefixCls?: string
   // 默认日期
   defaultValue?: string
   // 当前日期

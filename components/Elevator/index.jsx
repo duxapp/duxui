@@ -2,6 +2,7 @@ import { useCallback, useRef, useState, createContext, useContext as useReactCon
 import { View, Text, Input, Image } from '@tarojs/components'
 import { noop } from '@/duxapp/utils/util'
 import { ScrollView, Layout } from '@/duxapp'
+import classNames from 'classnames'
 import searchIcon from './images/search.png'
 import './index.scss'
 
@@ -10,7 +11,9 @@ const context = createContext({ setKeyword: noop })
 const useContext = () => useReactContext(context)
 
 export const ElevatorSearch = ({
-  placeholder = '请输入关键词搜索'
+  placeholder = '请输入关键词搜索',
+  className,
+  ...props
 }) => {
   const { setKeyword } = useContext()
 
@@ -26,7 +29,7 @@ export const ElevatorSearch = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return <View className='Elevator__search'>
+  return <View className={classNames('Elevator__search', className)} {...props}>
     <Image src={searchIcon} className='Elevator__search__icon' />
     <Input className='Elevator__search__input' placeholder={placeholder} onInput={input} />
   </View>
@@ -40,7 +43,8 @@ export const Elevator = ({
   renderTop,
   renderHeader,
   renderFooter,
-  renderNav = true,
+  showNav = true,
+  style,
   ...props
 }) => {
 
@@ -80,7 +84,7 @@ export const Elevator = ({
   // }, [])
 
   return <context.Provider value={{ keyword, setKeyword }}>
-    <View className={`Elevator ${className}`} {...props}>
+    <View className={`Elevator ${className}`} style={style} {...props}>
       {renderTop}
       <ScrollView scrollTop={scrollTop}>
         <Layout className='Elevator__group' onLayout={e => layout(e, 0)}>
@@ -88,7 +92,7 @@ export const Elevator = ({
         </Layout>
         {
           resultList.map((group, groupIndex) => <Layout className='Elevator__group' key={group.index} onLayout={e => layout(e, groupIndex + 1)}>
-            {renderNav && <View className='Elevator__group__name'>{group.name}</View>}
+            {showNav && <View className='Elevator__group__name'>{group.name}</View>}
             {
               group.children.map(item => {
                 return <View className='Elevator__group__item' key={item.name} onClick={() => onItemClick?.(item)}>{item.name}</View>
@@ -99,7 +103,7 @@ export const Elevator = ({
         {resultList.length === 0 && renderEmpty}
         {renderFooter}
       </ScrollView>
-      {renderNav && <View className='Elevator__nav'>
+      {showNav && <View className='Elevator__nav'>
         <View
           className='Elevator__nav__content'
         // onTouchMove={move}

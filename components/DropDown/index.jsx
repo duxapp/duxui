@@ -1,6 +1,7 @@
 import { useCallback, useState, forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
 import { View, Text } from '@tarojs/components'
 import { Layout, getRect, Absolute } from '@/duxapp'
+import { DuxuiIcon } from '../DuxuiIcon'
 import './index.scss'
 
 let classKey = 0
@@ -87,9 +88,8 @@ export const DropDown = forwardRef(({
               return <View key={index} className='dropdown__item--line' />
             }
             return <View className={`dropdown__item${select === index ? ' dropdown__item--select' : ''}`} key={item[rangeKey] || item} onClick={submit.bind(null, item, index)}>
-              {!!item.icon && <Icon name={item.icon} size={36} />}
               <Text className='dropdown__item__text'>{item[rangeKey] || item}</Text>
-              {select === index && <Icon name='duihao' size={48} color='#F23E39' />}
+              {select === index && <DuxuiIcon name='direction_right' size={48} color='#F23E39' />}
             </View>
           })
         }

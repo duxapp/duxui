@@ -1,12 +1,7 @@
-import { ReactNode, CSSProperties, FC } from 'react'
+import { ReactElement, FC } from 'react'
+import { SpaceProps } from '../Space'
 
-type Direction = 'horizontal' | 'vertical'
-
-interface RadioGroupProps {
-  /**
-   * 单选按钮组件
-   */
-  children: ReactNode
+interface RadioGroupProps extends SpaceProps {
   /**
    * 当前选中的值
    */
@@ -24,57 +19,28 @@ interface RadioGroupProps {
    */
   virtual?: boolean
   /**
-   * 附加在单选按钮组容器上的 CSS 类名
+   * 禁用选择
    */
-  className?: string
-  /**
-   * 附加在单选按钮组容器上的样式
-   */
-  style?: CSSProperties
-  /**
-   * 其他属性
-   */
-  [key: string]: any
+  disabled?: boolean
 }
 
-interface RadioProps {
+interface RadioProps extends SpaceProps {
   /**
-   * 单选按钮的值
+   * 当前选项的值
    */
   value: any
   /**
-   * 单选按钮的标签文字
+   * 当前选项的标签文字
    */
-  label?: ReactNode
+  label?: ReactElement
   /**
-   * 是否选中这个项目
+   * 如果单独使用 Radio 可以用这个属性控制是否选中
    */
   checked?: boolean
   /**
-   * 是否禁用这个项目
+   * 是否禁用这个选项
    */
   disabled?: boolean
-  /**
-   * 点击事件
-   * @param event
-   * @returns
-   */
-  onClick?: (event: any) => void
-  /**
-   * 附加在单选按钮容器上的 CSS 类名
-   */
-  className?: string
-}
-
-interface RadioContextValue {
-  /**
-   * 单选按钮选择函数
-   */
-  check: (value: any) => void
-  /**
-   * 当前选中的值
-   */
-  currentValue: any
 }
 
 export const Radio: FC<RadioProps> & {

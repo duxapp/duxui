@@ -9,7 +9,7 @@ const context = createContext({ check: noop })
 
 const CheckboxGroup = ({
   children,
-  value,
+  value = [],
   onChange,
   disabled,
   direction = 'horizontal',
@@ -45,10 +45,6 @@ const CheckboxGroup = ({
         </Space>
     }
   </context.Provider>
-}
-
-CheckboxGroup.defaultProps = {
-  value: []
 }
 
 /**

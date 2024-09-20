@@ -1,6 +1,6 @@
-import { View, ViewProps } from '@tarojs/components'
+import { ViewProps } from '@tarojs/components'
 
-interface DividerProps {
+interface DividerProps extends ViewProps {
   /**
    * 是否垂直布局
    */

@@ -1,7 +1,7 @@
-import { StandardProps } from '@tarojs/components/types/common'
+import { ViewProps } from '@tarojs/components'
 import { ReactNode, CSSProperties } from 'react'
 
-interface GridProps extends StandardProps {
+interface GridProps extends ViewProps {
   /** 列数 */
   column?: number
   /** 是否为正方形 */
@@ -12,8 +12,6 @@ interface GridProps extends StandardProps {
   rowGap?: number
   /** 列间距 默认等于gap */
   columnGap?: number
-  /** 子元素 */
-  children?: ReactNode
   /** 每一个元素容器的样式 */
   itemStyle?: CSSProperties
 }

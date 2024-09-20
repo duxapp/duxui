@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { View, ScrollView } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import { px } from '@/duxapp'
 import './index.scss'
 
 const Row = ({
@@ -43,7 +43,7 @@ const Row = ({
   }, [index, item, onClick])
 
   return <View {...rootProps} className={`step-comp__item--row ${className || ''}`} style={style}>
-    {!!startSize && <View className='step-comp__item__start' style={{ height: Taro.pxTransform(startSize) }}>{renderStart?.({item, index})}</View>}
+    {!!startSize && <View className='step-comp__item__start' style={{ height: px(startSize) }}>{renderStart?.({ item, index })}</View>}
     <View className='step-comp__item__center--row'>
       <View className='step-comp__item__line--row' style={lineStyle} />
       <View className='step-comp__item__point'>
@@ -54,7 +54,7 @@ const Row = ({
         }
       </View>
     </View>
-    <View className='step-comp__item__end'>{renderEnd?.({item, index})}</View>
+    <View className='step-comp__item__end'>{renderEnd?.({ item, index })}</View>
   </View>
 }
 
@@ -74,7 +74,7 @@ const Column = ({
 }) => {
 
   const lineStyle = useMemo(() => {
-    const top = Taro.pxTransform(pointTop + 10)
+    const top = px(pointTop + 10)
     const _style = {}
     if (first && last) {
 
@@ -101,10 +101,10 @@ const Column = ({
   }, [index, item, onClick])
 
   return <View {...rootProps} className={`step-comp__item--column ${className || ''}`} style={style}>
-    {!!startSize && <View className='step-comp__item__start' style={{ width: Taro.pxTransform(startSize) }}>{renderStart?.({item, index})}</View>}
+    {!!startSize && <View className='step-comp__item__start' style={{ width: px(startSize) }}>{renderStart?.({ item, index })}</View>}
     <View className='step-comp__item__center--column'>
       <View className='step-comp__item__line--column' style={lineStyle} />
-      <View className='step-comp__item__point' style={{ marginTop: Taro.pxTransform(pointTop) }}>
+      <View className='step-comp__item__point' style={{ marginTop: px(pointTop) }}>
         {
           renderPoint
             ? renderPoint(item, index)
@@ -112,7 +112,7 @@ const Column = ({
         }
       </View>
     </View>
-    <View className='step-comp__item__end--column'>{renderEnd?.({item, index})}</View>
+    <View className='step-comp__item__end--column'>{renderEnd?.({ item, index })}</View>
   </View>
 }
 
@@ -135,6 +135,8 @@ export function Step({
   data,
   // row 横向 column 纵向
   type = 'row',
+  // 是否垂直布局
+  vertical = type === 'column',
   // 横向时上面的渲染内容 纵向是左侧的渲染内容
   renderStart,
   // 指定尺寸 横向时为高度 纵向时为宽度 不指定则不会渲染开始块
@@ -150,15 +152,16 @@ export function Step({
   className,
   style,
   itemClassName,
-  itemStyle
+  itemStyle,
+  ...props
 }) {
 
-  const row = useMemo(() => type === 'row', [type])
+  const row = useMemo(() => !vertical, [vertical])
 
   const Item = useMemo(() => row ? Row : Column, [row])
 
   return <RowContainer row={row}>
-    <View className={className} style={{ ...style, flexDirection: row ? 'row' : 'column' }}>
+    <View className={className} style={{ ...style, flexDirection: row ? 'row' : 'column' }} {...props}>
       {
         data?.map((item, index) => {
           return <Item

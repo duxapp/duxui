@@ -38,22 +38,25 @@ export const Modal = ({ children, show, animation = true, maskClosable = true, o
 
   const ref = useRef(null)
 
+  const refs = useRef({})
+  refs.current.onClose = onClose
+
   const close = useCallback(() => {
     if (maskClosable) {
       if (animation) {
         ref.current.hide()
         setTimeout(() => {
-          onClose?.()
+          refs.current.onClose?.()
           action.current.remove()
           action.current = null
         }, 200)
       } else {
-        onClose?.()
+        refs.current.onClose?.()
         action.current.remove()
         action.current = null
       }
     }
-  }, [maskClosable, animation, onClose])
+  }, [maskClosable, animation])
 
   useEffect(() => {
     return () => {
@@ -81,7 +84,7 @@ export const Modal = ({ children, show, animation = true, maskClosable = true, o
         action.current = null
       }
     }
-  }, [children, show, animation, overlayOpacity, close])
+  }, [children, show, animation, overlayOpacity, close, group])
 
   return <></>
 }

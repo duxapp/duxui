@@ -24,8 +24,10 @@ export const ModalForm = ({
   side,
   children,
   renderForm,
+  renderHeader,
+  renderFooter,
   title,
-  placeholder,
+  placeholder = '请选择',
   showButton = true,
   autoSubmit,
   resetMode,
@@ -123,7 +125,9 @@ export const ModalForm = ({
             <Text bold>{title}</Text>
             <DuxuiIcon name='close' color='#a3a5b6' onClick={() => setShow(false)} />
           </Row>}
+          {renderHeader}
           {form}
+          {renderFooter}
           {
             showButton && !autoSubmit && <>
               <Divider padding={0} />

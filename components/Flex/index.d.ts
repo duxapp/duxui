@@ -1,7 +1,7 @@
-import { StandardProps } from '@tarojs/components/types/common'
+import { ViewProps } from '@tarojs/components'
 import { ReactNode } from 'react'
 
-interface RowProps extends StandardProps {
+interface RowProps extends ViewProps {
   /** 是否换行 */
   wrap?: boolean
   /** 横向排列时主轴对齐方式 */
@@ -14,11 +14,9 @@ interface RowProps extends StandardProps {
   shrink?: boolean
   /** 自身对齐方式 */
   self?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
-  /** 子元素 */
-  children?: ReactNode
 }
 
-interface ColumnProps extends StandardProps {
+interface ColumnProps extends ViewProps {
   /** 纵向排列时主轴对齐方式 */
   justify?: 'start' | 'end' | 'center' | 'between' | 'around'
   /** 横向排列时交叉轴对齐方式 */
@@ -29,8 +27,6 @@ interface ColumnProps extends StandardProps {
   shrink?: boolean
   /** 自身对齐方式 */
   self?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
-  /** 子元素 */
-  children?: ReactNode
 }
 
 export const Row: React.FC<RowProps>

@@ -1,7 +1,6 @@
-import { StandardProps } from '@tarojs/components/types/common'
-import { ReactNode } from 'react'
+import { RowProps } from '../Flex'
 
-interface TagProps extends StandardProps {
+interface TagProps extends RowProps {
   /** 标签类型 */
   type?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
   /** 标签大小 */
@@ -14,8 +13,6 @@ interface TagProps extends StandardProps {
   plain?: boolean
   /** 圆角类型 */
   radiusType?: 'square' | 'round' | 'round-min'
-  /** 子元素 */
-  children?: ReactNode
 }
 
 export const Tag: React.FC<TagProps>

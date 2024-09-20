@@ -204,8 +204,8 @@ const FormItem = ({
   className,
   children,
   rules,
-  trigger,
-  triggerPropName,
+  trigger = 'onChange',
+  triggerPropName = 'value',
   field,
   // 当有的表单一个需要编辑多个字段时，指定此方式
   fields,
@@ -315,12 +315,6 @@ const FormItem = ({
     </Space>
     {footer}
   </Column>
-}
-
-FormItem.defaultProps = {
-  trigger: 'onChange',
-  triggerPropName: 'value',
-  containerProps: {}
 }
 
 const Submit = ({ children, ...props }) => {

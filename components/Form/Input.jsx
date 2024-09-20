@@ -63,3 +63,5 @@ export const InputSearch = ({
 
   return <Input onChange={input} value={val ?? ''} {...props} />
 }
+
+Input.Search = InputSearch

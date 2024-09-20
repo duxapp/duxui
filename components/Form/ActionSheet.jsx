@@ -1,5 +1,5 @@
 import { Children, cloneElement, isValidElement, useMemo } from 'react'
-import Taro from '@tarojs/taro'
+import { showActionSheet } from '@tarojs/taro'
 
 export const ActionSheetForm = ({ value, range, nameKey = 'name', valueKey = 'value', onChange, children }) => {
   const isObject = typeof range[0] === 'object'
@@ -27,7 +27,7 @@ export const ActionSheetForm = ({ value, range, nameKey = 'name', valueKey = 'va
     return cloneElement(children, {
       onClick: async e => {
         children.props.onClick?.(e)
-        const { tapIndex } = await Taro.showActionSheet({
+        const { tapIndex } = await showActionSheet({
           itemList: isObject ? range.map(v => v[nameKey]) : range
         })
         const item = range[tapIndex]

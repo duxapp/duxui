@@ -66,8 +66,6 @@ const ONE_DAY = 24 * 60 * 60 * 1000
 
 export class DatePicker extends React.Component {
   static defaultProps = {
-    prefixCls: 'rmc-date-picker',
-    pickerPrefixCls: 'rmc-picker',
     locale: {
       year: '年',
       month: '月',

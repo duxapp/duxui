@@ -6,7 +6,7 @@ import './index.scss'
 
 export const Empty = ({
   url,
-  icon,
+  renderIcon,
   title = '什么都没有~',
   renderFooter,
   className,
@@ -22,7 +22,7 @@ export const Empty = ({
     style={style}
     {...props}
   >
-    {icon || <Image className='Empty__image' src={url || empry} />}
+    {renderIcon || <Image className='Empty__image' src={url || empry} />}
     <Text className='Empty__title' align='center' color={3}>{title}</Text>
     {renderFooter}
   </View>

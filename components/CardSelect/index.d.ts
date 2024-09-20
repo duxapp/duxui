@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { StandardProps } from '@tarojs/components/types/common'
+import { ViewProps } from '@tarojs/components'
 
 interface CardSelectGroupProps {
   /** 选中的值 */
@@ -23,9 +23,9 @@ interface CardSelectGroupProps {
   children: ReactNode
 }
 
-interface CardSelectProps extends StandardProps {
-  /** 选中的值 */
-  value?: string | number
+interface CardSelectProps extends ViewProps {
+  /** 当前选项的值 */
+  value: string | number
   /** 是否选中 */
   checked?: boolean
   /** 是否实心 */
@@ -42,10 +42,6 @@ interface CardSelectProps extends StandardProps {
   disabledCheck?: boolean
   /** 圆角类型 */
   radiusType?: 'square' | 'round' | 'round-min'
-  /** 点击事件 */
-  onClick?: (event: any) => void
-  /** 子元素 */
-  children?: ReactNode
 }
 
 export const CardSelect: React.FC<CardSelectProps> & {

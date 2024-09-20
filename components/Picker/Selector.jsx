@@ -3,7 +3,7 @@ import { MultiSelectorPicker } from './MultiSelector'
 import './common.scss'
 
 export const SelectorPicker = ({
-  range,
+  range = [],
   value,
   onChange,
   ...props
@@ -17,10 +17,6 @@ export const SelectorPicker = ({
   const _value = useMemo(() => [value], [value])
 
   return <MultiSelectorPicker range={_range} onChange={change} value={_value} {...props} />
-}
-
-SelectorPicker.defaultProps = {
-  range: []
 }
 
 SelectorPicker.getShowText = (value, {

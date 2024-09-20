@@ -10,7 +10,7 @@ interface HorseLanternLotteryProps extends LayoutProps {
   list: any[]
   /** 是否禁用开始抽奖 */
   disabled?: boolean
-  /** 项目的渲染组件 */
+  /** 项目的渲染奖品项目的组件 */
   renderItem: Component
   /** 开始按钮的渲染节点 */
   renderStart: ReactNode

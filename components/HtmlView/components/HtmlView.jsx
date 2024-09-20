@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, cloneElement } from 'react'
-import Taro from '@tarojs/taro'
+import { previewImageUtil } from '@tarojs/taro'
 import { View as TaroView, Text as TaroText, Image as TaroImage, Video as TaroVideo } from '@tarojs/components'
-import { Layout } from '@/duxapp'
+import { Layout, px } from '@/duxapp'
 import { HTMLParser } from '../utils/htmlparser'
 import tags from '../utils/tags.json'
 import './HtmlView.css'
@@ -249,7 +249,7 @@ export function HtmlView({
   const click = useCallback(e => {
     //console.log('click', e);
     if (e.type === 'image' && previewImage) {
-      Taro.previewImage({
+      previewImageUtil({
         current: e.src,
         urls: images.current
       })
@@ -301,13 +301,13 @@ const getNodes = (() => {
   // 转换尺寸单位
   const getSize = value => {
     if (value?.endsWith('px')) {
-      return Taro.pxTransform(value.replace('px', '') * 2)
+      return px(value.replace('px', '') * 2)
     } else if (value?.endsWith('pt')) {
-      return Taro.pxTransform(value.replace('pt', '') * 2 * 1.33333)
+      return px(value.replace('pt', '') * 2 * 1.33333)
     } else if (value?.endsWith('rem')) {
-      return Taro.pxTransform(value.replace('rem', '') * 32)
+      return px(value.replace('rem', '') * 32)
     } else if (value?.endsWith('em')) {
-      return Taro.pxTransform(value.replace('em', '') * 32)
+      return px(value.replace('em', '') * 32)
     }
     return false
   }

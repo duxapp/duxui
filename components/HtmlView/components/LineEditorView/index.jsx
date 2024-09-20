@@ -1,6 +1,6 @@
 import { View } from '@tarojs/components'
 import { useCallback } from 'react'
-import Taro from '@tarojs/taro'
+import { previewImage as previewImageUtil } from '@tarojs/taro'
 import { Header } from './components/Header'
 import { Paragraph } from './components/Paragraph'
 import { Video } from './components/Video'
@@ -23,7 +23,7 @@ export const LineEditorView = ({
 
   const click = useCallback(item => {
     if (item.type === 'image' && previewImage) {
-      Taro.previewImage({
+      previewImageUtil({
         current: item.data.src,
         urls: blocks.filter(v => v.type === 'image').map(v => v.data.src)
       })

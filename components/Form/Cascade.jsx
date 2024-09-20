@@ -34,8 +34,9 @@ export const Cascade = ({
   onChange,
   // 会把选中项的对象，而不是值传回去
   onChangeItem,
-  // radio 单选 checkbox 多选
   mode = 'radio',
+  // 是否多选
+  checkbox = mode === 'checkbox',
   /**
    * 允许选中任何一级
    * 如果是多选模式当选到最后一级时才多选
@@ -54,10 +55,11 @@ export const Cascade = ({
   nameKey = 'name',
   valueKey = 'value',
   className,
-  style
+  style,
+  ...props
 }) => {
 
-  const isRadio = mode === 'radio'
+  const isRadio = !checkbox
 
   const [list, setList] = useState(data || [])
 
@@ -249,7 +251,7 @@ export const Cascade = ({
 
   const Render = theme === 'fill' ? FillRender : DefaultRender
 
-  return <View className={classNames('Cascade', className)} style={style}>
+  return <View className={classNames('Cascade', className)} style={style} {...props}>
     <Render
       list={selectList}
       select={select}

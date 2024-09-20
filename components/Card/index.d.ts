@@ -4,7 +4,7 @@ import { BoxShadowProps } from '../BoxShadow'
 interface CardProps extends BoxShadowProps {
   /** 是否显示阴影，默认为 true */
   shadow?: boolean
-  /** 圆角大小，默认为 5px */
+  /** 圆角大小，默认为 24 */
   radius?: number
   /** 是否显示垂直方向上的内边距 默认显示 */
   verticalPadding?: boolean
@@ -22,9 +22,6 @@ interface CardProps extends BoxShadowProps {
   justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly'
   /** flex 容器在交叉轴方向上的对齐方式 */
   items?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
-  children?: ReactNode // 子元素
-  className?: string // 自定义 class
-  style?: React.CSSProperties // 自定义样式
 }
 
 interface TitleProps {

@@ -1,8 +1,8 @@
-import { StandardProps } from '@tarojs/components/types/common'
-import { ReactNode } from 'react'
+import { ViewProps } from '@tarojs/components'
+import { ReactNode, CSSProperties } from 'react'
 import { BadgeProps } from '../Badge'
 
-interface TabProps extends StandardProps {
+interface TabProps extends ViewProps {
   /** tab主题样式 */
   type?: 'line' | 'button'
   /** 按钮形式的时候未选中按钮背景颜色 可以指定为page颜色 默认为白色 */
@@ -27,18 +27,16 @@ interface TabProps extends StandardProps {
   expand?: boolean
   /** 仅有一个Tab时是否隐藏Tab显示 */
   oneHidden?: boolean
-  /** 子元素 */
-  children?: ReactNode
   /** tab的样式 */
-  tabStyle?: React.CSSProperties
+  tabStyle?: CSSProperties
   /** 自定义样式函数 */
   getItemStyle?: (option: {
     /** 是否选中 */
     select: boolean
   }) => {
-    line?: React.CSSProperties
-    text?: React.CSSProperties
-    container?: React.CSSProperties
+    line?: CSSProperties
+    text?: CSSProperties
+    container?: CSSProperties
   }
 }
 
@@ -47,10 +45,6 @@ interface TabItemProps {
   title?: string
   /** 对应的标签页的 key */
   paneKey?: string | number
-  /** 是否选中 */
-  select?: boolean
-  /** 点击时的回调函数 */
-  onClick?: (paneKey: string | number) => void
   /** 显示红点组件的属性 */
   badgeProps?: BadgeProps
 }

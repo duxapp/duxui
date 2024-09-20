@@ -1,4 +1,6 @@
-import { ReactNode, CSSProperties, FC, Ref } from 'react'
+import { ReactElement, FC, Ref } from 'react'
+import { RowProps } from '../Flex'
+import { LayoutProps } from '../../../duxapp/components/Layout'
 
 type MenuItemOptions = {
   value: any
@@ -14,7 +16,7 @@ type MenuItemClickOptions = {
   children: ReactNode
 }
 
-interface MenuItemProps {
+interface MenuItemProps extends RowProps {
   /**
    * 菜单项标题
    */
@@ -46,7 +48,7 @@ interface MenuItemProps {
   /**
    * 自定义图标区域
    */
-  renderIcon?: ReactNode
+  renderIcon?: ReactElement
   /**
    * 值改变时的回调函数
    */
@@ -54,42 +56,18 @@ interface MenuItemProps {
   /**
    * 自定义渲染弹出元素，优先级高于options
    */
-  children?: ReactNode
+  children?: ReactElement
   /**
    * 点击事件回调函数，当传入点击事件参数时，默认的点击事件将不会被触发
    */
   onClick?: () => void
-  /**
-   * 样式名
-   */
-  className?: string
-  /**
-   * 样式
-   */
-  style?: CSSProperties
 }
 
-interface MenuProps {
+interface MenuProps extends LayoutProps {
   /**
-   * 是否圆角
+   * 弹出的菜单是否显示圆角
    */
   round?: boolean
-  /**
-   * 菜单组件
-   */
-  children: ReactNode
-  /**
-   * 附加在菜单容器上的 CSS 类名
-   */
-  className?: string
-  /**
-   * 附加在菜单容器上的样式
-   */
-  style?: CSSProperties
-  /**
-   * 其他属性
-   */
-  [key: string]: any
 }
 
 interface MenuItemClickHandler {

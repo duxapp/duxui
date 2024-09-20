@@ -1,5 +1,5 @@
-import Taro from '@tarojs/taro'
 import classNames from 'classnames'
+import { px } from '@/duxapp'
 import { View } from '../common'
 import './index.scss'
 
@@ -19,7 +19,7 @@ export const Space = ({
   ...props
 }) => {
 
-  const _size = Taro.pxTransform(size)
+  const _size = px(size)
 
   return <View
     className={classNames(

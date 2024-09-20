@@ -24,7 +24,7 @@ export const PickerSelect = ({
 }
 
 export const PickerMultiSelect = ({
-  placeholder, grow, value, onChange, children, title, showButton, disabled, childPropsValueKey,
+  placeholder, grow, value = [], onChange, children, title, showButton, disabled, childPropsValueKey,
   _designKey,
   modalFormProps,
   ...props
@@ -43,11 +43,6 @@ export const PickerMultiSelect = ({
     {...modalFormProps}
     _designKey={_designKey}
   />
-}
-
-PickerMultiSelect.defaultProps = {
-  value: [],
-  range: []
 }
 
 export const PickerDate = ({

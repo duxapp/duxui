@@ -1,40 +1,27 @@
-import { ReactNode } from 'react'
-import { CommonEventFunction, ITouchEvent, TouchEvent } from '@tarojs/components/types/common'
+import { ReactElement } from 'react'
+import { ViewProps } from '@tarojs/components'
+import { BoxShadowProps } from '../BoxShadow'
 
-interface CellProps {
+interface CellProps extends ViewProps {
   /** 左侧标题 */
-  title?: ReactNode
+  title?: string | ReactElement
   /** 左侧子标题 */
-  subTitle?: ReactNode
+  subTitle?: string | ReactElement
   /** 右侧描述文字 */
-  desc?: ReactNode
+  desc?: string | ReactElement
   /** 自定义左侧图标 */
-  renderIcon?: ReactNode
+  renderIcon?: ReactElement
   /** 是否展示右侧箭头，并可设置跳转链接 */
-  isLink?: boolean | string
-  /** 是否使用圆角 */
-  radius?: string
-  /** 单元格点击事件 */
-  onClick?: CommonEventFunction<TouchEvent>
-  /** 单元格长按事件 */
-  onLongPress?: CommonEventFunction<TouchEvent>
-  /** 自定义样式名 */
-  className?: string
-  /** 自定义样式 */
-  style?: string
+  // isLink?: boolean | string
+  /** 圆角数值 */
+  radius?: number
 }
 
-interface CellGroupProps {
+interface CellGroupProps extends BoxShadowProps {
   /** 是否显示分割线 */
   line?: boolean
   /** 是否使用圆角 */
   radius?: string
-  /** 分组内容 */
-  children?: ReactNode
-  /** 自定义样式名 */
-  className?: string
-  /** 自定义样式 */
-  style?: string
 }
 
 export const Cell: React.FC<CellProps> & {

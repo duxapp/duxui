@@ -1,8 +1,7 @@
-import { TouchEvent, View } from '@tarojs/components'
-import { StandardProps } from '@tarojs/components/types/common'
+import { TouchEvent, View, ViewProps } from '@tarojs/components'
 import { FC } from 'react'
 
-interface LongPressProps extends StandardProps {
+interface LongPressProps extends ViewProps {
   /**
    * 点击事件的处理函数
    */

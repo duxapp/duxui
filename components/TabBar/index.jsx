@@ -1,5 +1,5 @@
 import { View, Text, Image } from '@tarojs/components'
-import Taro, { useDidShow, useDidHide } from '@tarojs/taro'
+import { useDidShow, useDidHide, getCurrentPages } from '@tarojs/taro'
 import React, { useMemo, useState, useCallback, createContext, useContext, useEffect, useRef } from 'react'
 import { QuickEvent, useRoute, currentPage, route } from '@/duxapp'
 import classNames from 'classnames'
@@ -48,7 +48,7 @@ const TabbarScreen = ({
 }
 
 const TabbarButton = ({
-  text,
+  name,
   number,
   select,
   hover,
@@ -68,7 +68,7 @@ const TabbarButton = ({
           ? Icon
           : <Icon hover={hover} index={index} select={select} />
       }
-      {!!text && <Text className={`TabBar-menu__item__name${hover ? ' TabBar-menu__item__name--hover' : ''}`}>{text}</Text>}
+      {!!name && <Text className={`TabBar-menu__item__name${hover ? ' TabBar-menu__item__name--hover' : ''}`}>{name}</Text>}
     </Badge>
   </View>
 }
@@ -153,7 +153,7 @@ const TabBar = ({
         itemClick({ index: value[0] })
         // 如果不在Tabbar页面，跳转到当前页面
         if (currentPage() !== path) {
-          const pages = Taro.getCurrentPages()
+          const pages = getCurrentPages()
           const index = pages.findIndex(page => {
             const pagePath = page.route.startsWith('/') ? page.route.substring(1) : page.route
             if (pagePath === path) {
@@ -186,7 +186,7 @@ const TabBar = ({
         childs.map((item, index) => <TabbarButton
           icon={item.icon}
           number={numbers[index]}
-          text={item.text}
+          name={item.name}
           key={index}
           select={select}
           hover={index === select}

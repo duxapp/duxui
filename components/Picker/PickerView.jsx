@@ -4,7 +4,7 @@ import { PickerView as OldPickerView, PickerViewColumn } from './view'
 import './common.scss'
 
 export const PickerView = ({
-  value,
+  value = [],
   grow,
   onChange,
   className,

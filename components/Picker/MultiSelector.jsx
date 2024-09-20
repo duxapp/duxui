@@ -3,7 +3,7 @@ import { PickerView, PickerViewColumn, PickerViewColumnItem } from './PickerView
 import './common.scss'
 
 export const MultiSelectorPicker = ({
-  range,
+  range = [],
   nameKey = 'name',
   valueKey = 'value',
   ...props
@@ -51,9 +51,4 @@ MultiSelectorPicker.getShowText = (value, {
     }
     return ''
   })
-}
-
-MultiSelectorPicker.defaultProps = {
-  range: [],
-  value: [],
 }

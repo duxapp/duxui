@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import { PickerProps as TaroPickerProps } from '@tarojs/components'
 import { DatePickerProps } from '../Picker/Date'
 import { ModalFormProps } from './Modal'
 
@@ -16,7 +15,11 @@ interface PickerValueProps {
 
 declare const PickerValue: React.FC<PickerValueProps>
 
-interface PickerSelectProps extends Omit<TaroPickerProps, 'value'> {
+interface PickerSelectProps {
+  /**
+   * 弹出选择器的标题
+   */
+  title: string
   /**
    * 当前选中的值
    */
@@ -24,7 +27,7 @@ interface PickerSelectProps extends Omit<TaroPickerProps, 'value'> {
   /**
    * 选项范围
    */
-  range: any[] | object[]
+  range: any[]
   /**
    * 占位符文本
    */
@@ -55,13 +58,17 @@ declare const PickerSelect: React.FC<PickerSelectProps>
 
 interface PickerMultiSelectProps {
   /**
+   * 弹出选择器的标题
+   */
+  title: string
+  /**
    * 当前选中的值数组
    */
   value: any[]
   /**
    * 选项范围数组
    */
-  range: any[][] | object[][]
+  range: any[][]
   /**
    * 选项对象中表示名称的键名
    */
@@ -87,6 +94,10 @@ interface PickerMultiSelectProps {
 declare const PickerMultiSelect: React.FC<PickerMultiSelectProps>
 
 interface PickerDateProps extends DatePickerProps {
+  /**
+   * 弹出选择器的标题
+   */
+  title: string
   /**
    * 当前选中的日期值
    */

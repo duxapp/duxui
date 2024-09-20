@@ -1,8 +1,7 @@
 import React, { useMemo, Children, Fragment, cloneElement } from 'react'
 import { View, Text, Image } from '@tarojs/components'
-import Taro from '@tarojs/taro'
 import classNames from 'classnames'
-import { duxuiTheme } from '@/duxui/utils'
+import { duxuiTheme, px } from '@/duxui/utils'
 
 import './index.scss'
 
@@ -35,7 +34,7 @@ const AvatarGroup = ({
               {...maxProps}
               className='AvatarGroup__avatar'
               style={{
-                left: Taro.pxTransform(index * (itemSize + span))
+                left: px(index * (itemSize + span))
               }}
             >{maxProps?.children || '+N'}</Avatar>
           }
@@ -44,7 +43,7 @@ const AvatarGroup = ({
           size, radiusType, color, bgColor, iconSize,
           className: classNames(child.props.className, 'AvatarGroup__avatar'),
           style: {
-            left: Taro.pxTransform(index * (itemSize + span))
+            left: px(index * (itemSize + span))
           }
         })
       })

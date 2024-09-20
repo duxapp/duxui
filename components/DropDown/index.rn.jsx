@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import { TouchableOpacity, View, Text, Dimensions } from 'react-native'
 import { Absolute } from '@/duxapp'
+import { DuxuiIcon } from '../DuxuiIcon'
 import './index.scss'
 
 const measureInWindow = ref => {
@@ -22,6 +23,7 @@ export const DropDown = forwardRef(({
   onSelect,
   rangeKey = 'text',
   select,
+  style,
   ...props
 }, ref) => {
 
@@ -81,7 +83,7 @@ export const DropDown = forwardRef(({
   }, [position])
 
   return <>
-    <TouchableOpacity {...props} onPress={click} activeOpacity={1} ref={view}>
+    <TouchableOpacity style={style} {...props} onPress={click} activeOpacity={1} ref={view}>
       {children}
     </TouchableOpacity>
     {show && <Absolute>
@@ -94,9 +96,8 @@ export const DropDown = forwardRef(({
               return <View key={item[rangeKey] || item} className='dropdown__item--line' />
             }
             return <TouchableOpacity className={`dropdown__item${select === index ? ' dropdown__item--select' : ''}`} activeOpacity={1} key={item[rangeKey] || item} onPress={submit.bind(null, item, index)}>
-              {!!item.icon && <Icon name={item.icon} size={36} />}
               <Text className='dropdown__item__text'>{item[rangeKey] || item}</Text>
-              {select === index && <Icon name='duihao' size={48} color='#F23E39' />}
+              {select === index && <DuxuiIcon name='direction_right' size={48} color='#F23E39' />}
             </TouchableOpacity>
           })
         }

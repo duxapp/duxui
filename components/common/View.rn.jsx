@@ -12,5 +12,4 @@ export const View = forwardRef(({
     return <ClickView ref={ref} onClick={onClick} {...props} />
   }
   return <NativeView ref={ref} {...props} />
-}
-)
+})

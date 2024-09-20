@@ -1,7 +1,6 @@
 import { Textarea as TextareaTaro } from '@tarojs/components'
-import Taro from '@tarojs/taro'
 import classNames from 'classnames'
-import { duxappTheme } from '@/duxapp'
+import { duxappTheme, px } from '@/duxapp'
 import { Column } from '../Flex'
 import { Text } from '../Text'
 import { Form } from './Form'
@@ -41,7 +40,7 @@ export const Textarea = ({
     <TextareaTaro
       maxlength={maxlength}
       className='Textarea__input'
-      style={{ height: Taro.pxTransform(36 * line) }}
+      style={{ height: px(36 * line) }}
       placeholderTextColor={duxappTheme.textColor3}
       placeholderStyle={`color: ${duxappTheme.textColor3}`}
       onInput={setVal}

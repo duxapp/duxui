@@ -1,4 +1,4 @@
-import Taro from '@tarojs/taro'
+import { uploadFile as uploadFileTaro } from '@tarojs/taro'
 import md5 from 'crypto-js/md5'
 
 const uploadFile = process.env.TARO_ENV === 'rn'
@@ -78,7 +78,7 @@ const uploadFile = process.env.TARO_ENV === 'rn'
       return execFetch
     }
   })()
-  : Taro.uploadFile
+  : uploadFileTaro
 
 export default (() => {
 

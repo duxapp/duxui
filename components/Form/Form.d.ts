@@ -1,8 +1,9 @@
-import { CSSProperties, ReactNode } from 'react'
+import { ReactElement } from 'react'
 import { SchemaRuleType } from 'b-validate'
 import { TextProps } from '../Text'
 import { SpaceProps } from '../Space'
 import { ButtonProps } from '../Button'
+import { ColumnProps } from '../Flex'
 
 interface Values {
   [key: string]: any
@@ -47,18 +48,16 @@ interface FormChildProps extends FormRef {
   validateErrors?: any
 }
 
-const FormChild: React.FC<FormChildProps>
-
 interface FormProps {
-  /** 表单默认值 */
+  /** 表单默认值，也可以是一个异步函数，其返回值作为默认值，用在一些需要远程加载数据的场景 */
   defaultValues?: Values | (() => Promise<Values>)
-  /** 表单改变事件 当quick参数为true时才会在表单改变是触发，否则会和onSubmit一起触发 */
+  /** 表单改变事件 */
   onChange?: (values: Values) => void
   /** 表单提交事件 */
   onSubmit?: (values: Values) => void
   /** 是否禁用表单 */
   disabled?: boolean
-  /** 是否垂直布局 */
+  /** 表单项是否垂直布局 */
   vertical?: boolean
   /** 全局传递给标签的属性 */
   labelProps?: TextProps
@@ -67,7 +66,7 @@ interface FormProps {
   /** 是否使用项目的内边距 默认为开启 */
   itemPadding?: boolean
   /** 子元素 */
-  children?: ReactNode | FormChild
+  children?: ReactElement | React.FC<FormChildProps>
   /** 表单操作 */
   ref?: (ref: FormRef) => void
 }
@@ -77,9 +76,7 @@ interface FormItemChildProps extends FormChildProps {
   value: any
 }
 
-const FormItemChild: React.FC<FormItemChildProps>
-
-interface FormItemProps {
+interface FormItemProps extends ColumnProps {
   /** 字段名称 */
   field?: string | number
   /**
@@ -88,7 +85,8 @@ interface FormItemProps {
    * 开启之后 子表单 value将是整个表单的值 onChange 相当于 setValues
    */
   fields?: boolean
-  /** 标题
+  /**
+   * 标题
    * 如果未传入属性则只会显示子元素
    * 如果传入一个空字符串怎不会显示label 但是会显示 错误提示 desc 项目内边距
    */
@@ -99,35 +97,27 @@ interface FormItemProps {
   containerProps?: SpaceProps
   /** 副标题 仅跟着标题渲染 */
   subLabel?: string
-  /** 自定义渲染标题右侧区域 一般设置 direction为vertical时使用 */
-  renderLabelRight?: ReactNode
+  /** 自定义渲染标题右侧区域 一般设置 vertical 为true时使用 时使用 */
+  renderLabelRight?: ReactElement
   /** 简介 渲染在表单下面 */
   desc?: string
   /** 是否垂直布局 */
   vertical?: boolean
   /** 是否显示红色星号 不作为验证规则 */
   required?: boolean
-  /** 表单默认值 */
-  initialValue?: any
   /** 禁用表单 */
   disabled?: boolean
-  /** 样式 */
-  style?: CSSProperties
-  /** 类名 */
-  className?: string
   /** 通过哪个事件名称触发表单改变 默认为 onChange */
-  trigger?: (value: any) => void
+  trigger?: string
   /** 给表单绑定的值的属性名称 默认为 value */
   triggerPropName?: string
   /** 表单验证规则 详情见 b-validate */
   rules?: SchemaRuleType[]
-  /** 子元素 */
-  children?: ReactNode | FormItemChild
 }
 
 interface FormSubmitProps extends ButtonProps {
-  /** 当子元素为ReactNode时，将不会使用按钮创建 当子元素为字符串时，将会创建一个按钮 */
-  children: string | ReactNode
+  /** 当子元素为ReactElement时，将不会使用按钮创建 当子元素为字符串时，将会创建一个按钮 */
+  children: string | ReactElement
 }
 
 interface FormObjectProps {
@@ -136,7 +126,7 @@ interface FormObjectProps {
   /** 内容改变时触发事件 */
   onChange?: (values: Values) => void
   /** 子元素 */
-  children: ReactNode
+  children: ReactElement
 }
 
 interface FormArrayItemProps {
@@ -149,13 +139,8 @@ interface FormArrayItemProps {
 }
 
 interface FormArrayContainerProps {
-  children: ReactNode
+  children: ReactElement
 }
-
-const FormArrayItem: React.FC<FormArrayItemProps>
-
-const FormArrayContainer: React.FC<FormArrayContainerProps>
-
 interface FormArrayProps {
   /** 数组表单值 */
   value: any[]
@@ -164,21 +149,21 @@ interface FormArrayProps {
   /**
    * 渲染每一项的组件 优先级高于children
    */
-  renderItem?: FormArrayItem
+  renderItem?: React.FC<FormArrayItemProps>
   /**
    * 渲染数组表单的头部 渲染在此处的内容才能取到数组表单的 Context
    * 一般来说 ArrayAction 将渲染到此处或者renderBottom 否则 ArrayAction将不会生效
    */
-  renderTop?: ReactNode
+  renderTop?: ReactElement
   /**
    * 渲染数组表单的底部 渲染在此处的内容才能取到数组表单的 Context
    * 一般来说 ArrayAction 将渲染到此处或者renderTop 否则 ArrayAction将不会生效
    */
-  renderBottom?: ReactNode
+  renderBottom?: ReactElement
   /** 表单容器组件 如果你要自定义数组表单的外围样式 并且需要获得数组表单的 Context 就可以使用容器组件来处理 */
-  itemContainer?: FormArrayContainer
+  itemContainer?: React.FC<FormArrayContainerProps>
   /** 子元素 */
-  children: ReactNode
+  children: ReactElement
 }
 
 interface FormArrayActionProps {
@@ -199,7 +184,7 @@ interface FormArrayActionProps {
    */
   action: (array: any[]) => any[]
   /** 子元素 需要是一个就有 onClick 事件的组件 */
-  children: ReactNode
+  children: ReactElement
 }
 
 export const Form: React.FC<FormProps> & {
@@ -242,7 +227,7 @@ export const Form: React.FC<FormProps> & {
    */
   useFormItemProxy: (props: {
     value?: string
-    onChange: (val: string) => void,
+    onChange: (val: string | any) => void,
     defaultValue?: string
   }) => [any, (val: any) => void]
 }

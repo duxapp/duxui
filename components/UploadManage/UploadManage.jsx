@@ -1,6 +1,6 @@
 import { View, Image, Text } from '@tarojs/components'
 import { useMemo, useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react'
-import Taro from '@tarojs/taro'
+import { chooseMessageFile } from '@tarojs/taro'
 import { toast } from '@/duxapp/utils'
 import { getMedia } from '@/duxapp/utils/net/util'
 import { ScrollView, PullView } from '@/duxapp'
@@ -145,7 +145,7 @@ export const UploadManage = forwardRef(({ }, ref) => {
         _list.push({
           text: '从消息中选择',
           callback: () => {
-            Taro.chooseMessageFile({
+            chooseMessageFile({
               count: 10,
               type: 'all',
             }).then(res => {
@@ -162,7 +162,7 @@ export const UploadManage = forwardRef(({ }, ref) => {
           _list.push({
             text: '消息图片',
             callback: () => {
-              Taro.chooseMessageFile({
+              chooseMessageFile({
                 count: 10,
                 type: 'image',
               }).then(res => {
@@ -179,7 +179,7 @@ export const UploadManage = forwardRef(({ }, ref) => {
           _list.push({
             text: '消息视频',
             callback: () => {
-              Taro.chooseMessageFile({
+              chooseMessageFile({
                 count: 10,
                 type: 'video',
               }).then(res => {
@@ -196,7 +196,7 @@ export const UploadManage = forwardRef(({ }, ref) => {
           _list.push({
             text: '消息文件',
             callback: () => {
-              Taro.chooseMessageFile({
+              chooseMessageFile({
                 count: 10,
                 type: 'file'
               }).then(res => {

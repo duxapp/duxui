@@ -1,10 +1,10 @@
-import { StandardProps } from '@tarojs/components/types/common'
-import { ReactNode } from 'react'
+import { TextProps } from '@tarojs/components'
+import { ReactElement } from 'react'
 
-interface TextProps extends StandardProps {
-  /** 文本颜色 */
-  color?: string | number
-  /** 文本类型 */
+interface TextProps extends TextProps {
+  /** 文本颜色 1-4是配置的主题颜色，优先级高于 type */
+  color?: 1 | 2 | 3 | 4 | string
+  /** 文本主题色 */
   type?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
   /** 是否加粗 */
   bold?: boolean
@@ -13,7 +13,7 @@ interface TextProps extends StandardProps {
    * RN不支持此属性
    */
   break?: boolean
-  /** 文字大小 */
+  /** 文字大小 数字1-7使用的是主题配置的字号 数字大于等于12时，将使用px处理 */
   size?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | number
   /** 是否有删除线 */
   delete?: boolean
@@ -30,7 +30,7 @@ interface TextProps extends StandardProps {
   /** 单个元素在交叉轴方向上的对齐方式 */
   self?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
   /** 子元素 子元素只能是 文本、Text组件、图标组件 */
-  children?: ReactNode
+  children?: string | ReactElement
 }
 
 export const Text: React.FC<TextProps>

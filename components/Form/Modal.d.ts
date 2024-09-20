@@ -1,4 +1,5 @@
-import { ReactElement, ReactNode, ChangeEvent, ComponentType } from 'react'
+import { ReactElement, ReactNode, ComponentType } from 'react'
+import { ButtonProps } from '../Button'
 
 /** 弹出位置 */
 interface side {
@@ -58,9 +59,9 @@ interface ModalFormProps {
   childPropsValueKey: string
 
   /**
-   * 渲染表单的组件或组件类型
+   * 渲染表单的组件
    */
-  renderForm: ReactElement | ComponentType<any>
+  renderForm: ReactElement
 
   /**
    * 标题
@@ -68,7 +69,17 @@ interface ModalFormProps {
   title?: string
 
   /**
-   * 占位文本
+   * 内容显示在renderForm的上边
+   */
+  renderHeader?: ReactElement
+
+  /**
+   * 内容显示在renderForm的下边
+   */
+  renderFooter?: ReactElement
+
+  /**
+   * 占位文本 默认请选择
    */
   placeholder?: string
 
@@ -78,7 +89,7 @@ interface ModalFormProps {
   showButton?: boolean
 
   /**
-   * 是否在值发生改变时自动提交
+   * 是否在值发生改变时自动提交，也就是不需要点击提交就将值赋值到表单中
    */
   autoSubmit?: boolean
 
@@ -88,7 +99,7 @@ interface ModalFormProps {
   resetMode?: keyof resetMode
 }
 
-interface ResetProps {
+interface ResetProps extends ButtonProps {
   /**
    * 子元素
    */
@@ -100,14 +111,13 @@ interface ResetProps {
   resetMode?: keyof resetMode
 }
 
-interface SubmitProps {
+interface SubmitProps extends ButtonProps {
   /**
    * 子元素
    */
   children: ReactNode
   /**
    * 设置提交的值，如果设置了提交的时候将按照此值提交
-   * 设置为unedfined无效
    */
   value?: any
 }
@@ -135,14 +145,14 @@ interface ModalFormsProps {
   side?: keyof side,
 
   /**
-   * 子元素
+   * 子元素，需要是一个可点击的单个元素
    */
   children: ReactElement
 
   /**
-   * 渲染表单的组件或组件类型
+   * 渲染表单的组件
    */
-  renderForm: ReactElement | ComponentType<any>
+  renderForm: ReactElement
 
   /**
    * 标题

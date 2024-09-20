@@ -1,5 +1,4 @@
-import { CSSProperties } from 'react'
-import { Component } from 'react'
+import { CSSProperties, Component } from 'react'
 
 type props = Partial<{
   /** html文本 */

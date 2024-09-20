@@ -16,6 +16,10 @@ yarn duxapp app add duxui
 - APP https://app.share.dux.plus/com.duxapp.duxui
 - H5 https://example.duxui.cn
 
+## 文档
+
+[http://www.duxapp.cn/docs/duxui/start](http://www.duxapp.cn/docs/duxui/start)
+
 ## 示例代码
 
 如需查看使用方法请安装`duxuiExample`模块查看

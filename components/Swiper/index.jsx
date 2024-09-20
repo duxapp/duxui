@@ -1,6 +1,6 @@
 import { px } from '@/duxapp'
 import { Swiper as TaroSwiper, SwiperItem as TaroSwiperItem } from '@tarojs/components'
-import { useState } from 'react'
+import { useState, Children } from 'react'
 import { Column, Row } from '../Flex'
 
 export const Swiper = ({
@@ -22,19 +22,19 @@ export const Swiper = ({
   const [current, setCurrent] = useState(defaultCurrent)
 
   return <Column style={style} className={className}>
-    <TaroSwiper
+    {Children.count(children) > 0 && <TaroSwiper
       className='h-full w-full'
       autoplay={autoplay}
       interval={interval}
       circular={circular}
       vertical={vertical}
-      current={current}
+      // current={current}
       onAnimationFinish={e => setCurrent(e.detail.current)}
       indicatorDots={false}
       {...props}
     >
       {children}
-    </TaroSwiper>
+    </TaroSwiper>}
     {dot && !!children?.length && <Row className='gap-1 absolute w-full z-1' justify='center' style={{ bottom: px(dotDistance) }}>
       {
         children.map((v, i) => <Column

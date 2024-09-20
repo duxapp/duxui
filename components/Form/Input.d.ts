@@ -1,11 +1,11 @@
 import { InputProps as TaroInputProps } from '@tarojs/components'
-import { CSSProperties, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 type Align = 'left' | 'center' | 'right'
 
 type Self = 'start' | 'end' | 'center' | 'baseline' | 'stretch'
 
-interface InputProps extends Omit<TaroInputProps, 'onInput' | 'value'> {
+interface InputProps extends TaroInputProps {
   /**
    * 是否自动增长宽度
    */
@@ -23,34 +23,15 @@ interface InputProps extends Omit<TaroInputProps, 'onInput' | 'value'> {
    */
   align?: Align
   /**
-   * 自定义样式类名
-   */
-  className?: string
-  /**
-   * 自定义样式对象
-   */
-  style?: CSSProperties
-  /**
-   * 值变化回调函数
-   */
-  onChange?: (value: string) => void
-  /**
-   * 输入框的值
-   */
-  value?: string
-}
-
-export const Input: React.FC<InputProps>
-
-interface InputSearchProps extends Omit<TaroInputProps, 'onInput' | 'value'> {
-  /**
-   * 输入框的值
-   */
-  value?: string
-  /**
    * 值变化回调函数
    */
   onChange?: (value: string) => void
 }
 
-export const InputSearch: React.FC<InputSearchProps>
+interface InputSearchProps extends InputProps {
+
+}
+
+export const Input: React.FC<InputProps> & {
+  Search: React.FC<InputSearchProps>
+}

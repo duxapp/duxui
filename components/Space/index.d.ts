@@ -1,10 +1,6 @@
-import { ComponentClass, FunctionComponent } from 'react'
-import { StandardProps } from '@tarojs/components/types/common'
-import Taro from '@tarojs/taro'
+import { ViewProps } from '@tarojs/components'
 
-interface SpaceProps extends StandardProps {
-  /** 子元素 */
-  children?: React.ReactNode
+interface SpaceProps extends ViewProps {
   /** 元素之间的间距 */
   size?: number
   /** 前后是否也使用间距 */

@@ -1,6 +1,6 @@
-import Taro from "@tarojs/taro"
+import { chooseMessageFile } from '@tarojs/taro'
 
 
 export const chooseFile = async () => {
-  Taro.chooseMessageFile()
+  chooseMessageFile()
 }

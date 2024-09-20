@@ -1,3 +1,5 @@
+import { SpaceProps } from '../Space'
+
 /** 尺寸 */
 interface size {
   /** s号 */
@@ -22,7 +24,7 @@ interface type {
   warning
 }
 
-interface GradeProps {
+interface GradeProps extends SpaceProps {
   /**
    * 当前评分值
    */

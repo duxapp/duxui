@@ -1,5 +1,5 @@
 import { useMemo, createElement } from 'react'
-import Taro from '@tarojs/taro'
+import { px } from '@/duxapp'
 import classNames from 'classnames'
 import { Text } from '@tarojs/components'
 import { HTMLParser } from '../../../utils/htmlparser'
@@ -42,13 +42,13 @@ const getNodes = (() => {
   // 转换尺寸单位
   const getSize = value => {
     if (value?.endsWith('px')) {
-      return Taro.pxTransform(value.replace('px', '') * 2)
+      return px(value.replace('px', '') * 2)
     } else if (value?.endsWith('pt')) {
-      return Taro.pxTransform(value.replace('pt', '') * 2 * 1.33333)
+      return px(value.replace('pt', '') * 2 * 1.33333)
     } else if (value?.endsWith('rem')) {
-      return Taro.pxTransform(value.replace('rem', '') * 32)
+      return px(value.replace('rem', '') * 32)
     } else if (value?.endsWith('em')) {
-      return Taro.pxTransform(value.replace('em', '') * 32)
+      return px(value.replace('em', '') * 32)
     }
     return false
   }

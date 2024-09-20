@@ -63,6 +63,7 @@ export default {
   divider: {
     padding: 16
   },
+
   formItem: {
     padding: 24,
     labelWidth: 140

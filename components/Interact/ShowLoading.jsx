@@ -1,6 +1,5 @@
 import { View, Text } from '@tarojs/components'
-import Taro from '@tarojs/taro'
-import { Loading } from '@/duxapp'
+import { Loading, px } from '@/duxapp'
 
 import './ShowLoading.scss'
 
@@ -18,8 +17,8 @@ export const ShowLoading = ({
   return <>
     {mask && <View className='ShowLoading__mask' />}
     <View className='ShowLoading' style={{
-      left: Taro.pxTransform(getSize(windowWidth) / 2 - 100),
-      top: Taro.pxTransform(getSize(windowHeight) / 2 - 100),
+      left: px(getSize(windowWidth) / 2 - 100),
+      top: px(getSize(windowHeight) / 2 - 100),
     }}
     >
       <Loading color='blank' size={64} />

@@ -4,7 +4,7 @@ import { useMemo, Children } from 'react'
 import classNames from 'classnames'
 import './index.scss'
 
-const Horizontal = ({ size, type, className, style }) => {
+const Horizontal = ({ size, type, className, style, ...props }) => {
 
   const style1 = useMemo(() => {
     const _styles = {}
@@ -20,10 +20,11 @@ const Horizontal = ({ size, type, className, style }) => {
   return <View
     className={classNames('Divider-Horizontal', className)}
     style={{ ...style1, ...style }}
+    {...props}
   />
 }
 
-const Vertical = ({ size, type, className, style }) => {
+const Vertical = ({ size, type, className, style, ...props }) => {
   const style1 = useMemo(() => {
     const _styles = {}
     if (size) {
@@ -38,6 +39,7 @@ const Vertical = ({ size, type, className, style }) => {
   return <View
     className={classNames('Divider-Vertical', className)}
     style={{ ...style1, ...style }}
+    {...props}
   />
 }
 

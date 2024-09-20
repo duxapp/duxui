@@ -1,4 +1,4 @@
-import { LegacyRef, ComponentType } from 'react'
+import { LegacyRef, FC } from 'react'
 
 interface ModalProps {
   /**
@@ -19,9 +19,9 @@ interface ModalProps {
    */
   onClose?: () => void
   /**
-   * 是否使用阴影
+   * 阴影不透明度
    */
-  overlayOpacity?: boolean
+  overlayOpacity?: number
   /**
    * 是否可以点击阴影关闭modal 默认true
    */
@@ -40,4 +40,4 @@ interface ModalProps {
  * </Modal>
  * ```
  */
-export const Modal: ComponentType<ModalProps>
+export const Modal: FC<ModalProps>

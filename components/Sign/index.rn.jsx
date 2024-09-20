@@ -209,12 +209,15 @@ export class Sign extends Component {
   // }
 
   render() {
+
+    const { style } = this.props
+
     const { drawType, isDrawing } = this.state
 
     return (
       <ViewShot
         options={{ format: 'png', quality: 1.0 }}
-        style={{ flex: 1 }}
+        style={style}
       >
         <View
           className='viewshotbg'
