@@ -14,10 +14,13 @@ const Row = ({
   renderPoint,
   className,
   style,
+  lineType,
   onClick
 }) => {
   const lineStyle = useMemo(() => {
-    const _style = {}
+    const _style = {
+      borderStyle: lineType
+    }
     if (first && last) {
 
     } else if (first) {
@@ -31,7 +34,7 @@ const Row = ({
       _style.right = 0
     }
     return _style
-  }, [first, last])
+  }, [first, last, lineType])
 
   const rootProps = useMemo(() => {
     if (onClick) {
@@ -70,12 +73,15 @@ const Column = ({
   renderPoint,
   className,
   style,
+  lineType,
   onClick
 }) => {
 
   const lineStyle = useMemo(() => {
     const top = px(pointTop + 10)
-    const _style = {}
+    const _style = {
+      borderStyle: lineType
+    }
     if (first && last) {
 
     } else if (first) {
@@ -147,7 +153,8 @@ export function Step({
   renderPoint,
   // 当为纵向是设置点距离顶部的距离
   pointTop = 24,
-  //
+  // 线条类型
+  lineType = 'solid',
   onItemClick,
   className,
   style,
@@ -177,6 +184,7 @@ export function Step({
             pointTop={pointTop}
             className={itemClassName}
             style={itemStyle}
+            lineType={lineType}
             onClick={onItemClick}
           />
         })

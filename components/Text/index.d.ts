@@ -1,7 +1,7 @@
-import { TextProps } from '@tarojs/components'
+import { TextProps as TaroTextProps } from '@tarojs/components'
 import { ReactElement } from 'react'
 
-interface TextProps extends TextProps {
+interface TextProps extends TaroTextProps {
   /** 文本颜色 1-4是配置的主题颜色，优先级高于 type */
   color?: 1 | 2 | 3 | 4 | string
   /** 文本主题色 */

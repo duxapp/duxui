@@ -4,7 +4,7 @@ import { font, px } from '@/duxapp/utils'
 import icons from './icons.json'
 import './index.scss'
 
-font.load('DuxuiIcon', 'https://pictcdn.client.jujiang.me/fonts/DuxuiIcon.1709522237756.ttf')
+font.load('DuxuiIcon', 'https://pictcdn.client.jujiang.me/fonts/DuxuiIcon.1728705176383.ttf')
 
 export const DuxuiIcon = ({ name, color, size, style, className, ...props }) => {
 

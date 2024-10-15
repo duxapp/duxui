@@ -3,6 +3,7 @@ import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
 import { Space } from '../Space'
 import { Row } from '../Flex'
+import { Form } from './Form'
 import './Grade.scss'
 
 const arr = [...new Array(5)]
@@ -10,32 +11,39 @@ const arr = [...new Array(5)]
 export const Grade = ({
   value,
   onChange,
+  defaultValue,
   size = 'm',
   type = 'primary',
   ...props
 }) => {
 
-  const values = value ? ('' + value).split('.') : []
+  const [val, setVal] = Form.useFormItemProxy({
+    value,
+    onChange,
+    defaultValue
+  })
+
+  const values = val ? ('' + val).split('.') : []
 
   return <Space row items='center' size={16} {...props}>
     <Row items='center'>
       {arr.map((item, index) => {
         return <Text
-          type={index < value ? type : void 0}
-          color={index < value ? void 0 : 3}
+          type={index < val ? type : void 0}
+          color={index < val ? void 0 : 3}
           key={index}
-          onClick={() => onChange?.(index + 1)}
+          onClick={() => setVal?.(index + 1)}
           className={classNames('Grade--' + size)}
         >
           <DuxuiIcon
-            name={index < value ? 'collection-fill' : 'collection'} onClick={() => {
+            name={index < val ? 'collection-fill' : 'collection'} onClick={() => {
               // RN安卓端外面的事件不触发 触发了此处
-              onChange?.(index + 1)
+              setVal?.(index + 1)
             }}
           />
         </Text>
       })}
     </Row>
-    {!!value && <Text type={type}>{values[0]}.{values[1] || 0}</Text>}
+    {!!val && <Text type={type}>{values[0]}.{values[1] || 0}</Text>}
   </Space>
 }

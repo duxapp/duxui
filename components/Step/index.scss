@@ -32,13 +32,13 @@
     &__line {
       &--row {
         position: absolute;
-        background-color: #e6e6e6;
-        height: 2px;
+        border-top-width: 2px;
+        border-top-color: #e6e6e6;
       }
       &--column {
         position: absolute;
-        background-color: #e6e6e6;
-        width: 2px;
+        border-left-width: 2px;
+        border-left-color: #e6e6e6;
       }
     }
     &__point {

@@ -12,7 +12,7 @@ interface StepProps extends ViewProps {
   startSize?: number
   // 横向时下面的渲染内容 纵向是右侧的渲染内容
   renderEnd?: Component
-  // 渲染中间的点的内容 获取在data的每一项上传入pointColor会自动渲染颜色
+  // 渲染中间的点的内容 或者在data的每一项上传入pointColor会自动渲染颜色
   renderPoint?: Component
   // 当为纵向是设置点距离顶部的距离
   pointTop?: number
@@ -20,6 +20,8 @@ interface StepProps extends ViewProps {
   onItemClick?: (option: { item: any, index: number }) => void
   // 每一项的样式
   itemClassName?: string
+  // 线条类型
+  lineType?: 'solid' | 'dashed' | 'dotted'
   // 每一项的样式
   itemStyle?: CSSProperties
 }

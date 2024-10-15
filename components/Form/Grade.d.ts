@@ -26,9 +26,13 @@ interface type {
 
 interface GradeProps extends SpaceProps {
   /**
-   * 当前评分值
+   * 当前评分值 1-5
    */
-  value: number
+  value?: number
+  /**
+   * 默认值 1-5
+   */
+  defaultValue?: number
   /**
    * 值变化回调函数
    */

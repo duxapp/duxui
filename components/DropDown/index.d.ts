@@ -1,4 +1,4 @@
-import { ReactElement, CSSProperties, RefForwardingComponent } from 'react'
+import { ReactElement, CSSProperties, FC } from 'react'
 
 interface DropDownMenuItem {
   /**
@@ -49,6 +49,6 @@ interface DropDownProps {
 /**
  * 下拉菜单组件
  */
-export declare const DropDown: RefForwardingComponent<{
-  close: () => void
-}, DropDownProps>
+export const DropDown: FC<DropDownProps> & {
+  ref?: Ref<MenuItemClickHandler>
+}

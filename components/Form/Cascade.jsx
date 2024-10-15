@@ -1,5 +1,5 @@
 import { View } from '@tarojs/components'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ScrollView, duxappTheme, recursionGetValue } from '@/duxapp'
 import classNames from 'classnames'
 import { Divider } from '../Divider'
@@ -321,7 +321,7 @@ const DefaultRender = ({
             group.map((item, index) => {
               const isSelect = select[groupIndex] === index
               return <View key={index} className='Cascade__left__label' onClick={() => labelClick(groupIndex, index, item)}>
-                <Text style={{ color: isSelect ? duxappTheme.primaryColor : '#373D52' }} className='Cascade__left__label__title'>{item[nameKey]}</Text>
+                <Text style={{ color: isSelect ? duxappTheme.primaryColor : duxappTheme.textColor1 }} className='Cascade__left__label__title'>{item[nameKey]}</Text>
                 {!isRadio && groupIndex === 0 && checkNumbers[index] > 0 && !anyLevel && <View style={{ color: isSelect ? duxappTheme.primaryColor : '#73778E' }} className='Cascade__left__label__select'>已选
                   <Text className='Cascade__left__label__select__num'>{checkNumbers[index]}</Text>
                 </View>}
@@ -336,20 +336,23 @@ const DefaultRender = ({
         {
           right.map((item, index) => {
             const isSelect = isRadio ? value === item[valueKey] : value?.includes?.(item[valueKey])
-            return <View key={'item' + index} className='Cascade__right__item' style={{ borderBottom: '1px solid rgba(180,180,180,0.3)' }} onClick={() => rightClick(item)}>
-              <Text style={{ color: isSelect ? duxappTheme.primaryColor : '#373D52' }} className='Cascade__right__item__label'>{item[nameKey]}</Text>
-              <DuxuiIcon
-                className='Cascade__right__item__icon'
-                color={isSelect ? duxappTheme.primaryColor : '#373D52'}
-                name={
-                  !isRadio ? (
-                    isSelect ? 'xuanzhong' : 'xuanzekuang'
-                  ) : (
-                    isSelect ? 'add_check1' : 'option'
-                  )
-                }
-              />
-            </View>
+            return <Fragment key={'item' + index}>
+              {!!index && <Divider />}
+              <View className='Cascade__right__item' onClick={() => rightClick(item)}>
+                <Text style={{ color: isSelect ? duxappTheme.primaryColor : duxappTheme.textColor1 }} className='Cascade__right__item__label'>{item[nameKey]}</Text>
+                <DuxuiIcon
+                  className='Cascade__right__item__icon'
+                  color={isSelect ? duxappTheme.primaryColor : duxappTheme.textColor1}
+                  name={
+                    !isRadio ? (
+                      isSelect ? 'xuanzhong' : 'xuanzekuang'
+                    ) : (
+                      isSelect ? 'add_check1' : 'option'
+                    )
+                  }
+                />
+              </View>
+            </Fragment>
           })
         }
       </ScrollView>

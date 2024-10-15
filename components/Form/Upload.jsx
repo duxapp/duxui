@@ -1,4 +1,5 @@
-import { View, Image } from '@tarojs/components'
+import { View, Image, Video } from '@tarojs/components'
+import { previewMedia } from '@tarojs/taro'
 import { useCallback, useState } from 'react'
 import { ActionSheet, Loading } from '@/duxapp/components'
 import classNames from 'classnames'
@@ -7,7 +8,7 @@ import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
 import { Grid } from '../Grid'
 import { Column } from '../Flex'
-import './Images.scss'
+import './Upload.scss'
 
 let requestPermissionMessage
 if (process.env.TARO_ENV === 'rn') {
@@ -26,6 +27,10 @@ export const UploadImages = ({
   option,
   ...props
 }) => {
+
+  if (!value) {
+    value = []
+  }
 
   const del = useCallback((index) => {
     value.splice(index, 1)
@@ -65,12 +70,12 @@ export const UploadImages = ({
   const content = [
     ...value?.map((item, index) => {
       return <View
-        className={classNames('UIUplodImages__item', isOne && 'UIUplodImages__item--one')}
+        className={classNames('UIUplod__item', isOne && 'UIUplod__item--one')}
         key={item}
         {...isOne ? { _designKey } : {}}
       >
-        <Image className='UIUplodImages__item__image w-full h-full' src={item} mode='aspectFit' />
-        {!disabled && <Column className='UIUplodImages__item__icon'>
+        <ItemView src={item} value={value} />
+        {!disabled && <Column className='UIUplod__item__icon'>
           <DuxuiIcon name='close' color='red' size={36} onClick={() => del(index)} />
         </Column>}
       </View>
@@ -78,7 +83,7 @@ export const UploadImages = ({
     (value?.length || 0) < max && !disabled &&
     <Column
       grow={!isOne}
-      className={classNames('UIUplodImages__item', isOne && 'UIUplodImages__item--one')}
+      className={classNames('UIUplod__item', isOne && 'UIUplod__item--one')}
       justify='center'
       items='center'
       onClick={!~progress && add}
@@ -106,6 +111,46 @@ export const UploadImages = ({
     {content}
   </Grid>
 }
+
+const ItemView = ({
+  src,
+  value
+}) => {
+
+  const preview = useCallback(() => {
+    let current = 0
+    const sources = value.map((item, i) => {
+      if (item === src) {
+        current = i
+      }
+      if (mediaImage.some(end => src.endsWith(end))) {
+        return {
+          url: item
+        }
+      }
+      return {
+        url: item,
+        type: 'video'
+      }
+    })
+    previewMedia({
+      sources,
+      current
+    })
+  }, [src, value])
+
+  if (mediaImage.some(end => src.endsWith(end))) {
+    return <Image className='UIUplod__item__image w-full h-full'
+      onClick={preview}
+      src={src}
+      mode='aspectFit'
+    />
+  } else {
+    return <Video className='UIUplod__item__image w-full h-full' onClick={preview} src={src} />
+  }
+}
+
+const mediaImage = ['.jpg', '.png', '.gif', '.jpeg']
 
 export const UploadImage = ({ onChange, value, ...props }) => {
 

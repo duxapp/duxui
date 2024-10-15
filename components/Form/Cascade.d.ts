@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, FC } from 'react'
 import { ViewProps } from '@tarojs/components'
 
 interface CascadeData {
@@ -69,4 +69,4 @@ interface CascadeProps extends ViewProps {
 /**
  * 级联选择组件
  */
-export const Cascade: React.FC<CascadeProps>
+export const Cascade: FC<CascadeProps>

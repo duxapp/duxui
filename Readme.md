@@ -13,7 +13,7 @@ yarn duxapp app add duxui
 ## 示例
 
 - 小程序 （小程序搜索 duxui）
-- APP https://app.share.dux.plus/com.duxapp.duxui
+- APP https://app.share.dux.plus/cn.duxapp.duxui
 - H5 https://example.duxui.cn
 
 ## 文档

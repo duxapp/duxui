@@ -12,7 +12,7 @@ interface CardSelectGroupProps {
   checkedProps?: {
     /** 选中时背景颜色 */
     color?: string
-    /** 是否实心 */
+    /** 是否镂空 */
     plain?: boolean
     /** 是否有边框 */
     border?: boolean
@@ -28,7 +28,7 @@ interface CardSelectProps extends ViewProps {
   value: string | number
   /** 是否选中 */
   checked?: boolean
-  /** 是否实心 */
+  /** 是否镂空 */
   plain?: boolean
   /** 颜色 */
   color?: string
