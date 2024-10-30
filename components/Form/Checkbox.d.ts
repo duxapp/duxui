@@ -38,6 +38,11 @@ interface CheckboxProps extends SpaceProps {
    */
   checked?: boolean
   /**
+   * 半选中状态
+   * checked为假的时候生效
+   */
+  half?: boolean
+  /**
    * 禁用这个选项
    */
   disabled?: boolean

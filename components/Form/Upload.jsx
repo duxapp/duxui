@@ -123,7 +123,7 @@ const ItemView = ({
       if (item === src) {
         current = i
       }
-      if (mediaImage.some(end => src.endsWith(end))) {
+      if (isImage(item)) {
         return {
           url: item
         }
@@ -139,18 +139,26 @@ const ItemView = ({
     })
   }, [src, value])
 
-  if (mediaImage.some(end => src.endsWith(end))) {
+  if (isImage(src)) {
     return <Image className='UIUplod__item__image w-full h-full'
       onClick={preview}
       src={src}
       mode='aspectFit'
     />
   } else {
-    return <Video className='UIUplod__item__image w-full h-full' onClick={preview} src={src} />
+    return <Video
+      className='UIUplod__item__image w-full h-full'
+      onClick={preview}
+      src={src}
+      controls={false}
+      showCenterPlayBtn={false}
+    />
   }
 }
 
-const mediaImage = ['.jpg', '.png', '.gif', '.jpeg']
+const mediaImage = ['.jpg', '.png', '.gif', '.jpeg', '.webp']
+
+const isImage = url => mediaImage.some(v => url.split('?')[0].endsWith(v))
 
 export const UploadImage = ({ onChange, value, ...props }) => {
 

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext } from 'react'
-import { noop } from '@/duxapp/utils'
+import { noop, stopPropagation } from '@/duxapp/utils'
 import classNames from 'classnames'
 import { Space } from '../Space'
 import { Text } from '../Text'
@@ -57,7 +57,11 @@ const CheckboxGroup = ({
 //   console.log('12323',value, props)
 // }
 
-export const Checkbox = ({ value, label, checked, disabled, children: Child, className, style, ...props }) => {
+export const Checkbox = ({
+  value, label, checked, half,
+  disabled, children: Child,
+  className, style, ...props
+}) => {
   const { check, currentValue } = useContext(context)
 
   const isCheck = checked || currentValue?.includes(value)
@@ -72,9 +76,18 @@ export const Checkbox = ({ value, label, checked, disabled, children: Child, cla
     />
   }
 
-  return <Space row items='center' size={8} onClick={() => !disabled && check(value)} className={className} style={style}  {...props}>
-    <Text size={32} type={isCheck ? 'primary' : void 0} color={isCheck ? void 0 : 3}>
-      <DuxuiIcon name={isCheck ? 'xuanzhong' : 'xuanzekuang'} />
+  return <Space
+    row items='center' size={8}
+    onClick={e => {
+      if (!disabled) {
+        stopPropagation(e)
+        check(value)
+      }
+    }}
+    className={className} style={style}  {...props}
+  >
+    <Text size={6} type={isCheck || half ? 'primary' : void 0} color={isCheck || half ? void 0 : 3}>
+      <DuxuiIcon name={isCheck ? 'xuanzhong' : half ? 'banxuanze' : 'xuanzekuang'} />
     </Text>
     {!!label && <Text>{label}</Text>}
   </Space>

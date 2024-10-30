@@ -1,5 +1,5 @@
 import { CSSProperties, ComponentType, ReactElement } from 'react'
-import { ViewProps, ButtonProps } from '@tarojs/components'
+import { ViewProps, ButtonProps as TaroButtonProps } from '@tarojs/components'
 
 /** 圆角类型 */
 interface type {
@@ -73,7 +73,7 @@ interface ButtonProps extends ViewProps {
   /** 按钮内容 支持文本或者图标 */
   children?: string
   /** 小程序端 openType 属性 */
-  openType?: keyof ButtonProps.OpenType
+  openType?: keyof TaroButtonProps.OpenType
 }
 
 /**

@@ -96,13 +96,13 @@ module.exports = theme => {
           scssData.avatar.push(`$duxuiAvatarIconSize: ${value.iconSize}px;`)
         }
         if (value.sizes?.s) {
-          scssData.avatar.push(`$duxuiAvatarSSize: ${value.sizes.s};`)
+          scssData.avatar.push(`$duxuiAvatarSSize: ${value.sizes.s}px;`)
         }
         if (value.sizes?.m) {
-          scssData.avatar.push(`$duxuiAvatarMSize: ${value.sizes.m};`)
+          scssData.avatar.push(`$duxuiAvatarMSize: ${value.sizes.m}px;`)
         }
         if (value.sizes?.l) {
-          scssData.avatar.push(`$duxuiAvatarLSize: ${value.sizes.l};`)
+          scssData.avatar.push(`$duxuiAvatarLSize: ${value.sizes.l}px;`)
         }
         break
       }

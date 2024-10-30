@@ -1,6 +1,7 @@
 import { ComponentType, Component, CSSProperties } from 'react'
 
 interface names {
+  'banxuanze'
   'voice-right'
   'voice-right_01'
   'voice-right_02'

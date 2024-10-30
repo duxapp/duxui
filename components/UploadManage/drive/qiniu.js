@@ -122,7 +122,7 @@ export default (() => {
 
   return () => {
     return {
-      isReady: isReady,
+      isReady,
       configSync: callback => {
         config.syncCallback = callback
       },
@@ -160,14 +160,18 @@ export default (() => {
           uploadTask.abort()
         })
 
-        const res_1 = await uploadTask
-        const dataString = res_1.data
         try {
+          const res_1 = await uploadTask
+          const dataString = res_1.data
           const dataObject = JSON.parse(dataString)
+
+          if (res_1.statusCode !== 200) {
+            throw dataObject
+          }
           dataObject.url = config.host + '/' + dataObject.key
           return dataObject
         } catch (e) {
-          console.log('返回值不是有效的JSON数据: ' + dataString)
+          console.log('上传错误: ', e)
           throw e
         }
       }
