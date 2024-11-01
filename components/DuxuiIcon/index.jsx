@@ -4,7 +4,9 @@ import { font, px } from '@/duxapp/utils'
 import icons from './icons.json'
 import './index.scss'
 
-font.load('DuxuiIcon', 'https://pictcdn.client.jujiang.me/fonts/DuxuiIcon.1729942957972.ttf')
+if (process.env.TARO_ENV === 'rn') {
+  font.loadLocal('DuxuiIcon', require('./DuxuiIcon.ttf'))
+}
 
 export const DuxuiIcon = ({ name, color, size, style, className, ...props }) => {
 
@@ -19,14 +21,8 @@ export const DuxuiIcon = ({ name, color, size, style, className, ...props }) => 
     return sty
   }, [color, size, style])
 
-  const status = font.useFont('DuxuiIcon')
-
   if (!icons[name]) {
     return console.log(`DuxuiIcon的${name}图标不存在`)
-  }
-
-  if (!status) {
-    return null
   }
 
   return <Text

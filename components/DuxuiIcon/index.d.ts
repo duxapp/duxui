@@ -1,4 +1,4 @@
-import { ComponentType, Component, CSSProperties } from 'react'
+import { Component, CSSProperties } from 'react'
 
 interface names {
   'banxuanze'

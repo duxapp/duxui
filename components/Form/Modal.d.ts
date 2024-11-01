@@ -44,6 +44,12 @@ interface ModalFormProps {
   getValue: (value: any) => string
 
   /**
+   * 在用户点击提交之前执行的函数，这可以是一个异步函数
+   * 如果要阻止用户提交 需要抛出一个错误
+   */
+  onSubmitBefore: (value: any) => Promise<{}>
+
+  /**
    * 弹出位置
    */
   side?: keyof side,

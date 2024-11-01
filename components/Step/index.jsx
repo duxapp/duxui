@@ -53,7 +53,7 @@ const Row = ({
         {
           renderPoint
             ? renderPoint(item, index)
-            : <View className='step-comp__item__point__point' style={{ backgroundColor: item.pointColor || '#528EFF' }} />
+            : <View className='step-comp__item__point__point' style={{ backgroundColor: item?.pointColor || '#528EFF' }} />
         }
       </View>
     </View>
@@ -114,7 +114,7 @@ const Column = ({
         {
           renderPoint
             ? renderPoint(item, index)
-            : <View className='step-comp__item__point__point' style={{ backgroundColor: item.pointColor || '#528EFF' }} />
+            : <View className='step-comp__item__point__point' style={{ backgroundColor: item?.pointColor || '#528EFF' }} />
         }
       </View>
     </View>
@@ -165,7 +165,7 @@ export function Step({
 
   const row = useMemo(() => !vertical, [vertical])
 
-  const Item = useMemo(() => row ? Row : Column, [row])
+  const Item = row ? Row : Column
 
   return <RowContainer row={row}>
     <View className={className} style={{ ...style, flexDirection: row ? 'row' : 'column' }} {...props}>

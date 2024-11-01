@@ -1,30 +1,7 @@
 import { TopView, currentPage } from '@/duxapp'
-import { ShowConfirm, ShowMessage, ShowLoading } from '@/duxui/components/Interact'
+import { ShowConfirm, ShowMessage } from '@/duxui/components/Interact'
 
-/**
- * 在页面上显示一个loading 当页面被关闭是loading也会随着关闭
- * @param {string} text loading文字
- * @param {boolean} mask 是否显示遮罩
- * @returns
- */
-export const loading = (() => {
-  const pages = {}
-  return (text, mask) => {
-    const page = currentPage()
-    if (!pages[page]) {
-      pages[page] = TopView.add([ShowLoading, { text, mask }])
-    } else {
-      pages[page].update([ShowLoading, { text, mask }])
-    }
-    return () => {
-      /**
-       * bug 停止的时候有时候找不到数据
-       */
-      pages[page]?.remove?.()
-      delete pages[page]
-    }
-  }
-})();
+export * from '@/duxapp/components/ShowLoading'
 
 /**
  * 在页面上显示一个提示框

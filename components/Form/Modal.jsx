@@ -29,12 +29,16 @@ export const ModalForm = ({
   title,
   placeholder = '请选择',
   showButton = true,
+  onSubmitBefore,
   autoSubmit,
   resetMode,
   childPropsValueKey,
   field,
   ...props
 }) => {
+
+  const refs = useRef({})
+  refs.current = { onSubmitBefore, onChange }
 
   const { defaultValues } = useFormContext()
 
@@ -56,10 +60,18 @@ export const ModalForm = ({
     setFormKey(old => old + 1)
   }, [defaultValues, field, value])
 
-  const submit = useCallback(val => {
-    onChange?.(val ?? selfValue)
-    setShow(false)
-  }, [onChange, selfValue])
+  const submit = useCallback(async val => {
+    try {
+      const task = refs.current.onSubmitBefore?.(val ?? selfValue)
+      if (task instanceof Promise) {
+        await task
+      }
+      refs.current.onChange?.(val ?? selfValue)
+      setShow(false)
+    } catch (error) {
+      console.log('ModalForm:提交被阻止', error)
+    }
+  }, [selfValue])
 
   const showValue = useMemo(() => {
     if (getValue) {
