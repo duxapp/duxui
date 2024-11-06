@@ -2,21 +2,24 @@ import { useEffect, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
+import { Form } from './Form'
 import './InputCode.scss'
 
 export const InputCode = ({
-  value = '', onChange,
+  value = '', onChange, defaultValue,
   itemStyle, length = 6, password, focus,
   className, style,
   ...props
 }) => {
 
+  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+
   const arr = useMemo(() => {
-    const _value = '' + value
+    const _value = '' + val
     return Array(length).fill(0).map((v, i) => {
       return _value[i] || ''
     })
-  }, [length, value])
+  }, [length, val])
 
   return <Row
     className={classNames('InputCode', className)}

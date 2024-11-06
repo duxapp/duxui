@@ -45,6 +45,10 @@ interface GradeProps extends SpaceProps {
    * 图标颜色
    */
   type?: keyof type
+  /**
+   * 是否禁用
+   */
+  disabled?: boolean
 }
 
 export const Grade: React.FC<GradeProps>

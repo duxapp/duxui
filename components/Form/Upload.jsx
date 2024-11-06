@@ -8,6 +8,7 @@ import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
 import { Grid } from '../Grid'
 import { Column } from '../Flex'
+import { Form } from './Form'
 import './Upload.scss'
 
 let requestPermissionMessage
@@ -34,7 +35,7 @@ export const UploadImages = ({
 
   const del = useCallback((index) => {
     value.splice(index, 1)
-    onChange?.([...value])
+    onChange([...value])
   }, [onChange, value])
 
   const [progress, setProgress] = useState(-1)
@@ -59,7 +60,7 @@ export const UploadImages = ({
         })
         .progress(setProgress)
       setProgress(-1)
-      onChange?.([...value || [], ...urls])
+      onChange([...value || [], ...urls])
     } catch (error) {
       setProgress(-1)
     }
@@ -167,10 +168,16 @@ export const UploadImage = ({ onChange, value, ...props }) => {
 
 export const Upload = ({
   max = 1,
+  value,
+  onChange,
+  defaultValue,
   ...props
 }) => {
+
+  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+
   if (max === 1) {
-    return <UploadImage {...props} />
+    return <UploadImage {...props} value={val} onChange={setVal} />
   }
-  return <UploadImages max={max} {...props} />
+  return <UploadImages max={max} {...props} value={val} onChange={setVal} />
 }

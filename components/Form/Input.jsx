@@ -14,10 +14,11 @@ export const Input = ({
   style,
   value,
   onChange,
+  defaultValue,
   ...props
 }) => {
 
-  const [val, setVal] = Form.useFormItemProxy({ value, onChange })
+  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
 
   return <TaroInput
     onInput={setVal}

@@ -6,6 +6,8 @@ interface InputCodeProps extends RowProps {
   value?: string,
   /** 值改变回调 此功能待实现 */
   onChange?: (value: string) => void
+  /** 默认值 */
+  defaultValue?: string
   /** 输入长度 默认6 */
   length?: number
   /** 是否隐藏输入内容 */

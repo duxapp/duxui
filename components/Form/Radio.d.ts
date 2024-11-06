@@ -11,6 +11,10 @@ interface RadioGroupProps extends SpaceProps {
    */
   onChange?: (value: any) => void
   /**
+   * 默认值
+   */
+  defaultValue?: any
+  /**
    * 是否垂直布局
    */
   vertical?: boolean

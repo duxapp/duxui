@@ -4,9 +4,17 @@ interface SwitchProps extends TaroSwitchProps {
   /**
    * 值变化回调函数
    */
-  onChange?: (boolean: string) => void
+  onChange?: (value: boolean | any) => void
   /**
-   * 输入框的值
+   * 默认值
+   */
+  defaultValue?: boolean | any
+  /**
+   * 指定未选中和选中的值
+   */
+  values?: [any, any]
+  /**
+   * 值
    */
   value?: boolean
 }

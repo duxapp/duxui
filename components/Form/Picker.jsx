@@ -1,8 +1,15 @@
+import { useMemo, useState } from 'react'
 import { DatePicker, SelectorPicker, MultiSelectorPicker } from '../Picker'
 import { ModalForm } from './Modal'
+import { Column } from '../Flex'
+import { Input } from './Input'
+import { Empty } from '../Empty'
 
 export const PickerSelect = ({
-  placeholder, grow, value, onChange, children, title, showButton, disabled, childPropsValueKey,
+  search,
+  placeholder, grow,
+  value, onChange, defaultValue,
+  children, title, showButton, disabled, childPropsValueKey,
   _designKey,
   modalFormProps,
   ...props
@@ -11,20 +18,51 @@ export const PickerSelect = ({
   return <ModalForm
     title={title}
     showButton={showButton}
-    renderForm={<SelectorPicker {...props} />}
+    renderForm={search ?
+      <SelectRenderForm {...props} /> :
+      <SelectorPicker {...props} />
+    }
     placeholder={placeholder}
     grow={grow}
     value={value}
     onChange={onChange}
     disabled={disabled}
     childPropsValueKey={childPropsValueKey}
+    defaultValue={defaultValue}
     {...modalFormProps}
     _designKey={_designKey}
   />
 }
 
+const SelectRenderForm = props => {
+
+  const [keyword, setKeyword] = useState('')
+
+  const rangeList = useMemo(() => {
+    if (!keyword) {
+      return props.range
+    }
+    const isObject = typeof props.range?.[0] === 'object'
+    return props.range?.filter(item => ('' + (isObject ? item[props.nameKey || 'name'] : item))?.includes(keyword))
+  }, [keyword, props.nameKey, props.range])
+
+  return <Column className='gap-3'>
+    <Column className='bg-page r-2 p-2 mh-3'>
+      <Input.Search value={keyword} placeholder='输入关键词搜索' onChange={setKeyword} className='w-full' />
+    </Column>
+    {
+      !rangeList?.length ?
+        <Empty title='没有可选数据' /> :
+        <SelectorPicker {...props} range={rangeList} />
+    }
+  </Column>
+}
+
+SelectRenderForm.getShowText = SelectorPicker.getShowText
+
 export const PickerMultiSelect = ({
-  placeholder, grow, value = [], onChange, children, title, showButton, disabled, childPropsValueKey,
+  placeholder, grow, value = [], onChange, defaultValue,
+  children, title, showButton, disabled, childPropsValueKey,
   _designKey,
   modalFormProps,
   ...props
@@ -40,13 +78,15 @@ export const PickerMultiSelect = ({
     onChange={onChange}
     disabled={disabled}
     childPropsValueKey={childPropsValueKey}
+    defaultValue={defaultValue}
     {...modalFormProps}
     _designKey={_designKey}
   />
 }
 
 export const PickerDate = ({
-  placeholder, grow, value, onChange, children, title, showButton, disabled, childPropsValueKey,
+  placeholder, grow, value, onChange, defaultValue,
+  children, title, showButton, disabled, childPropsValueKey,
   _designKey,
   modalFormProps,
   ...props
@@ -61,6 +101,7 @@ export const PickerDate = ({
     onChange={onChange}
     disabled={disabled}
     childPropsValueKey={childPropsValueKey}
+    defaultValue={defaultValue}
     _designKey={_designKey}
     {...modalFormProps}
   >{children}</ModalForm>

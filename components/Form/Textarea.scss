@@ -6,6 +6,8 @@
   &__input {
     textalignvertical: top;
     width: 100%;
+    font-size: 28px;
+    line-height: 36px;
     color: $duxappTextColor1;
     .taro-textarea {
       background-color: transparent;

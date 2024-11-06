@@ -14,7 +14,7 @@ yarn duxapp app add duxui
 
 - 小程序 （小程序搜索 duxui）
 - APP https://app.share.dux.plus/cn.duxapp.duxui
-- H5 https://example.duxui.cn
+- H5 https://duxui.duxapp.cn
 
 ## 文档
 

@@ -7,8 +7,7 @@ import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
 import { Divider } from '../Divider'
 import { Space } from '../Space'
-import { useFormContext, formContext } from './Form'
-
+import { useFormContext, formContext, Form } from './Form'
 import './Modal.scss'
 
 const context = createContext({
@@ -19,6 +18,7 @@ const context = createContext({
 export const ModalForm = ({
   value,
   onChange,
+  defaultValue,
   getValue,
   disabled,
   side,
@@ -37,12 +37,14 @@ export const ModalForm = ({
   ...props
 }) => {
 
+  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+
   const refs = useRef({})
-  refs.current = { onSubmitBefore, onChange }
+  refs.current = { onSubmitBefore, onChange: setVal }
 
   const { defaultValues } = useFormContext()
 
-  const [selfValue, setSelfValue] = useState(value)
+  const [selfValue, setSelfValue] = useState(val)
 
   const [show, setShow] = useState()
 
@@ -50,7 +52,7 @@ export const ModalForm = ({
 
   const reset = useCallback(mode => {
     if (mode === 'prev') {
-      setSelfValue(value)
+      setSelfValue(val)
     } else if (mode === 'clear') {
       setSelfValue(undefined)
     } else {
@@ -58,15 +60,15 @@ export const ModalForm = ({
       setSelfValue(defaultValues?.[field])
     }
     setFormKey(old => old + 1)
-  }, [defaultValues, field, value])
+  }, [defaultValues, field, val])
 
-  const submit = useCallback(async val => {
+  const submit = useCallback(async _val => {
     try {
-      const task = refs.current.onSubmitBefore?.(val ?? selfValue)
+      const task = refs.current.onSubmitBefore?.(_val ?? selfValue)
       if (task instanceof Promise) {
         await task
       }
-      refs.current.onChange?.(val ?? selfValue)
+      refs.current.onChange?.(_val ?? selfValue)
       setShow(false)
     } catch (error) {
       console.log('ModalForm:提交被阻止', error)
@@ -75,17 +77,17 @@ export const ModalForm = ({
 
   const showValue = useMemo(() => {
     if (getValue) {
-      return getValue(value)
+      return getValue(val)
     }
     if (isValidElement(renderForm) && renderForm.type?.getShowText) {
-      const res = renderForm.type.getShowText(value, renderForm?.props)
+      const res = renderForm.type.getShowText(val, renderForm?.props)
       if (res instanceof Array) {
         return res.join(' ')
       }
       return res
     }
-    return value
-  }, [getValue, value, renderForm])
+    return val
+  }, [getValue, val, renderForm])
 
   const child = useMemo(() => {
     if (isValidElement(children)) {
@@ -97,13 +99,13 @@ export const ModalForm = ({
     }
     return <Row onClick={() => !disabled && setShow(old => !old)} items='center' justify='end' {...props}>
       {
-        typeof value !== 'undefined' ?
+        typeof val !== 'undefined' ?
           <Text>{showValue}</Text> :
           <Text color={3}>{placeholder}</Text>
       }
       <Text color={3} size={5}><DuxuiIcon name='direction_right' /></Text>
     </Row>
-  }, [childPropsValueKey, children, disabled, placeholder, props, showValue, value])
+  }, [childPropsValueKey, children, disabled, placeholder, props, showValue, val])
 
   const form = useMemo(() => {
     if (!renderForm) {
@@ -114,18 +116,18 @@ export const ModalForm = ({
       return cloneElement(renderForm, {
         key: formKey,
         value: selfValue,
-        onChange: val => {
+        onChange: _val => {
           if (autoSubmit) {
-            onChange?.(val)
+            refs.current.onChange?.(_val)
             setShow(false)
           }
-          setSelfValue(val)
+          setSelfValue(_val)
         }
       })
     }
     const RenderForm = renderForm
     return <RenderForm key={formKey} value={selfValue} onChange={setSelfValue} />
-  }, [renderForm, selfValue, formKey, autoSubmit, onChange])
+  }, [renderForm, selfValue, formKey, autoSubmit])
 
   return <>
     {child}

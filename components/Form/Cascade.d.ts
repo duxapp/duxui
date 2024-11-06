@@ -23,6 +23,14 @@ interface CascadeProps extends ViewProps {
    */
   value?: string | number | (string | number)[]
   /**
+   * 默认值
+   */
+  defaultValue?: string | number | (string | number)[]
+  /**
+   * 禁用选择
+   */
+  disabled: boolean
+  /**
    * 值改变时的回调函数
    */
   onChange?: (value: string | number | (string | number)[]) => void

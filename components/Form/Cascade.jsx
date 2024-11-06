@@ -8,6 +8,7 @@ import { Column } from '../Flex'
 import { Text } from '../Text'
 import { Space } from '../Space'
 import './Cascade.scss'
+import { Form } from './Form'
 
 const findPosition = (cascadeData, value, valueKey = 'value', childrenKey = 'children', path = []) => {
   for (let i = 0; i < cascadeData.length; i++) {
@@ -31,9 +32,11 @@ export const Cascade = ({
    */
   getData,
   value,
+  defaultValue,
   onChange,
   // 会把选中项的对象，而不是值传回去
   onChangeItem,
+  disabled,
   mode = 'radio',
   // 是否多选
   checkbox = mode === 'checkbox',
@@ -59,6 +62,12 @@ export const Cascade = ({
   ...props
 }) => {
 
+  const [val, setVal] = Form.useFormItemProxy({
+    onChange,
+    value,
+    defaultValue
+  })
+
   const isRadio = !checkbox
 
   const [list, setList] = useState(data || [])
@@ -66,9 +75,9 @@ export const Cascade = ({
   // 计算出默认选中值
   const defaultSelect = useMemo(() => {
     const _select = new Array(level - 1).fill(-1)
-    if ((isRadio && typeof value !== 'undefined') || (!isRadio && typeof value?.[0] !== 'undefined')) {
+    if ((isRadio && typeof val !== 'undefined') || (!isRadio && typeof val?.[0] !== 'undefined')) {
       // console.log(findPosition(list, isRadio ? value : value[0]))
-      findPosition(list, isRadio ? value : value[0])?.forEach((v, i) => {
+      findPosition(list, isRadio ? val : val[0])?.forEach((v, i) => {
         if (i < _select.length) {
           _select[i] = v
         }
@@ -124,11 +133,11 @@ export const Cascade = ({
     const getChild = (_list, _level = level - 1) => {
       _list.some(item => {
         if (!_level) {
-          const isSelect = isRadio ? value === item[valueKey] : value?.includes(item[valueKey])
+          const isSelect = isRadio ? val === item[valueKey] : val?.includes(item[valueKey])
           if (isSelect) {
             valueItems.push(item)
             // 找到所有的值 不再循环
-            if (isRadio || valueItems.length === value.length) {
+            if (isRadio || valueItems.length === val.length) {
               return true
             }
           }
@@ -141,12 +150,13 @@ export const Cascade = ({
     if (valueItems.length) {
       onChangeItemRef.current(isRadio ? valueItems[0] : valueItems)
     }
-  }, [isRadio, value, list, level, valueKey, childrenKey])
+  }, [isRadio, list, level, valueKey, childrenKey, val])
 
   /**
    * 分类点击
    */
   const labelClick = useCallback(async (_level, index, item) => {
+    if (disabled) return
     // 没有数据需要获取数据
     select[_level] = index
     setSelect([...select])
@@ -160,24 +170,25 @@ export const Cascade = ({
     if (anyLevel) {
       // 允许选择任何一级触发值更新
       if (isRadio) {
-        onChange?.(item[valueKey])
+        setVal(item[valueKey])
       } else {
-        onChange?.([item[valueKey]])
+        setVal([item[valueKey]])
       }
     }
-  }, [anyLevel, childrenKey, getData, isRadio, list, onChange, select, valueKey])
+  }, [anyLevel, childrenKey, disabled, getData, isRadio, list, setVal, select, valueKey])
 
   /**
    * 最后一级点击
    */
   const rightClick = useCallback(item => {
+    if (disabled) return
     if (isRadio) {
-      if (value === item[valueKey]) {
+      if (val === item[valueKey]) {
         return
       }
-      onChange?.(item[valueKey])
+      setVal(item[valueKey])
     } else {
-      let _value = value instanceof Array ? [...value] : []
+      let _value = val instanceof Array ? [...val] : []
       if (anyLevel) {
         // 如果之前有值判断这些值是不是当前这个层级的值不是的剔除
         const keys = selectList[selectList.length - 1].map(v => v[valueKey])
@@ -194,20 +205,21 @@ export const Cascade = ({
         const prev = selectList[select.length - 1][select[select.length - 1]]
         _value.push(prev[valueKey])
       }
-      onChange?.(_value)
+      setVal(_value)
     }
-  }, [anyLevel, isRadio, onChange, select, selectList, value, valueKey])
+  }, [anyLevel, disabled, isRadio, setVal, select, selectList, val, valueKey])
 
   /**
    * 子元素点击
    */
   const itemClick = useCallback((_level, index, item) => {
+    if (disabled) return
     if (_level + 1 === level) {
       rightClick(item)
     } else {
       labelClick(_level, index, item)
     }
-  }, [labelClick, level, rightClick])
+  }, [disabled, labelClick, level, rightClick])
 
   /**
    * 子元素索引
@@ -240,14 +252,14 @@ export const Cascade = ({
     if (isRadio || level < 2) {
       return []
     }
-    return (value || [])?.reduce((prev, current) => {
+    return (val || [])?.reduce((prev, current) => {
       const index = listIndex.findIndex(v => v.includes(current))
       if (~index) {
         prev[index]++
       }
       return prev
     }, listIndex.map(() => 0))
-  }, [isRadio, level, listIndex, value])
+  }, [isRadio, level, listIndex, val])
 
   const Render = theme === 'fill' ? FillRender : DefaultRender
 
@@ -259,7 +271,7 @@ export const Cascade = ({
       checkNumbers={checkNumbers}
       labelClick={labelClick}
       nameKey={nameKey}
-      value={value}
+      value={val}
       valueKey={valueKey}
       rightClick={rightClick}
       itemClick={itemClick}

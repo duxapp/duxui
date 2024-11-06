@@ -25,6 +25,10 @@ interface PickerSelectProps {
    */
   value: string
   /**
+   * 默认值
+   */
+  defaultValue?: string
+  /**
    * 选项范围
    */
   range: any[]
@@ -44,6 +48,10 @@ interface PickerSelectProps {
    * 值变化回调函数
    */
   onChange?: (value: string) => void
+  /**
+   * 启用搜索
+   */
+  search?: boolean
   /**
    * 子元素
    */
@@ -65,6 +73,10 @@ interface PickerMultiSelectProps {
    * 当前选中的值数组
    */
   value: any[]
+  /**
+   * 默认值
+   */
+  defaultValue?: any[]
   /**
    * 选项范围数组
    */
@@ -102,6 +114,10 @@ interface PickerDateProps extends DatePickerProps {
    * 当前选中的日期值
    */
   value: string
+  /**
+   * 默认值
+   */
+  defaultValue?: string
   /**
    * 值变化回调函数
    */

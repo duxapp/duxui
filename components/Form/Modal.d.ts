@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, ComponentType } from 'react'
+import { ReactElement, ReactNode } from 'react'
 import { ButtonProps } from '../Button'
 
 /** 弹出位置 */
@@ -29,25 +29,30 @@ interface ModalFormProps {
   /**
    * 当前值
    */
-  value: any
+  value?: any
 
   /**
    * 值变化时的回调函数
    */
-  onChange: (value: any) => void
+  onChange?: (value: any) => void
+
+  /**
+   * 默认值
+   */
+  defaultValue?: any
 
   /**
    * 获取value的显示值
    * @param value
    * @returns
    */
-  getValue: (value: any) => string
+  getValue?: (value: any) => string
 
   /**
    * 在用户点击提交之前执行的函数，这可以是一个异步函数
    * 如果要阻止用户提交 需要抛出一个错误
    */
-  onSubmitBefore: (value: any) => Promise<{}>
+  onSubmitBefore?: (value: any) => Promise<{}>
 
   /**
    * 弹出位置
@@ -57,12 +62,12 @@ interface ModalFormProps {
   /**
    * 子元素
    */
-  children: ReactElement
+  children?: ReactElement
 
   /**
    * 设置子元素接收显示值的props属性名称，将会改写子元素的此属性
    */
-  childPropsValueKey: string
+  childPropsValueKey?: string
 
   /**
    * 渲染表单的组件

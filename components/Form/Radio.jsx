@@ -3,6 +3,7 @@ import { noop } from '@/duxapp/utils'
 import { Space } from '../Space'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
+import { Form } from './Form'
 
 const context = createContext({ check: noop })
 
@@ -10,6 +11,7 @@ const RadioGroup = ({
   children,
   value,
   onChange,
+  defaultValue,
   disabled,
   direction = 'horizontal',
   vertical,
@@ -19,16 +21,18 @@ const RadioGroup = ({
   ...props
 }) => {
 
+  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+
   const horizontal = direction === 'horizontal' && !vertical
 
-  const check = useCallback(val => {
-    if (value === val || disabled) {
+  const check = useCallback(_val => {
+    if (val === _val || disabled) {
       return
     }
-    onChange?.(val)
-  }, [onChange, value, disabled])
+    setVal(_val)
+  }, [setVal, val, disabled])
 
-  return <context.Provider value={{ check, currentValue: value }}>
+  return <context.Provider value={{ check, currentValue: val }}>
     {
       virtual ?
         children :

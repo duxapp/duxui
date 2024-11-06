@@ -26,6 +26,10 @@ interface InputProps extends TaroInputProps {
    * 值变化回调函数
    */
   onChange?: (value: string) => void
+  /**
+   * 默认值
+   */
+  defaultValue?: string
 }
 
 interface InputSearchProps extends InputProps {

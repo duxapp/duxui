@@ -11,6 +11,10 @@ interface RecorderProps extends GridProps {
    */
   onChange?: (value: string | string[]) => void
   /**
+   * 默认值
+   */
+  defaultValue?: string | string[]
+  /**
    * 每行显示多少
    * 默认4
    */

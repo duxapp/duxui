@@ -10,15 +10,22 @@ import { Text } from '../Text'
 import { Button } from '../Button'
 import { formConfig } from './config'
 import './Upload.scss'
+import { Form } from './Form'
 
 export const Recorder = ({
   max = 1,
+  value,
+  onChange,
+  defaultValue,
   ...props
 }) => {
+
+  const [val, setValue] = Form.useFormItemProxy({ value, onChange, defaultValue })
+
   if (max === 1) {
-    return <RecorderOne {...Recorder} />
+    return <RecorderOne {...props} value={val} onChange={setValue} />
   }
-  return <AudioRecorder {...props} max={max} />
+  return <AudioRecorder {...props} value={val} onChange={setValue} max={max} />
 }
 
 const AudioRecorder = ({
@@ -37,7 +44,7 @@ const AudioRecorder = ({
 
   const del = useCallback((index) => {
     value.splice(index, 1)
-    onChange?.([...value])
+    onChange([...value])
   }, [onChange, value])
 
   const [progress, setProgress] = useState(-1)
@@ -54,8 +61,9 @@ const AudioRecorder = ({
         })
         .progress(setProgress)
       setProgress(-1)
-      onChange?.([...value || [], ...urls])
+      onChange([...value || [], ...urls])
     } catch (error) {
+      console.log('音频上传失败', error)
       setProgress(-1)
     }
   }, [onChange, option, value])
@@ -197,7 +205,8 @@ const AddAudio = ({
       const stop = loading('加载中', true)
       const recorder = RecorderManager.current = getRecorderManager()
       recorder.start({
-        duration: 60000
+        duration: 60000,
+        format: 'mp3'
       })
       recorder.onStart(() => {
         setStatus(true)

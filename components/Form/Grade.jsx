@@ -14,6 +14,7 @@ export const Grade = ({
   defaultValue,
   size = 'm',
   type = 'primary',
+  disabled,
   ...props
 }) => {
 
@@ -32,13 +33,13 @@ export const Grade = ({
           type={index < val ? type : void 0}
           color={index < val ? void 0 : 3}
           key={index}
-          onClick={() => setVal?.(index + 1)}
+          onClick={() => !disabled && setVal?.(index + 1)}
           className={classNames('Grade--' + size)}
         >
           <DuxuiIcon
             name={index < val ? 'collection-fill' : 'collection'} onClick={() => {
               // RN安卓端外面的事件不触发 触发了此处
-              setVal?.(index + 1)
+              !disabled && setVal?.(index + 1)
             }}
           />
         </Text>
