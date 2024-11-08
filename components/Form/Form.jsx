@@ -1,4 +1,4 @@
-import { deepCopy, noop } from '@/duxapp/utils'
+import { deepCopy, noop, useDeepObject } from '@/duxapp/utils'
 import { isValidElement, cloneElement, Fragment, createContext, useContext, useEffect, useMemo, useState, useCallback, useRef, forwardRef, useImperativeHandle } from 'react'
 import classNames from 'classnames'
 import { Schema } from 'b-validate'
@@ -462,37 +462,42 @@ const useFormItemProxy = ({ value, onChange, defaultValue } = {}) => {
 
   const [val, setVal] = useState(value ?? defaultValue)
 
-  const valRef = useRef(val)
-  valRef.current = val
+  const refs = useRef({
+    val,
+    first: true,
+    onChange
+  })
 
-  const onChangeRef = useRef(onChange)
-  onChangeRef.current = onChange
+  refs.current.onChange = onChange
 
   const input = useCallback(e => {
-    const _val = e?.detail?.value ?? e
-    setVal(_val)
-    valRef.current = _val
-    onChangeRef.current?.(_val)
+    let _val = e?.detail?.value ?? e
+    setVal(old => {
+      _val = typeof _val === 'function' ? _val(old) : _val
+      refs.current.val = _val
+      refs.current.onChange?.(_val)
+      return _val
+    })
   }, [])
 
-  const mark = useRef({
-    first: true
-  })
-  useMemo(() => {
+  const deepValue = useDeepObject(value)
+
+  useEffect(() => {
     // 反向更新值
-    if (mark.current.first) {
-      mark.current.first = false
+    if (refs.current.first) {
+      refs.current.first = false
       return
     }
-    if (valRef.current !== value) {
-      setVal(value)
+    if (refs.current.val !== deepValue) {
+      refs.current.val = deepValue
+      setVal(deepValue)
     }
-  }, [value])
+  }, [deepValue])
 
-  useMemo(() => {
+  useEffect(() => {
     // 更新默认值
-    if (typeof value === 'undefined' && typeof defaultValue !== 'undefined') {
-      onChangeRef.current(defaultValue)
+    if (refs.current.onChange && typeof value === 'undefined' && typeof defaultValue !== 'undefined') {
+      refs.current.onChange(defaultValue)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

@@ -34,15 +34,18 @@ const CheckboxGroup = ({
     if (disabled) {
       return
     }
-    const _value = val ? [...val] : []
-    const index = _value.indexOf(_val)
-    if (~index) {
-      _value.splice(index, 1)
-    } else {
-      _value.push(_val)
-    }
-    setVal(_value)
-  }, [setVal, val, disabled])
+
+    setVal(old => {
+      const select = old ? [...old] : []
+      const index = select.indexOf(_val)
+      if (~index) {
+        select.splice(index, 1)
+      } else {
+        select.push(_val)
+      }
+      return select
+    })
+  }, [setVal, disabled])
 
   return <context.Provider value={{ check, currentValue: val }}>
     {

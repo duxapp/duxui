@@ -1,6 +1,6 @@
 import { View, Text, Image } from '@tarojs/components'
 import { useDidShow, useDidHide, getCurrentPages } from '@tarojs/taro'
-import React, { useMemo, useState, useCallback, createContext, useContext, useEffect, useRef } from 'react'
+import React, { useState, useCallback, createContext, useContext, useEffect, useRef, Fragment } from 'react'
 import { QuickEvent, useRoute, currentPage, route } from '@/duxapp'
 import classNames from 'classnames'
 import { Badge } from '../Badge'
@@ -23,23 +23,30 @@ const tabbarContext = createContext({
 })
 
 const TabbarScreen = ({
-  hover,
+  select,
   index,
-  children: child
+  child
 }) => {
 
-  const [render, setRender] = useState(false)
+  const render = useRef()
 
-  useMemo(() => {
-    if (hover && !render) {
-      setRender(true)
-    }
-  }, [hover, render])
+  if (select && !render.current) {
+    render.current = true
+  }
 
-  return <screenContext.Provider value={{ hover, index }}>
-    <View className={classNames('TabBar-page__item', hover && 'TabBar-page__item--hover')}>
+  if (!render.current) {
+    return
+  }
+
+  return <screenContext.Provider value={{ hover: select, index }}>
+    <View
+      className={classNames(
+        'TabBar-page__item',
+        select && 'TabBar-page__item--hover'
+      )}
+    >
       {
-        render && (React.isValidElement(child.Comp)
+        render.current && (React.isValidElement(child.Comp)
           ? React.cloneElement(child.Comp, { _index: child.index, _key: child.itemKey })
           : <child.Comp _index={child.index} _key={child.itemKey} />)
       }
@@ -57,11 +64,7 @@ const TabbarButton = ({
   icon: Icon
 }) => {
 
-  const itemClick = useCallback(() => {
-    onClick({ index })
-  }, [index, onClick])
-
-  return <View className='TabBar-menu__item' onClick={itemClick}>
+  return <View className='TabBar-menu__item' onClick={() => onClick({ index })}>
     <Badge count={number > 0 ? number : 0} dot={number < 0}>
       {
         React.isValidElement(Icon)
@@ -112,22 +115,19 @@ const TabBar = ({
   // 红点数量
   const [numbers, setNumbers] = useState({})
 
-  const childs = useMemo(() => {
-    return React.Children.map(children, ({ props }, index) => {
-      const Comp = props.component
-      return {
-        child: {
-          Comp,
-          index,
-          itemKey: props.itemKey
-        },
-        key: props.itemKey,
+  const childs = React.Children.map(children, ({ props }, index) => {
+    return {
+      child: {
+        Comp: props.component,
         index,
-        name: props.name,
-        icon: props.icon
-      }
-    })
-  }, [children])
+        itemKey: props.itemKey
+      },
+      key: props.itemKey,
+      index,
+      name: props.name,
+      icon: props.icon
+    }
+  })
 
   const [select, setSelect] = useState(0)
 
@@ -174,11 +174,15 @@ const TabBar = ({
 
   return <tabbarContext.Provider value={{ show }}>
     {
-      childs.map((item, index) => <TabbarScreen key={item.key || index} hover={select === index} index={index}>
-        {item.child}
-      </TabbarScreen>)
+      childs.map((item, index) => <TabbarScreen
+        key={item.key || index}
+        select={select === index}
+        index={index}
+        child={item.child}
+      />)
     }
     <View
+      key='tabbar-menus'
       style={style}
       className={classNames('TabBar-menu', className)}
     >

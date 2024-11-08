@@ -29,7 +29,7 @@ export const Recorder = ({
 }
 
 const AudioRecorder = ({
-  value = [],
+  value,
   onChange,
   disabled,
   max = 1,

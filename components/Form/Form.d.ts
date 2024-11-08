@@ -222,6 +222,7 @@ export const Form: React.FC<FormProps> & {
   useFormContext: () => FormRef
   /**
    * 给表单代理值和事件
+   * 传入的value需要是一个基本类型值或者是一个简单对象，否则会导致死循环
    * @param props
    * @returns
    */
