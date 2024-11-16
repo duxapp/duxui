@@ -1,6 +1,6 @@
 import { View, Text, Image } from '@tarojs/components'
 import { useDidShow, useDidHide, getCurrentPages } from '@tarojs/taro'
-import React, { useState, useCallback, createContext, useContext, useEffect, useRef, Fragment } from 'react'
+import React, { useState, useCallback, createContext, useContext, useEffect, useRef } from 'react'
 import { QuickEvent, useRoute, currentPage, route } from '@/duxapp'
 import classNames from 'classnames'
 import { Badge } from '../Badge'
@@ -216,18 +216,16 @@ export const createTabBar = (() => {
 
     const _TabBar = ({
       children,
-      onChange,
       style,
-      className
+      ...props
     }) => {
       return <TabBar
         tabbarKey={key}
         beforeEvent={beforeEvent}
         afterEvent={afterEvent}
         actionEvent={actionEvent}
-        onChange={onChange}
         style={style}
-        className={className}
+        {...props}
       >
         {children}
       </TabBar>

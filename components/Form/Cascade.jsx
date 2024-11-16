@@ -332,11 +332,11 @@ const DefaultRender = ({
           {
             group.map((item, index) => {
               const isSelect = select[groupIndex] === index
-              return <View key={index} className='Cascade__left__label' onClick={() => labelClick(groupIndex, index, item)}>
+              return <View key={index} className='Cascade__left__label self-stretch gap-2' onClick={() => labelClick(groupIndex, index, item)}>
                 <Text style={{ color: isSelect ? duxappTheme.primaryColor : duxappTheme.textColor1 }} className='Cascade__left__label__title'>{item[nameKey]}</Text>
-                {!isRadio && groupIndex === 0 && checkNumbers[index] > 0 && !anyLevel && <View style={{ color: isSelect ? duxappTheme.primaryColor : '#73778E' }} className='Cascade__left__label__select'>已选
-                  <Text className='Cascade__left__label__select__num'>{checkNumbers[index]}</Text>
-                </View>}
+                {!isRadio && groupIndex === 0 && checkNumbers[index] > 0 && !anyLevel &&
+                  <Text className='text-s1 text-primary'>已选 {checkNumbers[index]}</Text>
+                }
               </View>
             })
           }
@@ -349,8 +349,8 @@ const DefaultRender = ({
           right.map((item, index) => {
             const isSelect = isRadio ? value === item[valueKey] : value?.includes?.(item[valueKey])
             return <Fragment key={'item' + index}>
-              {!!index && <Divider />}
-              <View className='Cascade__right__item' onClick={() => rightClick(item)}>
+              {!!index && <Divider className='self-stretch' />}
+              <View className='Cascade__right__item self-stretch' onClick={() => rightClick(item)}>
                 <Text style={{ color: isSelect ? duxappTheme.primaryColor : duxappTheme.textColor1 }} className='Cascade__right__item__label'>{item[nameKey]}</Text>
                 <DuxuiIcon
                   className='Cascade__right__item__icon'
@@ -398,6 +398,7 @@ const FillRender = ({
                   key={item[valueKey] || index}
                   items='center'
                   justify='center'
+                  self='stretch'
                   onClick={() => itemClick(groupIndex, index, item)}
                   className={classNames('Cascade-fill__item', isSelect && 'Cascade-fill__item--select')}
                 >

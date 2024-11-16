@@ -9,8 +9,8 @@ import { Grid } from '../Grid'
 import { Text } from '../Text'
 import { Button } from '../Button'
 import { formConfig } from './config'
-import './Upload.scss'
 import { Form } from './Form'
+import './Upload.scss'
 
 export const Recorder = ({
   max = 1,
@@ -89,7 +89,6 @@ const AudioRecorder = ({
       grow={!isOne}
       className={classNames('UIUplod__item', isOne && 'UIUplod__item--one')}
       justify='center'
-      items='center'
       onClick={!~progress && add}
     >
       {
@@ -104,7 +103,7 @@ const AudioRecorder = ({
             >
               <Column style={{ width: px(18) }} className='square r-1 bg-danger' />
             </Column>
-            <Text color={2} size={2} className='mt-1'>{tip}</Text>
+            <Text color={2} size={2}>{tip}</Text>
           </>
       }
     </Column>
@@ -231,7 +230,7 @@ const AddAudio = ({
   }, [status])
 
   return <PullView ref={pullView} onClose={onClose}>
-    <Column className='rt-3 bg-white p-3 gap-3'>
+    <Column className='rt-3 bg-white p-3 gap-3 items-center'>
       <Text align='center' bold>音频录制</Text>
       {
         result.path ?
@@ -277,7 +276,7 @@ const AddAudio = ({
             }
           </>
       }
-      <Row className='gap-4 p-3 mt-3' style={{ height: px(160) }}>
+      <Row className='gap-4 p-3 mt-3 self-stretch' style={{ height: px(160) }}>
         {
           !!result.path && <>
             <Button type='primary' plain className='flex-grow'

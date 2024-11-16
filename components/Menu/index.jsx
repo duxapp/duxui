@@ -1,6 +1,7 @@
 import { useCallback, useState, createContext, useContext, useRef, forwardRef, useImperativeHandle, useMemo } from 'react'
 import { Layout, Absolute, duxappTheme } from '@/duxapp'
 import classNames from 'classnames'
+import { getSystemInfoSync } from '@tarojs/taro'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -207,13 +208,13 @@ export const Menu = ({
     </Layout>
     {!!~show && <Absolute>
       <Column
-        className='absolute left-0 top-0 right-0'
+        className='absolute left-0 top-0 w-full items-center'
         style={{ height: layout.top + layout.height }}
         onClick={close}
       />
       <Column
-        className='Menu__mask absolute left-0 bottom-0 right-0'
-        style={{ top: layout.height + layout.top }}
+        className='Menu__mask absolute left-0 bottom-0 w-full items-center'
+        style={{ height: getSystemInfoSync().screenHeight - (layout.top + layout.height) }}
         onClick={close}
       />
       <Row className={classNames('Menu absolute', className)}
@@ -240,11 +241,15 @@ export const Menu = ({
       </Row>
       <Column
         className={classNames('Menu__content absolute', round && 'Menu__content--round')}
-        style={{ top: layout.height + layout.top, left: layout.left, width: layout.width }}
+        style={{
+          top: layout.height + layout.top,
+          left: layout.left,
+          width: layout.width
+        }}
       >
         {
           option.current.children ||
-          <Grid column={option.current.column} gap={36}>
+          <Grid column={option.current.column} gap={36} className='self-stretch'>
             {
               option.current.options.map(item => <Text
                 align={option.current.align}

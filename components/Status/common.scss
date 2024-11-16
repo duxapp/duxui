@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .StatusIncline {
   height: 40px;
   width: 200px;
@@ -111,34 +113,34 @@
   }
 
   &--primary {
-    background-color: lighten($duxappPrimaryColor, 30%);
+    background-color: color.adjust($duxappPrimaryColor, $lightness: 30%);
   }
 
   &--secondary {
-    background-color: lighten($duxappSecondaryColor, 30%);
+    background-color: color.adjust($duxappSecondaryColor, $lightness: 30%);
   }
 
   &--success {
-    background-color: lighten($duxappSuccessColor, 30%);
+    background-color: color.adjust($duxappSuccessColor, $lightness: 30%);
   }
 
   &--danger {
-    background-color: lighten($duxappDangerColor, 30%);
+    background-color: color.adjust($duxappDangerColor, $lightness: 30%);
   }
 
   &--warning {
-    background-color: lighten($duxappWarningColor, 30%);
+    background-color: color.adjust($duxappWarningColor, $lightness: 30%);
   }
 
   &--custom1 {
-    background-color: lighten($duxappCustomColor1, 30%);
+    background-color: color.adjust($duxappCustomColor1, $lightness: 30%);
   }
 
   &--custom2 {
-    background-color: lighten($duxappCustomColor2, 30%);
+    background-color: color.adjust($duxappCustomColor2, $lightness: 30%);
   }
 
   &--custom3 {
-    background-color: lighten($duxappCustomColor3, 30%);
+    background-color: color.adjust($duxappCustomColor3, $lightness: 30%);
   }
 }

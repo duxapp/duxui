@@ -23,7 +23,7 @@ export const InputCode = ({
 
   return <Row
     className={classNames('InputCode', className)}
-    style={style} justify='between'
+    style={style} justify='between' items='center'
     {...props}
   >
     {
@@ -41,8 +41,13 @@ const Item = ({ value, password, focus, style }) => {
     {
       focus ?
         <Focus /> : value ?
-          (password ? <Column className='InputCode__password' /> : <Text size={7}>{value}</Text>)
-          : null
+          (password ?
+            <Column className='w-full items-center justify-center'>
+              <Column className='InputCode__password' />
+            </Column> :
+            <Text size={7} className='w-full text-center' align='center'>{value}</Text>
+          )
+          : <Column className='w-full' items='center' />
     }
   </Column>
 }
@@ -58,7 +63,7 @@ const Focus = () => {
     return () => clearInterval(timer)
   }, [])
 
-  if (show) {
-    return <Column className='InputCode__focus' />
-  }
+  return <Column className='w-full items-center'>
+    {show && <Column className='InputCode__focus' />}
+  </Column>
 }

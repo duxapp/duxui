@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .Calendar {
   // padding: 10px 5px;
 
@@ -34,72 +36,91 @@
       &__select {
         position: absolute;
         top: 5px;
-        bottom: 5px;
+        height: 110px;
         background-color: $duxappPrimaryColor;
 
         &--select {
           left: 5px;
+          /*  #ifndef harmony  */
           right: 5px;
+          /*  #endif  */
           border-radius: 16px;
         }
 
         &--start {
+          /*  #ifndef harmony  */
           left: 5px;
+          /*  #endif  */
           right: -1px;
           border-radius: 16px 0 0 16px;
         }
 
         &--end {
           left: -1px;
+          /*  #ifndef harmony  */
           right: 5px;
+          /*  #endif  */
           border-radius: 0 16px 16px 0;
         }
 
         &--center {
           left: -1px;
+          /*  #ifndef harmony  */
           right: -1px;
-          background-color: lighten($duxappPrimaryColor, 20%);
+          /*  #endif  */
+          background-color: color.adjust($duxappPrimaryColor, $lightness: 20%);
         }
       }
 
       &__custom {
         position: absolute;
         top: 5px;
-        bottom: 5px;
+        height: 110px;
 
         &--select {
           left: 5px;
+          /*  #ifndef harmony  */
           right: 5px;
+          /*  #endif  */
           border-radius: 16px;
         }
 
         &--start {
+          /*  #ifndef harmony  */
           left: 5px;
+          /*  #endif  */
           right: -1px;
           border-radius: 16px 0 0 16px;
         }
 
         &--end {
           left: -1px;
+          /*  #ifndef harmony  */
           right: 5px;
+          /*  #endif  */
           border-radius: 0 16px 16px 0;
         }
 
         &--center {
           left: -1px;
+          /*  #ifndef harmony  */
           right: -1px;
+          /*  #endif  */
         }
       }
 
       &__other {
         position: absolute;
-        top: 5px;
-        bottom: 5px;
-        left: 5px;
-        right: 5px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 5px;
         justify-content: space-between;
+        align-items: center;
 
         &__item {
+          align-self: stretch;
           height: 46px;
           align-items: center;
           justify-content: center;
@@ -110,6 +131,8 @@
         color: $duxappTextColor1;
         font-size: 28px;
         z-index: 1;
+        width: 100%;
+        text-align: center;
 
         &--disable {
           color: $duxappTextColor3;

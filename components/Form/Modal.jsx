@@ -133,8 +133,14 @@ export const ModalForm = ({
     {child}
     {show && <PullView onClose={() => setShow(false)} side={side}>
       <context.Provider value={{ reset, submit }}>
-        <Column className={classNames('ModalForm', ['left', 'right'].includes(side) ? 'ModalForm--full h-full' : 'ModalForm--vertical')}>
-          {!!title && <Row items='center' justify='between' className='ModalForm__head'>
+        <Column
+          className={classNames(
+            'ModalForm',
+            ['left', 'right'].includes(side) ? 'ModalForm--full h-full' : 'ModalForm--vertical',
+            process.env.TARO_ENV === 'harmony' && ' items-center'
+          )}
+        >
+          {!!title && <Row items='center' justify='between' className='ModalForm__head self-stretch'>
             <DuxuiIcon name='close' color='#fff' />
             <Text bold>{title}</Text>
             <DuxuiIcon name='close' color='#a3a5b6' onClick={() => setShow(false)} />
@@ -145,7 +151,7 @@ export const ModalForm = ({
           {
             showButton && !autoSubmit && <>
               <Divider padding={0} />
-              <Space row className='ModalForm__btns'>
+              <Space row className='ModalForm__btns self-stretch'>
                 <Reset type='primary' size='l' plain className='flex-grow' mode={resetMode}>重置</Reset>
                 <Submit type='primary' size='l' className='flex-grow'>提交</Submit>
               </Space>
@@ -284,8 +290,13 @@ export const ModalForms = ({
     {show && <PullView onClose={() => setShow(false)} side={side}>
       <formContext.Provider value={{ ...contextData, onGetField, defaultValues, setValue, setValues: selfSetValues, values: selfValue }}>
         <context.Provider value={{ reset, submit }}>
-          <Column className={classNames('ModalForm', ['left', 'right'].includes(side) ? 'ModalForm--full h-full' : 'ModalForm--vertical')}>
-            {!!title && <Row items='center' justify='between' className='ModalForm__head'>
+          <Column className={classNames(
+            'ModalForm',
+            ['left', 'right'].includes(side) ? 'ModalForm--full h-full' : 'ModalForm--vertical',
+            process.env.TARO_ENV === 'harmony' && ' items-center'
+          )}
+          >
+            {!!title && <Row items='center' justify='between' className='ModalForm__head self-stretch'>
               <DuxuiIcon name='close' color='#fff' />
               <Text bold>{title}</Text>
               <DuxuiIcon name='close' color='#a3a5b6' onClick={() => setShow(false)} />
@@ -294,7 +305,7 @@ export const ModalForms = ({
             {
               showButton && <>
                 <Divider padding={0} />
-                <Space row className='ModalForm__btns'>
+                <Space row className='ModalForm__btns self-stretch'>
                   <Reset type='primary' size='l' plain className='flex-grow' mode={resetMode}>重置</Reset>
                   <Submit type='primary' size='l' className='flex-grow'>提交</Submit>
                 </Space>

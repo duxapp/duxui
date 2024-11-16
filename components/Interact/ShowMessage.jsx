@@ -1,6 +1,7 @@
 import { Text } from '@tarojs/components'
 import { useEffect, useRef } from 'react'
 import { asyncTimeOut, nav, route } from '@/duxapp/utils'
+import { getSystemInfoSync } from '@tarojs/taro'
 import { BoxShadow } from '../BoxShadow'
 import './ShowMessage.scss'
 
@@ -11,7 +12,7 @@ export const ShowMessage = ({
   onTopViewRemove
 }) => {
 
-  const { statusBarHeight = 0 } = global.systemInfo
+  const { statusBarHeight = 0 } = getSystemInfoSync()
 
   const timer = useRef(null)
 

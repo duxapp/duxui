@@ -1,6 +1,8 @@
 .Tab {
+  align-items: center;
   &__row {
     padding-top: 16px;
+    align-self: stretch;
   }
 
   &__item {
@@ -22,6 +24,8 @@
     }
 
     &--button {
+      align-items: center;
+      justify-content: center;
       padding: 8px 32px;
       border-radius: 8px;
       margin: 0 14px;
@@ -75,6 +79,7 @@
 
   &__con {
     overflow: hidden;
+    align-self: stretch;
     flex: 1;
 
     &__item {

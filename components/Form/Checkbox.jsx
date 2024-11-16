@@ -71,7 +71,7 @@ const CheckboxGroup = ({
 export const Checkbox = ({
   value, label, checked, half,
   disabled, children: Child,
-  className, style, ...props
+  style, ...props
 }) => {
   const { check, currentValue } = useContext(context)
 
@@ -95,11 +95,15 @@ export const Checkbox = ({
         check(value)
       }
     }}
-    className={className} style={style}  {...props}
+    style={style}  {...props}
   >
-    <Text size={6} type={isCheck || half ? 'primary' : void 0} color={isCheck || half ? void 0 : 3}>
+    {/* <Text size={6} type={isCheck || half ? 'primary' : void 0} color={isCheck || half ? void 0 : 3}>
       <DuxuiIcon name={isCheck ? 'xuanzhong' : half ? 'banxuanze' : 'xuanzekuang'} />
-    </Text>
+    </Text> */}
+    <DuxuiIcon
+      className={classNames('text-s6',isCheck || half ? 'text-primary' : 'text-c3')}
+      name={isCheck ? 'xuanzhong' : half ? 'banxuanze' : 'xuanzekuang'}
+    />
     {!!label && <Text>{label}</Text>}
   </Space>
 }

@@ -116,6 +116,20 @@
   &--linear {
     border-width: 0;
   }
+  &__linear {
+    position: absolute;
+    top: 0;
+    /*  #ifdef harmony  */
+    left: -$duxuiButtonMPadding;
+    // 鸿蒙定位问题，宽度不包含padding
+    width: 110%;
+    /*  #endif  */
+    /*  #ifndef harmony  */
+    left: 0;
+    width: 100%;
+    /*  #endif  */
+    height: 100%;
+  }
   &--round {
     border-radius: 750px;
   }

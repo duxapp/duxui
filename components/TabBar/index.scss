@@ -11,13 +11,10 @@
 
 .TabBar-menu {
   flex-direction: row;
+  align-items: center;
   background-color: #fff;
   border-top-width: 1px;
   border-top-color: #f1f1f1;
-  /*postcss-pxtransform rn eject enable*/
-  border-top-style: solid;
-
-  /*postcss-pxtransform rn eject disable*/
   &__item {
     flex: 1;
     align-items: center;

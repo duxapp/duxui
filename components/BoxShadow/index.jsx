@@ -1,5 +1,4 @@
 import { View } from '@tarojs/components'
-import { useMemo } from 'react'
 import { colorToRgb, px } from '@/duxapp/utils'
 import classNames from 'classnames'
 
@@ -16,13 +15,20 @@ export const BoxShadow = ({
   ...props
 }) => {
 
-  const rgb = useMemo(() => colorToRgb(color), [color])
+  const rgb = colorToRgb(color)
 
   return <View
     style={{
       ...radius ? { borderRadius: px(radius) } : {},
       ...style,
-      boxShadow: `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1}) ${px(x)} ${px(y)} ${px(border)}`
+      boxShadow: process.env.TARO_ENV === 'harmony'
+        ? {
+          radius: border,
+          color: `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1})`,
+          offsetX: x,
+          offsetY: y,
+        }
+        : `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1}) ${px(x)} ${px(y)} ${px(border)}`
     }}
     className={classNames('overflow-hidden bg-white', className)}
     {...props}

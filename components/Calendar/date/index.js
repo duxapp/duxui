@@ -1,9 +1,9 @@
-const dateToStr = (formatStr = "yyyy-MM-dd HH:mm:ss", date) => {
+const dateToStr = (formatStr = 'yyyy-MM-dd HH:mm:ss', date) => {
   date = timeStampToDate(date)
   let str = formatStr
   let Week = ['日', '一', '二', '三', '四', '五', '六']
   str = str.replace(/yyyy|YYYY/, date.getFullYear())
-  str = str.replace(/yy|YY/, (date.getYear() % 100) > 9 ? (date.getYear() % 100).toString() : '0' + (date.getYear() % 100))
+  str = str.replace(/yy|YY/, (date.getFullYear() % 100) > 9 ? (date.getFullYear() % 100).toString() : '0' + (date.getFullYear() % 100))
   str = str.replace(/MM/, date.getMonth() > 8 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1))
   str = str.replace(/M/g, (date.getMonth() + 1))
   str = str.replace(/w|W/g, Week[date.getDay()])

@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useRef } from 'react'
 import classNames from 'classnames'
-import { PickerView as OldPickerView, PickerViewColumn } from './view'
+import { PickerView as TaroPickerView, PickerViewColumn } from './view'
 import './common.scss'
+import { Text } from '../Text'
 
 export const PickerView = ({
   value = [],
@@ -51,11 +52,12 @@ export const PickerView = ({
       change({ detail: { value: indexs } })
     }
     return indexs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [range, value])
 
-  return <OldPickerView onChange={change} value={select} {...props} className={classNames('PickerView', grow && 'flex-grow', className)}>
-    {children}
-  </OldPickerView>
+  return <TaroPickerView onChange={change} value={select} {...props} className={classNames('PickerView', grow && 'flex-grow', className)}>
+    {process.env.TARO_ENV === 'harmony' ? <Text align='center'>鸿蒙端暂不支持 Picker</Text> : children}
+  </TaroPickerView>
 }
 
 export const PickerViewColumnItem = ({

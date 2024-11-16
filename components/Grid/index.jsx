@@ -14,6 +14,7 @@ export const Grid = ({
   className,
   style,
   itemStyle,
+  __hmStyle,
   ...props
 }) => {
 
@@ -41,15 +42,15 @@ export const Grid = ({
     return _group
   }, [children, column])
 
-  return <View className={className} style={{ ...style, rowGap: px(rowGap) }} {...props}>
+  return <View className={classNames('items-center', className)} style={{ ...style, rowGap: px(rowGap) }} {...props}>
     {
       group.map((item, index) => {
-        return <View className='Grid__row' key={index} style={{ columnGap: px(columnGap) }}>
+        return <View className='Grid__row self-stretch' key={index} style={{ columnGap: px(columnGap) }}>
           {
             item.map((child, childIndex) => <View
               key={childIndex}
-              itemStyle={itemStyle}
-              className={classNames('Grid__item flex-grow', square && 'Grid__square')}
+              style={itemStyle}
+              className={classNames('Grid__item flex-grow self-stretch', square && 'Grid__square')}
             >
               {
                 square && React.isValidElement(child)
@@ -57,8 +58,17 @@ export const Grid = ({
                     style: {
                       ...child.props.style,
                       height: '100%',
+                      width: '100%'
                     },
-                  }) : child
+                  })
+                  : React.isValidElement(child)
+                    ? React.cloneElement(child, {
+                      style: {
+                        ...child.props.style,
+                        width: '100%'
+                      },
+                    })
+                    : child
               }
             </View>)
           }

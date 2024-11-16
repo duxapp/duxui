@@ -4,6 +4,7 @@ import { Divider } from '../Divider'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import './ShowConfirm.scss'
+import { px } from '@/duxapp'
 
 export const ShowConfirm = ({
   title,
@@ -26,19 +27,18 @@ export const ShowConfirm = ({
   return (
     <View className='DuxuiShowConfirm'>
       {renderTop}
-      <View className='DuxuiShowConfirm__main'>
+      <View className='DuxuiShowConfirm__main items-center'>
         {!!title && <Text size={6} bold align='center' className='mh-3'>{title}</Text>}
         {content && <>{isValidElement(content) ? content : <Text className='DuxuiShowConfirm__content' color={2} size={3} align='center'>{content}</Text>}</>}
-        <Divider padding={0} className='DuxuiShowConfirm__divider' />
         <Row className='DuxuiShowConfirm__btns'>
           {cancel && <>
             <Column grow items='center' justify='center' onClick={onCancel}>
-              <Text size={6} align='center'>{cancelText}</Text>
+              <Text size={6} className='w-full' align='center'>{cancelText}</Text>
             </Column>
             <Divider vertical />
           </>}
           <Column grow items='center' justify='center' onClick={onConfirm}>
-            <Text type='primary' size={6} align='center'>{confirmText}</Text>
+            <Text type='primary' className='w-full' size={6} align='center'>{confirmText}</Text>
           </Column>
         </Row>
       </View>

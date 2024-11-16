@@ -29,20 +29,12 @@ export const Grade = ({
   return <Space row items='center' size={16} {...props}>
     <Row items='center'>
       {arr.map((item, index) => {
-        return <Text
-          type={index < val ? type : void 0}
-          color={index < val ? void 0 : 3}
+        return <DuxuiIcon
           key={index}
+          name={index < val ? 'collection-fill' : 'collection'}
           onClick={() => !disabled && setVal?.(index + 1)}
-          className={classNames('Grade--' + size)}
-        >
-          <DuxuiIcon
-            name={index < val ? 'collection-fill' : 'collection'} onClick={() => {
-              // RN安卓端外面的事件不触发 触发了此处
-              !disabled && setVal?.(index + 1)
-            }}
-          />
-        </Text>
+          className={classNames('Grade--' + size, index < val ? `text-${type}` : 'text-c3')}
+        />
       })}
     </Row>
     {!!val && <Text type={type}>{values[0]}.{values[1] || 0}</Text>}

@@ -11,7 +11,7 @@ export const MultiSelectorPicker = ({
 
   const isObject = typeof range?.[0]?.[0] === 'object'
 
-  return <PickerView {...props}>
+  return <PickerView range={range} rangeKey={nameKey} {...props}>
     {
       range.map((item, index) => <PickerViewColumn key={index}>
         {

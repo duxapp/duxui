@@ -1,4 +1,4 @@
-import { px, PullView, noop } from '@/duxapp'
+import { px, PullView, noop, duxappTheme } from '@/duxapp'
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
@@ -45,7 +45,7 @@ const Keyboard = ({ onInput, onBackspace: onBackspaceInput }) => {
 }
 
 const Province = ({ onKey, onBackspace }) => {
-  return <Grid column={7} square gap={16}>
+  return <Grid column={7} square gap={16} className='self-stretch'>
     {
       carCity.map(item => <TouchableOpacity key={item.name} className='r-1 items-center justify-center bg-white'
         onClick={() => onKey(item.name)}
@@ -68,7 +68,7 @@ const City = ({ province, onKey, onBackspace }) => {
     return Array(_empty < 0 ? 4 : _empty).fill(1)
   }, [citys.length])
 
-  return <Grid column={5} square gap={16}>
+  return <Grid column={5} square gap={16} className='self-stretch'>
     {
       citys.map(item => <TouchableOpacity key={item} className='r-1 items-center justify-center bg-white'
         onClick={() => onKey(item)}
@@ -91,8 +91,8 @@ const Key = ({ onKey, onBackspace }) => {
     ]
   }, [])
 
-  return <Column>
-    <Row className='gap-1'>
+  return <Column className='self-stretch items-center'>
+    <Row className='gap-1 self-stretch'>
       {
         num.map(item => <TouchableOpacity
           className='flex-grow bg-white r-1 items-center justify-center'
@@ -104,7 +104,7 @@ const Key = ({ onKey, onBackspace }) => {
         </TouchableOpacity>)
       }
     </Row>
-    <Grid column={9} gap={10} square className='mt-1'>
+    <Grid column={9} gap={10} square className='mt-1 self-stretch'>
       {
         az.map(item => <TouchableOpacity key={item}
           className='r-1 items-center justify-center bg-white'
@@ -166,14 +166,14 @@ export const LicensePlate = ({ onChange, ...props }) => {
   return <context.Provider value={state}>
     <Input onClick={() => setShow(true)} {...props} />
     {show && <PullView ref={pullView} masking={false} onClose={() => setShow(false)}>
-      <context.Provider value={state}>
-        <BoxShadow className='p-3 bg-page gap-3 rt-3' style={{ backgroundColor: '#f5f5f5' }}>
-          <Row justify='end'>
+      <BoxShadow className='p-3 bg-page gap-3 rt-3 items-center' style={{ backgroundColor: duxappTheme.pageColor }}>
+        <context.Provider value={state}>
+          <Row justify='end' items='center' self='stretch'>
             <Text type='primary' onClick={() => pullView.current.close()}>关闭</Text>
           </Row>
           <Keyboard />
-        </BoxShadow>
-      </context.Provider>
+        </context.Provider>
+      </BoxShadow>
     </PullView>}
   </context.Provider>
 }

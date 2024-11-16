@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { View, ScrollView } from '@tarojs/components'
-import { px } from '@/duxapp'
+import { View } from '@tarojs/components'
+import { px, ScrollView } from '@/duxapp'
 import './index.scss'
 
 const Row = ({
@@ -19,7 +19,7 @@ const Row = ({
 }) => {
   const lineStyle = useMemo(() => {
     const _style = {
-      borderStyle: lineType
+      borderTopStyle: lineType
     }
     if (first && last) {
 
@@ -31,7 +31,7 @@ const Row = ({
       _style.width = '50%'
     } else {
       _style.left = 0
-      _style.right = 0
+      _style.width = '100%'
     }
     return _style
   }, [first, last, lineType])
@@ -46,18 +46,20 @@ const Row = ({
   }, [index, item, onClick])
 
   return <View {...rootProps} className={`step-comp__item--row ${className || ''}`} style={style}>
-    {!!startSize && <View className='step-comp__item__start' style={{ height: px(startSize) }}>{renderStart?.({ item, index })}</View>}
-    <View className='step-comp__item__center--row'>
-      <View className='step-comp__item__line--row' style={lineStyle} />
-      <View className='step-comp__item__point'>
+    {!!startSize && <View className='step-comp__item__start items-center' style={{ height: px(startSize) }}>
+      {renderStart?.({ item, index })}
+    </View>}
+    <View className='step-comp__item__center--row self-stretch'>
+      <View className='step-comp__item__line--row items-center z-0' style={lineStyle} />
+      <View className='step-comp__item__point items-center z-1'>
         {
           renderPoint
             ? renderPoint(item, index)
-            : <View className='step-comp__item__point__point' style={{ backgroundColor: item?.pointColor || '#528EFF' }} />
+            : <View className='step-comp__item__point__point items-center' style={item?.pointColor ? { backgroundColor: item.pointColor } : {}} />
         }
       </View>
     </View>
-    <View className='step-comp__item__end'>{renderEnd?.({ item, index })}</View>
+    <View className='step-comp__item__end items-center'>{renderEnd?.({ item, index })}</View>
   </View>
 }
 
@@ -86,16 +88,16 @@ const Column = ({
 
     } else if (first) {
       _style.top = top
-      _style.bottom = 0
+      _style.height = '100%'
     } else if (last) {
       _style.top = 0
       _style.height = top
     } else {
       _style.top = 0
-      _style.bottom = 0
+      _style.height = '100%'
     }
     return _style
-  }, [first, last, pointTop])
+  }, [first, last, lineType, pointTop])
 
   const rootProps = useMemo(() => {
     if (onClick) {
@@ -106,15 +108,15 @@ const Column = ({
     return {}
   }, [index, item, onClick])
 
-  return <View {...rootProps} className={`step-comp__item--column ${className || ''}`} style={style}>
+  return <View {...rootProps} className={`step-comp__item--column self-stretch ${className || ''}`} style={style}>
     {!!startSize && <View className='step-comp__item__start' style={{ width: px(startSize) }}>{renderStart?.({ item, index })}</View>}
     <View className='step-comp__item__center--column'>
-      <View className='step-comp__item__line--column' style={lineStyle} />
-      <View className='step-comp__item__point' style={{ marginTop: px(pointTop) }}>
+      <View className='step-comp__item__line--column z-0 items-center' style={lineStyle} />
+      <View className='step-comp__item__point z-1 items-center' style={{ marginTop: px(pointTop) }}>
         {
           renderPoint
             ? renderPoint(item, index)
-            : <View className='step-comp__item__point__point' style={{ backgroundColor: item?.pointColor || '#528EFF' }} />
+            : <View className='step-comp__item__point__point items-center' style={item?.pointColor ? { backgroundColor: item.pointColor } : {}} />
         }
       </View>
     </View>
@@ -124,9 +126,9 @@ const Column = ({
 
 const RowContainer = ({ row, children }) => {
   if (row) {
-    return <ScrollView scrollX className='step-comp__row'>
+    return <ScrollView.Horizontal className='step-comp__row'>
       {children}
-    </ScrollView>
+    </ScrollView.Horizontal>
   }
   return children
 }
@@ -156,7 +158,6 @@ export function Step({
   // 线条类型
   lineType = 'solid',
   onItemClick,
-  className,
   style,
   itemClassName,
   itemStyle,
@@ -168,7 +169,7 @@ export function Step({
   const Item = row ? Row : Column
 
   return <RowContainer row={row}>
-    <View className={className} style={{ ...style, flexDirection: row ? 'row' : 'column' }} {...props}>
+    <View style={{ ...style, flexDirection: row ? 'row' : 'column', alignItems: 'center' }} {...props}>
       {
         data?.map((item, index) => {
           return <Item
@@ -182,7 +183,7 @@ export function Step({
             renderEnd={renderEnd}
             renderPoint={renderPoint}
             pointTop={pointTop}
-            className={itemClassName}
+            className={itemClassName || ''}
             style={itemStyle}
             lineType={lineType}
             onClick={onItemClick}

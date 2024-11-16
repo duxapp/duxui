@@ -4,11 +4,11 @@ import { font, px } from '@/duxapp/utils'
 import icons from './icons.json'
 import './index.scss'
 
-if (process.env.TARO_ENV === 'rn') {
+if (process.env.TARO_ENV === 'rn' || process.env.TARO_ENV === 'harmony') {
   font.loadLocal('DuxuiIcon', require('./DuxuiIcon.ttf'))
 }
 
-export const DuxuiIcon = ({ name, color, size, style, className, ...props }) => {
+export const DuxuiIcon = ({ name, color, size, style, className, __hmStyle, ...props }) => {
 
   const _style = useMemo(() => {
     const sty = { ...style }

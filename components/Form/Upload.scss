@@ -2,10 +2,13 @@
   &__item {
     background-color: $duxappPageColor;
     border-radius: 16px;
+    align-items: center;
+    gap: 8px;
 
     &--one {
       width: 160px;
       height: 160px;
+      align-self: flex-start;
     }
 
     &__image {

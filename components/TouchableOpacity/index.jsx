@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { Column } from '../Flex'
 import './index.scss'
 
-export const TouchableOpacity = ({ activeOpacity = 0.2, style, className, ...props }) => {
+export const TouchableOpacity = ({ activeOpacity = 0.2, style, className, __hmStyle, ...props }) => {
 
   const [touch, setTouch] = useState({ status: false, time: null })
 

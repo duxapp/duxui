@@ -1,9 +1,9 @@
 import { uploadFile as uploadFileTaro } from '@tarojs/taro'
 import md5 from 'crypto-js/md5'
+import { Platform } from '@/duxapp/utils/rn/util'
 
 const uploadFile = process.env.TARO_ENV === 'rn'
   ? (() => {
-    const { Platform } = require('react-native')
     const isAndroid = Platform.OS === 'android'
     const createFormData = (filePath, body = {}, name) => {
       const data = new FormData()

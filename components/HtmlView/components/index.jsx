@@ -30,8 +30,8 @@ export const HtmlView = ({
   }
 
   if (_html && typeof _html === 'object') {
-    return <LineEditorView blocks={_html.blocks} style={style} className={className} previewImage={previewImage} imageSpace={imageSpace} />
+    return <LineEditorView blocks={_html.blocks} style={style} className={className || ''} previewImage={previewImage} imageSpace={imageSpace} />
   }
 
-  return <RichText className={className} style={style} nodes={htmlReplace(html)} />
+  return <RichText className={className || ''} style={style} nodes={htmlReplace(html)} />
 }

@@ -20,10 +20,13 @@ const ModalContent = forwardRef(({ children, animation, overlayOpacity = 0.2, on
     }
   }))
 
-  return <View onClick={onClose} className='modal-view' style={{ backgroundColor: show ? `rgba(0, 0, 0, ${overlayOpacity})` : 'rgba(0, 0, 0, 0)' }}>
+  return <View onClick={onClose}
+    className='ModalView'
+    style={{ backgroundColor: show ? `rgba(0, 0, 0, ${overlayOpacity})` : 'rgba(0, 0, 0, 0)' }}
+  >
     <View
-      className={classNames('modal-view__main', {
-        'modal-view__main--show': show
+      className={classNames('ModalView__main items-center', {
+        'ModalView__main--show': show
       })}
       onClick={stopPropagation}
     >

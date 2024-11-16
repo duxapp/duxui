@@ -1,5 +1,5 @@
 import { previewImage } from '@tarojs/taro'
-import { Image as BaseImage } from '@tarojs/components'
+import { Image as TaroImage } from '@tarojs/components'
 import { createContext, useRef, useCallback, useContext, useMemo, useEffect, memo } from 'react'
 import classNames from 'classnames'
 import { noop } from '@/duxapp'
@@ -82,7 +82,7 @@ export const Image = memo(({
 
   if (square) {
     return <View className={classNames('Image--img-square__root Image', 'Image--' + radiusType, className)} style={style}>
-      <BaseImage
+      <TaroImage
         className={classNames('Image--img-square', process.env.TARO_ENV !== 'weapp' && 'Image--img-square--height')}
         mode='aspectFill'
         src={src}
@@ -91,7 +91,7 @@ export const Image = memo(({
       />
     </View>
   }
-  return <BaseImage
+  return <TaroImage
     className={classNames('Image', 'Image--' + radiusType, className)}
     mode='aspectFill'
     src={src}

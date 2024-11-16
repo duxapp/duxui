@@ -1,10 +1,13 @@
 .Grid {
   &__row {
     flex-direction: row;
+    align-items: center;
   }
   &__item {
+    /*  #ifndef harmony  */
     width: 0;
-    align-items: stretch;
+    /*  #endif  */
+    align-items: center;
   }
   &__square {
     aspect-ratio: 1;

@@ -88,7 +88,7 @@ export const Button = _props => {
         colors={color}
         useAngle
         angle={colorAngle}
-        className='absolute inset-0'
+        className='Button__linear z-0'
       />}
       {loading && <Loading
         color={_plain || (type === 'default' && !color) ? 'dark' : 'blank'}
@@ -101,7 +101,7 @@ export const Button = _props => {
           {...type === 'default' ? { color: 1 } : {}}
           numberOfLines={1}
           className={classNames(
-            'Button__text',
+            'Button__text z-0',
             (!_plain && type !== 'default' || color) && 'Button-c-white',
             'Button--fs-' + size
           )}

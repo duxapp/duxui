@@ -1,6 +1,7 @@
 import { useCallback, useState, forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
 import { View, Text } from '@tarojs/components'
 import { Layout, getRect, Absolute } from '@/duxapp'
+import { getSystemInfoSync } from '@tarojs/taro'
 import { DuxuiIcon } from '../DuxuiIcon'
 import './index.scss'
 
@@ -21,7 +22,7 @@ export const DropDown = forwardRef(({
     close: () => setShow(false)
   }))
 
-  const currentClass = useMemo(() => `dorpdown-${classKey++}`, [])
+  const currentClass = useMemo(() => `dropdown-${classKey++}`, [])
 
   const [show, setShow] = useState(false)
   const [position, setPosition] = useState({
@@ -59,7 +60,7 @@ export const DropDown = forwardRef(({
 
   const menuLayout = useCallback(layout => {
     (async () => {
-      const { windowWidth: width, windowHeight: height } = global.systemInfo
+      const { windowWidth: width, windowHeight: height } = getSystemInfoSync()
       const newposition = { ...clickSize.current, opacity: 1 }
       // 此处需要修改
       const { left: x, top: y, width: viewWidth, height: viewHeight } = await getRect('.' + currentClass)
@@ -79,17 +80,17 @@ export const DropDown = forwardRef(({
       {children}
     </View>
     {show && <Absolute>
-      <View className='dropdown__mask' onClick={close} />
-      <Layout className='dropdown__main' onLayout={menuLayout} style={position}>
+      <View className='DropDown__mask' onClick={close} />
+      <Layout className='DropDown__main' onLayout={menuLayout} style={position}>
         {
           renderContent ||
           menuList?.map((item, index) => {
             if (item.type === 'line') {
-              return <View key={index} className='dropdown__item--line' />
+              return <View key={index} className='DropDown__item--line ' />
             }
-            return <View className={`dropdown__item${select === index ? ' dropdown__item--select' : ''}`} key={item[rangeKey] || item} onClick={submit.bind(null, item, index)}>
-              <Text className='dropdown__item__text'>{item[rangeKey] || item}</Text>
-              {select === index && <DuxuiIcon name='direction_right' size={48} color='#F23E39' />}
+            return <View className={`DropDown__item${select === index ? ' DropDown__item--select' : ''}`} key={item[rangeKey] || item} onClick={submit.bind(null, item, index)}>
+              <Text className='DropDown__item__text'>{item[rangeKey] || item}</Text>
+              {select === index && <DuxuiIcon name='direction_right' size={48} className='text-primary' />}
             </View>
           })
         }

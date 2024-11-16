@@ -13,7 +13,7 @@ import './Upload.scss'
 
 let requestPermissionMessage
 if (process.env.TARO_ENV === 'rn') {
-  requestPermissionMessage = require('@/duxappReactNative/utils/rn/index.rn').requestPermissionMessage
+  requestPermissionMessage = require('@/duxappReactNative/utils/rn/index').requestPermissionMessage
 }
 
 export const UploadImages = ({
@@ -86,7 +86,6 @@ export const UploadImages = ({
       grow={!isOne}
       className={classNames('UIUplod__item', isOne && 'UIUplod__item--one')}
       justify='center'
-      items='center'
       onClick={!~progress && add}
       {...isOne ? { _designKey } : {}}
     >

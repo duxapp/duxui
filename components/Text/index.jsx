@@ -43,7 +43,7 @@ export const Text = memo(({
   }
 
   if (process.env.TARO_ENV !== 'rn' && numberOfLines > 1) {
-    _style['-webkit-line-clamp'] = numberOfLines
+    _style.WebkitLineClamp = numberOfLines
   }
 
   const cn = classNames(
@@ -61,7 +61,12 @@ export const Text = memo(({
     self && 'self-' + self,
     align && 'text-' + align,
     // 省略行数量
-    process.env.TARO_ENV === 'rn' ? '' : numberOfLines === 1 ? 'Text-ellipsis' : numberOfLines > 1 ? 'Text-ellipsis--more' : '',
+    process.env.TARO_ENV === 'rn'
+      ? '' : numberOfLines === 1
+        ? 'Text-ellipsis'
+        : numberOfLines > 1
+          ? 'Text-ellipsis--more'
+          : '',
     className
   )
 
