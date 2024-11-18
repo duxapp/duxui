@@ -1,7 +1,7 @@
 {
   "name": "duxui",
   "description": "DUXUI库",
-  "version": "1.0.54",
+  "version": "1.0.55",
   "dependencies": [
     "duxapp"
   ]

@@ -1,6 +1,6 @@
-# duxui
+![组件效果](https://duxapp.cn/assets/images/duxui-7708652baa055ffa6122759ff122c205.jpg)
 
-兼容小程序、APP、H5的移动端ui组件库，提供了50+个组件，帮助你快速完成业务
+兼容小程序、APP、鸿蒙、H5的移动端ui组件库，提供了60+个组件，帮助你快速完成业务
 
 ## 安装
 
@@ -12,13 +12,12 @@ yarn duxapp app add duxui
 
 ## 示例
 
-- 小程序 （小程序搜索 duxui）
+- 小程序  
+<img src="https://duxapp.cn/img/weapp/duxui.jpg" width="200" />  
+
 - APP https://app.share.dux.plus/cn.duxapp.duxui
-- H5 https://duxui.duxapp.cn
-
-## 文档
-
-[http://www.duxapp.cn/docs/duxui/start](http://www.duxapp.cn/docs/duxui/start)
+- H5 https://duxui.duxapp.cn/
+- 鸿蒙 需要自行运行代码并编译查看
 
 ## 示例代码
 
@@ -26,6 +25,14 @@ yarn duxapp app add duxui
 ```bash
 yarn duxapp app add duxuiExample
 ```
+
+如果你还没有 duxapp 项目，你可以使用下面的命令，快速创建一个 duxapp 项目
+
+```bash
+npx duxapp-cli create projectExample duxuiExample
+```
+
+然后根据运行结果提示，执行不同的命令，运行不同的端
 
 ## 组件库
 
@@ -75,6 +82,7 @@ yarn duxapp app add duxuiExample
 - NumberKeyboard 数字键盘
 - InputCode 验证码密码输入
 - LicensePlate 车牌号输入
+- Recorder 录音
 
 ### 展示组件
 - Text 文本
