@@ -1,6 +1,6 @@
 import { View } from '@tarojs/components'
 import { px } from '@/duxapp'
-import { useMemo, Children } from 'react'
+import { useMemo, Children, isValidElement } from 'react'
 import classNames from 'classnames'
 import './index.scss'
 
@@ -61,7 +61,7 @@ const DividerGroup = ({
 }) => {
   return Children.map(children, (child, index) => {
     return <>
-      {index > 0 && <>
+      {index > 0 && isValidElement(child) && <>
         {
           vertical
             ? <Vertical {...props} />

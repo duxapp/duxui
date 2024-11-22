@@ -158,7 +158,7 @@ const ItemView = ({
 
 const mediaImage = ['.jpg', '.png', '.gif', '.jpeg', '.webp']
 
-const isImage = url => mediaImage.some(v => url.split('?')[0].endsWith(v))
+const isImage = url => mediaImage.some(v => url.split('?')[0].toLowerCase().endsWith(v))
 
 export const UploadImage = ({ onChange, value, ...props }) => {
 

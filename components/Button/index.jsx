@@ -1,7 +1,7 @@
 import { View, Button as TaroButton } from '@tarojs/components'
 import classNames from 'classnames'
 import { useMemo } from 'react'
-import { Loading } from '@/duxapp'
+import { isPlatformMini, Loading } from '@/duxapp'
 import { duxuiTheme, duxuiHook } from '@/duxui/utils'
 import { LinearGradient } from '../LinearGradient'
 import { Text } from '../Text'
@@ -13,7 +13,7 @@ const RootView = ({
   className,
   ...props
 }) => {
-  if (process.env.TARO_ENV === 'weapp' && openType) {
+  if (isPlatformMini && openType) {
     return <TaroButton openType={openType} style={style} className={classNames('button-clean', className)} {...props} />
   }
   return <View style={style} className={className} {...props} />
