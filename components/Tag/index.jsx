@@ -18,7 +18,7 @@ export const Tag = ({
   type = 'primary',
   size = 'm',
   color,
-  texColor,
+  texColor = type === 'default' ? 3 : undefined,
   plain,
   radiusType = duxuiTheme.tag.radiusType,
   className,

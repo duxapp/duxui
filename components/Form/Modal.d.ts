@@ -184,6 +184,13 @@ interface ModalFormsProps {
    * 重置按钮重置的方式
    */
   resetMode?: keyof resetMode
+
+  /**
+   * 在用户点击提交之前执行的函数，这可以是一个异步函数
+   * 如果要阻止用户提交 需要抛出一个错误
+   * autoSubmit 为 false 的情况下生效
+   */
+  onSubmitBefore?: (value: {[key: string]: any}) => Promise<{}>
 }
 
 /**

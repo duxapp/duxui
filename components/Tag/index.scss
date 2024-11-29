@@ -11,6 +11,10 @@
     padding: 10px 14px;
   }
 
+  &--default {
+    background-color: $duxappPageColor;
+  }
+
   &--primary {
     background-color: $duxappPrimaryColor;
   }

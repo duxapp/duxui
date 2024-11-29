@@ -31,7 +31,7 @@ export const PickerSelect = ({
     defaultValue={defaultValue}
     {...modalFormProps}
     _designKey={_designKey}
-  />
+  >{children}</ModalForm>
 }
 
 const SelectRenderForm = props => {
@@ -81,7 +81,7 @@ export const PickerMultiSelect = ({
     defaultValue={defaultValue}
     {...modalFormProps}
     _designKey={_designKey}
-  />
+  >{children}</ModalForm>
 }
 
 export const PickerDate = ({

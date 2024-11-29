@@ -204,6 +204,7 @@ export const ModalForms = ({
   side,
   resetMode,
   autoSubmit,
+  onSubmitBefore,
   ...props
 }) => {
 
@@ -212,6 +213,9 @@ export const ModalForms = ({
   const [selfValue, setSelfValue] = useState({})
 
   const [show, setShow] = useState()
+  const refs = useRef({})
+
+  refs.current = { onSubmitBefore, setValues }
 
   useMemo(() => setSelfValue(deepCopy(values)), [values])
 
@@ -223,8 +227,8 @@ export const ModalForms = ({
       ...old,
       [field]: value
     }))
-    autoSubmit && setValues?.({ ...selfValue, [field]: value })
-  }, [autoSubmit, selfValue, setValues])
+    autoSubmit && refs.current.setValues?.({ ...selfValue, [field]: value })
+  }, [autoSubmit, selfValue])
 
   const selfSetValues = useCallback(data => {
     setSelfValue(old => ({
@@ -251,14 +255,14 @@ export const ModalForms = ({
     if (mode === 'prev') {
       const newValue = deepCopy(values)
       setSelfValue(newValue)
-      autoSubmit && setValues?.(newValue)
+      autoSubmit && refs.current.setValues?.(newValue)
     } else if (mode === 'clear') {
       const _values = deepCopy(values)
       fields.current.forEach(field => {
         delete _values[field]
       })
       setSelfValue(_values)
-      autoSubmit && setValues?.(_values)
+      autoSubmit && refs.current.setValues?.(_values)
     } else {
       // default 重置到表单设置的默认值
       const _values = deepCopy(values)
@@ -266,14 +270,22 @@ export const ModalForms = ({
         _values[field] = defaultValues[field]
       })
       setSelfValue(_values)
-      autoSubmit && setValues?.(_values)
+      autoSubmit && refs.current.setValues?.(_values)
     }
-  }, [values, autoSubmit, setValues, defaultValues])
+  }, [values, autoSubmit, defaultValues])
 
-  const submit = useCallback(() => {
-    setValues?.(selfValue)
-    setShow(false)
-  }, [setValues, selfValue])
+  const submit = useCallback(async () => {
+    try {
+      const task = refs.current.onSubmitBefore?.(selfValue)
+      if (task instanceof Promise) {
+        await task
+      }
+      refs.current.setValues?.(selfValue)
+      setShow(false)
+    } catch (error) {
+      console.log('ModalForms:提交被阻止', error)
+    }
+  }, [selfValue])
 
   const child = useMemo(() => {
     if (isValidElement(children)) {
