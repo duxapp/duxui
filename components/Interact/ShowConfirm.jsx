@@ -4,7 +4,6 @@ import { Divider } from '../Divider'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import './ShowConfirm.scss'
-import { px } from '@/duxapp'
 
 export const ShowConfirm = ({
   title,
@@ -27,7 +26,7 @@ export const ShowConfirm = ({
   return (
     <View className='DuxuiShowConfirm'>
       {renderTop}
-      <View className='DuxuiShowConfirm__main items-center'>
+      <View className='DuxuiShowConfirm__main'>
         {!!title && <Text size={6} bold align='center' className='mh-3'>{title}</Text>}
         {content && <>{isValidElement(content) ? content : <Text className='DuxuiShowConfirm__content' color={2} size={3} align='center'>{content}</Text>}</>}
         <Row className='DuxuiShowConfirm__btns'>

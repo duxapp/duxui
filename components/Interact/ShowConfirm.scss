@@ -14,6 +14,9 @@
     border-radius: 32px;
     padding-top: 48px;
     z-index: 100;
+    /*  #ifdef harmony  */
+    align-items: center;
+    /*  #endif  */
   }
 
   &__content {
