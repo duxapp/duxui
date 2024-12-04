@@ -5,6 +5,7 @@ import { isPlatformMini, Loading } from '@/duxapp'
 import { duxuiTheme, duxuiHook } from '@/duxui/utils'
 import { LinearGradient } from '../LinearGradient'
 import { Text } from '../Text'
+import { TouchableOpacity } from '../TouchableOpacity'
 import './index.scss'
 
 const RootView = ({
@@ -16,7 +17,7 @@ const RootView = ({
   if (isPlatformMini && openType) {
     return <TaroButton openType={openType} style={style} className={classNames('button-clean', className)} {...props} />
   }
-  return <View style={style} className={className} {...props} />
+  return <TouchableOpacity activeOpacity={0.5} style={style} className={className} {...props} />
 }
 
 export const Button = _props => {

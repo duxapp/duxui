@@ -18,6 +18,7 @@ export class Sign extends Component {
   canvasID = `ui-sign-${++Sign.key}`
 
   layout = res => {
+    this.layoutData = res
     this.setState({
       width: res.width,
       height: res.height,
@@ -31,10 +32,12 @@ export class Sign extends Component {
             const canvas = _res[0].node
             const ctx = canvas.getContext('2d')
 
-            const dpr = getSystemInfoSync().pixelRatio
-            canvas.width = _res[0].width * dpr
-            canvas.height = _res[0].height * dpr
-            ctx.scale(dpr, dpr)
+            if (process.env.TARO_ENV !== 'h5') {
+              const dpr = getSystemInfoSync().pixelRatio
+              canvas.width = _res[0].width * dpr
+              canvas.height = _res[0].height * dpr
+              ctx.scale(dpr, dpr)
+            }
 
             this.ctx = ctx
             this.canvas = canvas
@@ -57,20 +60,30 @@ export class Sign extends Component {
   touchs = []
   touchCount = 0
 
+  getPos = e => {
+    const touch = e.touches[0]
+    if (process.env.TARO_ENV !== 'h5') {
+
+      return {
+        x: touch.x,
+        y: touch.y,
+      }
+    }
+    return {
+      x: touch.pageX - this.layoutData.left,
+      y: touch.pageY - this.layoutData.top,
+    }
+
+  }
+
   touchStart = e => {
     e.preventDefault()
-    this.touchs.push({
-      x: e.touches[0].x,
-      y: e.touches[0].y,
-    })
+    this.touchs.push(this.getPos(e))
   }
 
   touchMove = e => {
     e.preventDefault()
-    this.touchs.push({
-      x: e.touches[0].x,
-      y: e.touches[0].y,
-    })
+    this.touchs.push(this.getPos(e))
     this.touchCount++
     if (this.touchs.length >= 2) {
       this.draw()
@@ -93,6 +106,7 @@ export class Sign extends Component {
     }
     const point1 = this.touchs[0]
     const point2 = this.touchs[1]
+
     // 删除第一个元素
     this.touchs.shift()
     ctx.moveTo(point1.x, point1.y)

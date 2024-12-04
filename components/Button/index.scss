@@ -126,7 +126,12 @@
     /*  #endif  */
     /*  #ifndef harmony  */
     left: 0;
+    /*  #ifndef rn  */
     width: 100%;
+    /*  #endif  */
+    /*  #ifdef rn  */
+    width: 110%;
+    /*  #endif  */
     /*  #endif  */
     height: 100%;
   }
