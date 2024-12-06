@@ -7,20 +7,17 @@
   z-index: 10;
   align-items: center;
   justify-content: center;
-  /*postcss-pxtransform rn eject enable*/
-  transition: background-color 0.2s;
-  /*postcss-pxtransform rn eject disable*/
+
+  &__mask {
+    opacity: 0;
+    background-color: #000;
+  }
+
   &__main {
-    /*postcss-pxtransform rn eject enable*/
-    transition: all 0.2s;
-    transform: scale3d(0.1, 0.1, 1);
+    transform: scaleX(0.1) scaleY(0.1);
     opacity: 0.2;
-    /*postcss-pxtransform rn eject disable*/
-    &--show {
-      /*postcss-pxtransform rn eject enable*/
-      transform: scale3d(1, 1, 1);
-      opacity: 1;
-      /*postcss-pxtransform rn eject disable*/
-    }
+    /*  #ifdef harmony  */
+    align-items: center;
+    /*  #endif  */
   }
 }

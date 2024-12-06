@@ -1,11 +1,15 @@
 .ShowMessage {
   position: absolute;
   left: 24px;
-  width: 702px;
-  padding: 24px;
-  background-color: #fff;
-  align-items: start;
   z-index: 99;
+  transform: translateY(-100px);
+
+  &__main {
+    width: 702px;
+    padding: 24px;
+    background-color: #fff;
+    align-items: start;
+  }
 
   &__title {
     font-size: 32px;

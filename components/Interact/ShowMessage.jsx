@@ -1,6 +1,6 @@
 import { Text } from '@tarojs/components'
-import { useEffect, useRef } from 'react'
-import { asyncTimeOut, nav, route } from '@/duxapp/utils'
+import { useEffect, useRef, useState } from 'react'
+import { asyncTimeOut, nav, route, Animated, nextTick, pxNum } from '@/duxapp'
 import { getSystemInfoSync } from '@tarojs/taro'
 import { BoxShadow } from '../BoxShadow'
 import './ShowMessage.scss'
@@ -12,7 +12,26 @@ export const ShowMessage = ({
   onTopViewRemove
 }) => {
 
-  const { statusBarHeight = 0 } = getSystemInfoSync()
+  let { statusBarHeight = 0 } = getSystemInfoSync()
+
+  if (!statusBarHeight) {
+    statusBarHeight = 0
+  }
+
+  const [mainAn, setMainAn] = useState(Animated.defaultState)
+
+  const an = useRef(null)
+
+  useEffect(() => {
+    nextTick(() => {
+      if (!an.current) {
+        an.current = Animated.create({
+          duration: 100
+        })
+      }
+      setMainAn(an.current.translateY(0).step().export())
+    })
+  }, [])
 
   const timer = useRef(null)
 
@@ -31,14 +50,22 @@ export const ShowMessage = ({
     if (timer.current) {
       clearTimeout(timer.current)
     }
-    timer.current = setTimeout(() => {
+    timer.current = setTimeout(async () => {
+      setMainAn(an.current.translateY(pxNum(-150)).step().export())
+      await asyncTimeOut(150)
       onTopViewRemove?.()
     }, 3000)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, content, url])
 
-  return <BoxShadow opacity={0.2} onClick={() => nav(url)} className='ShowMessage' radius={16} style={{ top: statusBarHeight + 10 }}>
-    <Text className='ShowMessage__title'>{title}</Text>
-    {!!content && <Text className='ShowMessage__content'>{content}</Text>}
-  </BoxShadow>
+  return <Animated.View
+    animation={mainAn}
+    style={{ top: statusBarHeight + 10 }}
+    className='ShowMessage'
+  >
+    <BoxShadow opacity={0.2} onClick={() => nav(url)} className='ShowMessage__main' radius={16}>
+      <Text className='ShowMessage__title'>{title}</Text>
+      {!!content && <Text className='ShowMessage__content'>{content}</Text>}
+    </BoxShadow>
+  </Animated.View>
 }

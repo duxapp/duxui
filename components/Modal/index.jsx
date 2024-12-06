@@ -1,37 +1,58 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react'
 import { View } from '@tarojs/components'
-import { stopPropagation } from '@/duxapp/utils'
-import classNames from 'classnames'
-import { TopView } from '@/duxapp'
+import { nextTick } from '@/duxapp/utils'
+import { Animated, TopView } from '@/duxapp'
 import './index.scss'
 
-const ModalContent = forwardRef(({ children, animation, overlayOpacity = 0.2, onClose }, ref) => {
-  const [show, setShow] = useState(!animation)
+const ModalContent = forwardRef(({ children, overlayOpacity = 0.2, onClose }, ref) => {
 
-  useEffect(() => {
-    setTimeout(() => {
-      setShow(true)
-    }, 50)
-  }, [])
+  const [mainAn, setMainAn] = useState(Animated.defaultState)
+
+  const [maskAn, setMaskAn] = useState(Animated.defaultState)
+
+  const an = useRef(null)
+
+  const refs = useRef({})
+  refs.current.onClose = onClose
+  refs.current.overlayOpacity = overlayOpacity
 
   useImperativeHandle(ref, () => ({
-    hide() {
-      setShow(false)
+    close: () => {
+      setMainAn(an.current.scale(0.1).opacity(0.2).step().export())
+      setMaskAn(an.current.opacity(0).step().export())
     }
   }))
 
-  return <View onClick={onClose}
+  useEffect(() => {
+    nextTick(() => {
+      if (!an.current) {
+        an.current = Animated.create({
+          duration: 150,
+          timingFunction: 'ease-out'
+        })
+      }
+      setMainAn(an.current.scale(1).opacity(1).step().export())
+      setMaskAn(an.current.opacity(refs.current.overlayOpacity).step().export())
+    })
+  }, [])
+
+  return <View
     className='ModalView'
-    style={{ backgroundColor: show ? `rgba(0, 0, 0, ${overlayOpacity})` : 'rgba(0, 0, 0, 0)' }}
   >
+    <Animated.View
+      animation={maskAn}
+      className='inset-0 absolute ModalView__mask'
+    />
     <View
-      className={classNames('ModalView__main items-center', {
-        'ModalView__main--show': show
-      })}
-      onClick={stopPropagation}
+      className='inset-0 absolute'
+      onClick={onClose}
+    />
+    <Animated.View
+      animation={mainAn}
+      className='ModalView__main'
     >
       {children}
-    </View>
+    </Animated.View>
   </View>
 })
 
@@ -47,12 +68,12 @@ export const Modal = ({ children, show, animation = true, maskClosable = true, o
   const close = useCallback(() => {
     if (maskClosable) {
       if (animation) {
-        ref.current.hide()
+        ref.current.close()
         setTimeout(() => {
           refs.current.onClose?.()
           action.current.remove()
           action.current = null
-        }, 200)
+        }, 150)
       } else {
         refs.current.onClose?.()
         action.current.remove()
@@ -69,7 +90,7 @@ export const Modal = ({ children, show, animation = true, maskClosable = true, o
 
   useEffect(() => {
     if (show) {
-      const ele = <ModalContent ref={ref} animation={animation} onClose={close} overlayOpacity={overlayOpacity}>{children}</ModalContent>
+      const ele = <ModalContent ref={ref} onClose={close} overlayOpacity={overlayOpacity}>{children}</ModalContent>
       if (action.current) {
         action.current.update(ele)
       } else {
@@ -77,7 +98,7 @@ export const Modal = ({ children, show, animation = true, maskClosable = true, o
       }
     } else if (!show && action.current) {
       if (animation) {
-        ref.current.hide()
+        ref.current.close()
         setTimeout(() => {
           action.current.remove()
           action.current = null

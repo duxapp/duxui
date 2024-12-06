@@ -4,6 +4,7 @@ import { Divider } from '../Divider'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import './ShowConfirm.scss'
+import { Modal } from '../Modal'
 
 export const ShowConfirm = ({
   title,
@@ -24,7 +25,7 @@ export const ShowConfirm = ({
   }, [])
 
   return (
-    <View className='DuxuiShowConfirm'>
+    <Modal show maskClosable={false}>
       {renderTop}
       <View className='DuxuiShowConfirm__main'>
         {!!title && <Text size={6} bold align='center' className='mh-3'>{title}</Text>}
@@ -42,6 +43,6 @@ export const ShowConfirm = ({
         </Row>
       </View>
       {renderBottom}
-    </View>
+    </Modal>
   )
 }

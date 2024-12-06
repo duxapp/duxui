@@ -18,7 +18,6 @@ export class Sign extends Component {
   canvasID = `ui-sign-${++Sign.key}`
 
   layout = res => {
-    this.layoutData = res
     this.setState({
       width: res.width,
       height: res.height,
@@ -42,7 +41,7 @@ export class Sign extends Component {
             this.ctx = ctx
             this.canvas = canvas
 
-            const { color = '#333333' } = this.props
+            const { color = '#333' } = this.props
             //设置线的颜色
             ctx.strokeStyle = color
             //设置线的宽度
@@ -63,15 +62,15 @@ export class Sign extends Component {
   getPos = e => {
     const touch = e.touches[0]
     if (process.env.TARO_ENV !== 'h5') {
-
       return {
         x: touch.x,
-        y: touch.y,
+        y: touch.y
       }
     }
+    const rect = e.target.getBoundingClientRect()
     return {
-      x: touch.pageX - this.layoutData.left,
-      y: touch.pageY - this.layoutData.top,
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
     }
 
   }
