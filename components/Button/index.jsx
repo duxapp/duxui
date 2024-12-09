@@ -10,6 +10,7 @@ import './index.scss'
 
 const RootView = ({
   openType,
+  disabled,
   style,
   className,
   ...props
@@ -17,7 +18,8 @@ const RootView = ({
   if (isPlatformMini && openType) {
     return <TaroButton openType={openType} style={style} className={classNames('button-clean', className)} {...props} />
   }
-  return <TouchableOpacity activeOpacity={0.5} style={style} className={className} {...props} />
+  const RenderView = disabled ? View : TouchableOpacity
+  return <RenderView activeOpacity={0.5} style={style} className={className} {...props} />
 }
 
 export const Button = _props => {
@@ -67,6 +69,7 @@ export const Button = _props => {
 
   return <duxuiHook.Render mark='Button' option={{ props: _props, linearGradient, plain: _plain, viewStyle, selfTextStyle }}>
     <RootView
+      disabled={disabled}
       {...porps}
       {...(disabled || !onClick ? {} : { onClick })}
       className={classNames(

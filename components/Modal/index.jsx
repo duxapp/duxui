@@ -58,6 +58,8 @@ const ModalContent = forwardRef(({ children, overlayOpacity = 0.2, onClose }, re
 
 export const Modal = ({ children, show, animation = true, maskClosable = true, overlayOpacity, onClose, group }) => {
 
+  console.warn('Modal：组件将在不久后删除，请使用 PullView，有一样的功能')
+
   const action = useRef(null)
 
   const ref = useRef(null)

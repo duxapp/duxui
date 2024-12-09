@@ -1,10 +1,10 @@
 import { View } from '@tarojs/components'
 import { useEffect, isValidElement } from 'react'
+import { PullView } from '@/duxapp'
 import { Divider } from '../Divider'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import './ShowConfirm.scss'
-import { Modal } from '../Modal'
 
 export const ShowConfirm = ({
   title,
@@ -25,7 +25,7 @@ export const ShowConfirm = ({
   }, [])
 
   return (
-    <Modal show maskClosable={false}>
+    <PullView mask side='center' duration={120}>
       {renderTop}
       <View className='DuxuiShowConfirm__main'>
         {!!title && <Text size={6} bold align='center' className='mh-3'>{title}</Text>}
@@ -43,6 +43,6 @@ export const ShowConfirm = ({
         </Row>
       </View>
       {renderBottom}
-    </Modal>
+    </PullView>
   )
 }
