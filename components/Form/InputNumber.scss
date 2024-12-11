@@ -1,0 +1,14 @@
+.InputNumber {
+  &__btn {
+    padding: 0 16px;
+
+    &--disabled {
+      opacity: 0.5;
+    }
+  }
+
+  &__value {
+    min-width: 80px;
+    padding: 8px;
+  }
+}

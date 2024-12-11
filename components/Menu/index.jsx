@@ -1,5 +1,5 @@
-import { useCallback, useState, createContext, useContext, useRef, forwardRef, useImperativeHandle, useMemo } from 'react'
-import { Layout, Absolute, duxappTheme } from '@/duxapp'
+import { useCallback, useState, createContext, useContext, useRef, forwardRef, useImperativeHandle, useMemo, useEffect } from 'react'
+import { Layout, Absolute, duxappTheme, Animated, nextTick, pxNum, asyncTimeOut, transformStyle, px } from '@/duxapp'
 import classNames from 'classnames'
 import { getSystemInfoSync } from '@tarojs/taro'
 import { Column, Row } from '../Flex'
@@ -125,13 +125,17 @@ export const Menu = ({
    */
   const itemClicks = useRef({})
 
+  // 调用内部方法关闭弹窗
+  const pullContent = useRef()
+
   const [pullIndexs, setPullIndexs] = useState([])
 
   const callback = useRef([])
   const option = useRef(null)
-  const itemClick = useCallback(_option => {
+  const itemClick = useCallback(async _option => {
     callback.current[1]?.('点击了其他菜单')
     if (_option.close) {
+      await pullContent.current.close()
       setShow(-1)
       option.current = null
       // 出发子元素菜单的这个点击事件
@@ -145,6 +149,7 @@ export const Menu = ({
       _option.index = indexs.current.show[pullIndex]
     }
     if (option.current?.index === _option.index) {
+      await pullContent.current.close()
       setShow(-1)
       option.current = null
       return Promise.reject('关闭菜单')
@@ -163,7 +168,8 @@ export const Menu = ({
     }
   }, [])
 
-  const valueClick = useCallback(item => {
+  const valueClick = useCallback(async item => {
+    await pullContent.current.close(true)
     callback.current[0](item)
     callback.current = []
     option.current = null
@@ -206,63 +212,154 @@ export const Menu = ({
         {children}
       </menuContext.Provider>
     </Layout>
-    {!!~show && <Absolute>
-      <Column
-        className='absolute left-0 top-0 w-full items-center'
-        style={{ height: layout.top + layout.height }}
-        onClick={close}
-      />
-      <Column
-        className='Menu__mask absolute left-0 bottom-0 w-full items-center'
-        style={{ height: getSystemInfoSync().screenHeight - (layout.top + layout.height) }}
-        onClick={close}
-      />
-      <Row className={classNames('Menu absolute', className)}
-        items='center'
-        style={{
-          top: layout.top,
-          left: layout.left,
-          width: layout.width,
-          height: layout.height
-        }}
-      >
-        <formContext.Provider value={form}>
-          <menuContext.Provider
-            value={{
-              itemClick,
-              showIndex: ~show ? pullIndexs[indexs.current.show.indexOf(show)] : show,
-              onIndex: pullIndex,
-              pull: true
-            }}
-          >
-            {children}
-          </menuContext.Provider>
-        </formContext.Provider>
-      </Row>
-      <Column
-        className={classNames('Menu__content absolute', round && 'Menu__content--round')}
-        style={{
-          top: layout.height + layout.top,
-          left: layout.left,
-          width: layout.width
-        }}
-      >
-        {
-          option.current.children ||
-          <Grid column={option.current.column} gap={36} className='self-stretch'>
-            {
-              option.current.options.map(item => <Text
-                align={option.current.align}
-                key={item.value}
-                type={item.value === option.current.value ? 'primary' : void 0}
-                onClick={() => valueClick(item)}
-              >{item.name}</Text>)
-            }
-          </Grid>
-        }
-      </Column>
-    </Absolute>}
+    {
+      !!~show && <PullContent
+        ref={pullContent}
+        option={option}
+        layout={layout}
+        className={className}
+        form={form}
+        itemClick={itemClick}
+        valueClick={valueClick}
+        show={show}
+        indexs={indexs}
+        pullIndexs={pullIndexs}
+        pullIndex={pullIndex}
+        round={round}
+        onClose={close}
+      >{children}</PullContent>
+    }
   </>
 }
+
+const duration = 100
+
+const PullContent = forwardRef(({
+  option,
+  layout,
+  className,
+  form,
+  itemClick,
+  valueClick,
+  show,
+  indexs,
+  pullIndexs,
+  pullIndex,
+  children,
+  round,
+  onClose
+}, ref) => {
+
+  const [mainAn, setMainAn] = useState(Animated.defaultState)
+
+  const [maskAn, setMaskAn] = useState(Animated.defaultState)
+
+  const ans = useRef()
+
+  const refs = useRef({})
+  refs.current.onClose = onClose
+
+  const close = useCallback(async (noOnClose) => {
+    let an = ans.current.main
+    setMainAn(an.translateY(pxNum(-100)).opacity(0).step().export())
+    setMaskAn(ans.current.mask.opacity(0).step().export())
+    await asyncTimeOut(duration)
+    noOnClose !== true && refs.current.onClose?.()
+  }, [])
+
+  useEffect(() => {
+    nextTick(() => {
+      if (!ans.current) {
+        ans.current = {
+          main: Animated.create({
+            duration,
+            timingFunction: 'ease-in-out'
+          }),
+          mask: Animated.create({
+            duration,
+            timingFunction: 'ease-in-out'
+          })
+        }
+      }
+      setMainAn(ans.current.main.translateY(0).opacity(1).step().export())
+      setMaskAn(ans.current.mask.opacity(0.5).step().export())
+    })
+  }, [])
+
+  useImperativeHandle(ref, () => {
+    return {
+      close
+    }
+  })
+
+  const screenHeight = getSystemInfoSync().screenHeight
+
+  return <Absolute>
+    <Column
+      className='absolute left-0 top-0 w-full items-center'
+      style={{ height: layout.top + layout.height }}
+      onClick={close}
+    />
+    <Animated.View
+      animation={maskAn}
+      className='Menu__mask absolute left-0 bottom-0 w-full items-center'
+      style={{ height: screenHeight - (layout.top + layout.height) }}
+    />
+    <Column
+      className='Menu__mask absolute left-0 bottom-0 w-full items-center'
+      style={{ height: screenHeight - (layout.top + layout.height) }}
+      onClick={close}
+    />
+    <Animated.View
+      animation={mainAn}
+      className={classNames('Menu__content absolute', round && 'Menu__content--round')}
+      style={{
+        top: layout.height + layout.top,
+        left: layout.left,
+        width: layout.width,
+        transform: transformStyle({
+          translateY: px(-100)
+        })
+      }}
+    >
+      {
+        option.current.children ||
+        <Grid column={option.current.column} gap={36} className='self-stretch'>
+          {
+            option.current.options.map(item => <Text
+              align={option.current.align}
+              key={item.value}
+              type={item.value === option.current.value ? 'primary' : void 0}
+              onClick={() => valueClick(item)}
+            >{item.name}</Text>)
+          }
+        </Grid>
+      }
+    </Animated.View>
+
+    <Row className={classNames('Menu absolute', className)}
+      items='center'
+      style={{
+        top: layout.top,
+        left: layout.left,
+        width: layout.width,
+        height: layout.height
+      }}
+    >
+      <formContext.Provider value={form}>
+        <menuContext.Provider
+          value={{
+            itemClick,
+            showIndex: ~show ? pullIndexs[indexs.current.show.indexOf(show)] : show,
+            onIndex: pullIndex,
+            pull: true
+          }}
+        >
+          {children}
+        </menuContext.Provider>
+      </formContext.Provider>
+    </Row>
+  </Absolute>
+})
 
 Menu.Item = MenuItem

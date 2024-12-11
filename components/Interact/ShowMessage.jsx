@@ -1,15 +1,16 @@
 import { Text } from '@tarojs/components'
 import { useEffect, useRef, useState } from 'react'
-import { asyncTimeOut, nav, route, Animated, nextTick, pxNum } from '@/duxapp'
+import { asyncTimeOut, nav, route, Animated, nextTick, pxNum, currentPage, TopView } from '@/duxapp'
 import { getSystemInfoSync } from '@tarojs/taro'
 import { BoxShadow } from '../BoxShadow'
 import './ShowMessage.scss'
 
-export const ShowMessage = ({
+const ShowMessage = ({
   url,
   title,
   content,
-  onTopViewRemove
+  onTopViewRemove,
+  onRemove
 }) => {
 
   let { statusBarHeight = 0 } = getSystemInfoSync()
@@ -58,6 +59,10 @@ export const ShowMessage = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, content, url])
 
+  useEffect(() => {
+    return () => onRemove?.()
+  }, [onRemove])
+
   return <Animated.View
     animation={mainAn}
     style={{ top: statusBarHeight + 10 }}
@@ -69,3 +74,43 @@ export const ShowMessage = ({
     </BoxShadow>
   </Animated.View>
 }
+
+/**
+ * 在页面顶部显示一个提示消息，三秒后或者页面跳转时将会自动关闭
+ * @param {string} title 提示标题
+ * @param {string} content 提示详情
+ * @param {string} url 点击跳转链接
+ * @returns
+ */
+export const message = (() => {
+  const pages = {}
+  return (title, content, url) => {
+
+    if (!title) {
+      return console.log('message: 请传入标题')
+    }
+
+    const onClose = () => {
+      pages[page].remove()
+      delete pages[page]
+    }
+
+    const page = currentPage()
+    const val = [
+      ShowMessage,
+      {
+        title, content, url,
+        onRemove: () => {
+          delete pages[page]
+        }
+      }
+    ]
+    if (!pages[page]) {
+      pages[page] = TopView.add(val)
+    } else {
+      pages[page].update(val)
+    }
+
+    return onClose
+  }
+})();

@@ -1,7 +1,7 @@
-import { useCallback, useRef, useState, createContext, useContext as useReactContext, useMemo } from 'react'
+import { useCallback, useRef, useState, createContext, useContext as useReactContext, useMemo, useEffect } from 'react'
 import { View, Text, Input, Image } from '@tarojs/components'
-import { noop } from '@/duxapp/utils/util'
-import { ScrollView, Layout } from '@/duxapp'
+import { noop, px, pxNum, transformStyle } from '@/duxapp/utils/util'
+import { ScrollView, Layout, Absolute } from '@/duxapp'
 import classNames from 'classnames'
 import searchIcon from './images/search.png'
 import './index.scss'
@@ -48,6 +48,10 @@ export const Elevator = ({
   ...props
 }) => {
 
+  const [select, setSelect] = useState(-1)
+  const currentSelect = useRef(select)
+  currentSelect.current = select
+
   const [scrollTop, setScrollTop] = useState(0)
 
   const [keyword, setKeyword] = useState('')
@@ -67,21 +71,51 @@ export const Elevator = ({
 
   const layouts = useRef([])
 
+  const timer = useRef()
+
+  const navLayout = useRef()
+
+  useEffect(() => {
+    return () => timer.current && clearTimeout(timer.current)
+  }, [])
+
   const layout = useCallback((e, index) => {
     layouts.current[index] = e.height
   }, [])
 
   const toGroup = useCallback(index => {
-    setScrollTop(layouts.current.slice(0, index + 1).reduce((prev, current) => prev + current, 0))
+    if (currentSelect.current === index) {
+      return
+    }
+    currentSelect.current = index
+    setSelect(index)
+    timer.current && clearTimeout(timer.current)
+    if (index !== -1) {
+      timer.current = setTimeout(() => {
+        setSelect(-1)
+      }, 1000)
+      setScrollTop(layouts.current.slice(0, index + 1).reduce((prev, current) => prev + current, 0))
+    }
   }, [])
 
-  // const move = useCallback(e => {
-  //   console.log(e)
-  // }, [])
-
-  // const moveEnd = useCallback(e => {
-  //   console.log(e)
-  // }, [])
+  const move = useCallback(e => {
+    const touch = (e.touches || e.nativeEvent?.touches)?.[0]
+    if (!touch) {
+      return
+    }
+    const len = list.length
+    let index = -1
+    const y = touch.pageY - navLayout.current.top
+    if (y > pxNum(8)) {
+      const maxHeight = navLayout.current.height - pxNum(16)
+      const itemHeight = maxHeight / len
+      index = (y / itemHeight) | 0
+    }
+    if (index > len - 1) {
+      index = len - 1
+    }
+    toGroup(index)
+  }, [list.length, toGroup])
 
   return <context.Provider value={{ keyword, setKeyword }}>
     <View className={`Elevator ${className}`} style={style} {...props}>
@@ -103,18 +137,35 @@ export const Elevator = ({
         {resultList.length === 0 && renderEmpty}
         {renderFooter}
       </ScrollView>
-      {showNav && <View className='Elevator__nav'>
-        <View
+      {showNav && <View className='Elevator__nav'
+        onTouchMove={move}
+      >
+        <Layout
+          onLayout={e => navLayout.current = e}
           className='Elevator__nav__content'
-        // onTouchMove={move}
-        // onTouchEnd={moveEnd}
         >
           {
-            resultList.map((group, groupIndex) => <Text className='Elevator__nav__item' onClick={() => toGroup(groupIndex)} key={group.name}>{group.name}</Text>)
+            resultList.map((group, groupIndex) => <Text
+              className='Elevator__nav__item'
+              onClick={() => toGroup(groupIndex)}
+              key={group.name}
+            >{group.name}</Text>)
           }
-        </View>
+        </Layout>
       </View>}
     </View>
+    {select !== -1 && <Absolute>
+      <View className='Elevator__select'
+        style={{
+          transform: transformStyle({
+            translateX: px(-120),
+            translateY: px(-120),
+          })
+        }}
+      >
+        <Text className='Elevator__select__text'>{list[select].name}</Text>
+      </View>
+    </Absolute>}
   </context.Provider>
 }
 
