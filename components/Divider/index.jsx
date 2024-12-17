@@ -4,7 +4,7 @@ import { useMemo, Children, isValidElement } from 'react'
 import classNames from 'classnames'
 import './index.scss'
 
-const Horizontal = ({ size, type, className, style, ...props }) => {
+const Horizontal = ({ size, type, self, color, className, style, ...props }) => {
 
   const style1 = useMemo(() => {
     const _styles = {}
@@ -18,13 +18,18 @@ const Horizontal = ({ size, type, className, style, ...props }) => {
   }, [size, type])
 
   return <View
-    className={classNames('Divider-Horizontal', className)}
+    className={classNames(
+      'Divider-Horizontal',
+      self && ('self-' + self),
+      color && ('Divider--' + color),
+      className
+    )}
     style={{ ...style1, ...style }}
     {...props}
   />
 }
 
-const Vertical = ({ size, type, className, style, ...props }) => {
+const Vertical = ({ size, type, self = 'stretch', color, className, style, ...props }) => {
   const style1 = useMemo(() => {
     const _styles = {}
     if (size) {
@@ -37,7 +42,12 @@ const Vertical = ({ size, type, className, style, ...props }) => {
   }, [size, type])
 
   return <View
-    className={classNames('Divider-Vertical', className)}
+    className={classNames(
+      'Divider-Vertical',
+      self && ('self-' + self),
+      color && ('Divider--' + color),
+      className
+    )}
     style={{ ...style1, ...style }}
     {...props}
   />

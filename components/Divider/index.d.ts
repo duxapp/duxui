@@ -15,6 +15,15 @@ interface DividerProps extends ViewProps {
    * @default 'solid'
    */
   type?: 'dotted' | 'dashed' | 'solid'
+  /**
+   * 自身对齐方式
+   * 竖向时默认为 stretch
+   */
+  self?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
+  /**
+   * 颜色类型
+   */
+  color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
 }
 
 interface DividerGruopProps {
@@ -32,6 +41,15 @@ interface DividerGruopProps {
    * 是否垂直布局
    */
   vertical?: boolean
+  /**
+   * 自身对齐方式
+   * 竖向时默认为 stretch
+   */
+  self?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
+  /**
+   * 颜色类型
+   */
+  color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
 }
 
 export const Divider: React.FC<DividerProps> & {

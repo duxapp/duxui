@@ -37,6 +37,10 @@ interface ProgressCircleProps extends ViewProps {
    * 默认为 true
    */
   clockwise?: boolean
+  /**
+   * 加载中状态
+   */
+  loading?: boolean
 }
 
 

@@ -9,11 +9,44 @@
 }
 
 .Divider-Vertical {
-  align-self: stretch;
   flex-shrink: 0;
   border-left-width: 1Px;
   border-color: #f5f5f5;
   /*  #ifdef harmony  */
   width: 1px;
   /*  #endif  */
+}
+
+.Divider {
+  &--primary {
+    border-color: $duxappPrimaryColor;
+  }
+
+  &--secondary {
+    border-color: $duxappSecondaryColor;
+  }
+
+  &--success {
+    border-color: $duxappSuccessColor;
+  }
+
+  &--danger {
+    border-color: $duxappDangerColor;
+  }
+
+  &--warning {
+    border-color: $duxappWarningColor;
+  }
+
+  &--custom1 {
+    border-color: $duxappCustomColor1;
+  }
+
+  &--custom2 {
+    border-color: $duxappCustomColor2;
+  }
+
+  &--custom3 {
+    border-color: $duxappCustomColor3;
+  }
 }

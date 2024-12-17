@@ -1,7 +1,7 @@
-import { useState, useCallback, useMemo, Children, useRef } from 'react'
-import { View } from '@tarojs/components'
+import { useState, useCallback, useMemo, Children, useRef, useEffect } from 'react'
+import { View, Swiper, SwiperItem } from '@tarojs/components'
 import classNames from 'classnames'
-import { ScrollView, Layout, Absolute } from '@/duxapp'
+import { ScrollView, Layout, Absolute, Animated, transformStyle } from '@/duxapp'
 import { Text } from '../Text'
 import { Column, Row } from '../Flex'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -15,6 +15,8 @@ export const Tab = ({
   disabled,
   onChange,
   type = 'line',
+  swiper,
+  swiperProps,
   buttonColor,
   buttonRound,
   defaultValue,
@@ -61,12 +63,6 @@ export const Tab = ({
   }, [children])
 
   const [select, setSelect] = useState(value ?? defaultValue ?? list?.[0]?.paneKey)
-
-  // 懒加载模式记录哪些tab被加载了
-  const shows = useRef([])
-  if (!shows.current.includes(select)) {
-    shows.current.push(select)
-  }
 
   useMemo(() => {
     if (typeof value !== 'undefined') {
@@ -151,13 +147,58 @@ export const Tab = ({
             </Layout> :
             tabs()
       }
-      {tabPane.some(v => typeof v.el !== 'undefined') && <View className='Tab__con'>
-        {tabPane.map((item, index) => <View key={item.paneKey || index} className={classNames('Tab__con__item', item.paneKey === select && 'Tab__con__item--select')}>
-          {(!lazyload || shows.current.includes(item.paneKey || index)) && item.el}
-        </View>)}
-      </View>}
+      {tabPane.some(v => typeof v.el !== 'undefined') && <RenderContent
+        swiper={swiper}
+        swiperProps={swiperProps}
+        tabPane={tabPane}
+        lazyload={lazyload}
+        select={select}
+        setSelect={setSelect}
+      />}
     </View>
   )
+}
+
+const RenderContent = ({
+  swiper,
+  swiperProps,
+  tabPane,
+  lazyload,
+  select,
+  setSelect
+}) => {
+
+  // 懒加载模式记录哪些tab被加载了
+  const shows = useRef([])
+  if (!shows.current.includes(select)) {
+    shows.current.push(select)
+  }
+
+  if (swiper) {
+
+    const current = tabPane.findIndex(item => item.paneKey === select)
+
+    return <Swiper current={current}
+      className='Tab__con'
+      {...swiperProps}
+      onChange={e => {
+        setSelect(tabPane[e.detail.current].paneKey ?? e.detail.current)
+      }}
+    >
+      {tabPane.map(item => <SwiperItem key={item.paneKey}>
+        {(!lazyload || shows.current.includes(item.paneKey)) && item.el}
+      </SwiperItem>)}
+    </Swiper>
+  }
+
+  return <View className='Tab__con'>
+    {tabPane.map(item => <View
+      key={item.paneKey}
+      className={classNames('Tab__con__item', item.paneKey === select && 'Tab__con__item--select')}
+    >
+      {(!lazyload || shows.current.includes(item.paneKey)) && item.el}
+    </View>)}
+  </View>
 }
 
 const TabItem = ({
@@ -191,10 +232,9 @@ const TabItem = ({
       onClick={() => onClick(paneKey)}
       style={container}
     >
-      {/* <BadgeText badgeProps={badgeProps} outside>
-
-      </BadgeText> */}
-      <Text style={text} color={select ? 4 : 1} size={4}>{title}</Text>
+      <BadgeText badgeProps={badgeProps} outside>
+        <Text style={text} color={select ? 4 : 1} size={4}>{title}</Text>
+      </BadgeText>
     </Column>
   }
 
@@ -209,9 +249,42 @@ const TabItem = ({
     <BadgeText badgeProps={badgeProps}>
       <Text style={text} type={select ? 'primary' : void 0} color={select ? void 0 : 2} bold size={4}>{title}</Text>
     </BadgeText>
-    <View style={line} className={classNames('Tab__item__line', select && 'Tab__item__line--hover')} />
+    <LineAn style={line} select={select} />
   </Column>
 }
+
+const LineAn = ({
+  style,
+  select
+}) => {
+
+  const [animation, setAnimation] = useState(Animated.defaultState)
+
+  useEffect(() => {
+    if (!an) {
+      an = Animated.create({ duration: 100 })
+    }
+    setAnimation(an
+      .opacity(select ? 1 : 0)
+      .scaleX(select ? 1 : 0)
+      .step()
+      .export()
+    )
+  }, [select])
+
+  return <Animated.View
+    animation={animation}
+    style={{
+      ...style,
+      transform: transformStyle({
+        scaleX: 0
+      })
+    }}
+    className='Tab__item__line'
+  />
+}
+
+let an = Animated.create({ duration: 100 })
 
 const Item = ({ children }) => {
   return children

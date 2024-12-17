@@ -7,7 +7,8 @@ const isObject = val => val !== null && typeof val === 'object'
 
 export const ProgressCircle = ({
   children,
-  value = 0,
+  loading,
+  value = loading ? 10 : 0,
   size = 200,
   color = '#ea4335',
   background = '#e5e9f2',
@@ -15,7 +16,6 @@ export const ProgressCircle = ({
   strokeWidth = 20,
   strokeLinecap = 'round',
   style,
-  className,
   ...props
 }) => {
 
@@ -25,6 +25,7 @@ export const ProgressCircle = ({
   const forceUpdate = useForceUpdate()
 
   const oldValue = useRef(value)
+  const rotate = useRef(-90)
   const animateIdRef = useRef(0)
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
@@ -53,6 +54,17 @@ export const ProgressCircle = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
+  useEffect(() => {
+    if (loading) {
+      const timer = setInterval(() => {
+        rotate.current += 10
+        forceUpdate()
+      }, 60)
+      return () => clearInterval(timer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading])
+
   const getGradientStops = () => {
     if (!isObject(color)) return null
     const colorArr = Object.keys(color).sort(
@@ -68,12 +80,10 @@ export const ProgressCircle = ({
 
   return (
     <View
-      style={[{
+      style={{
         width: size,
         height: size,
-      }, style]}
-      className='items-center justify-center'
-      {...props}
+      }}
     >
       <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <Defs>
@@ -100,11 +110,11 @@ export const ProgressCircle = ({
           strokeLinecap={strokeLinecap}
           strokeDasharray={`${circumference} ${circumference}`}
           strokeDashoffset={clockwise ? progressOffset : -progressOffset}
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          transform={`rotate(${rotate.current} ${size / 2} ${size / 2})`}
           fill='none'
         />
       </Svg>
-      <View className='items-center justify-center absolute inset-0'>
+      <View className='items-center justify-center absolute inset-0' style={style} {...props}>
         {children}
       </View>
     </View>

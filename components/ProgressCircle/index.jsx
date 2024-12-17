@@ -7,7 +7,8 @@ const isObject = val => val !== null && typeof val === 'object'
 
 export const ProgressCircle = ({
   children,
-  value = 0,
+  loading,
+  value = loading ? 10 : 0,
   size = 200,
   color = duxappTheme.primaryColor,
   background = '#e5e9f2',
@@ -22,9 +23,10 @@ export const ProgressCircle = ({
   size = pxNum(size)
   strokeWidth = pxNum(strokeWidth / (size / 100))
 
-  const oldValue = useRef(value)
   const forceUpdate = useForceUpdate()
 
+  const oldValue = useRef(loading ? value : 0)
+  const rotate = useRef(-90)
   const refRandomId = Math.random().toString(36).slice(-8)
   const animateIdRef = useRef(0)
 
@@ -52,6 +54,17 @@ export const ProgressCircle = ({
     return () => window.cancelAnimationFrame(animateIdRef.current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setInterval(() => {
+        rotate.current += 10
+        forceUpdate()
+      }, 60)
+      return () => clearInterval(timer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading])
 
   const stop = () => {
     if (!isObject(color)) {
@@ -93,7 +106,7 @@ export const ProgressCircle = ({
       <svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'>
         ${defs}
         <circle cx='50' cy='50' r='${radius}' stroke='${background}' stroke-width='${strokeWidth}' fill='none' />
-        <circle cx='50' cy='50' r='${radius}' stroke='${realColor}' stroke-width='${strokeWidth}' stroke-dasharray='${perimeter}' stroke-dashoffset='${clockwise ? offset : -offset}' stroke-linecap='${strokeLinecap}' fill='none' transform='rotate(-90 50 50)' />
+        <circle cx='50' cy='50' r='${radius}' stroke='${realColor}' stroke-width='${strokeWidth}' stroke-dasharray='${perimeter}' stroke-dashoffset='${clockwise ? offset : -offset}' stroke-linecap='${strokeLinecap}' fill='none' transform='rotate(${rotate.current} 50 50)' />
       </svg>`
 
     return {

@@ -1,7 +1,7 @@
 import { View, Image, Video } from '@tarojs/components'
 import { previewMedia } from '@tarojs/taro'
 import { useCallback, useState } from 'react'
-import { ActionSheet, Loading } from '@/duxapp/components'
+import { ActionSheet, Loading, requestPermissionMessage } from '@/duxapp/components'
 import classNames from 'classnames'
 import { formConfig } from './config'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -10,11 +10,6 @@ import { Grid } from '../Grid'
 import { Column } from '../Flex'
 import { Form } from './Form'
 import './Upload.scss'
-
-let requestPermissionMessage
-if (process.env.TARO_ENV === 'rn') {
-  requestPermissionMessage = require('@/duxappReactNative/utils/rn/index').requestPermissionMessage
-}
 
 export const UploadImages = ({
   value = [],
@@ -43,7 +38,7 @@ export const UploadImages = ({
   const add = useCallback(async () => {
     const upload = formConfig.getUpload()
     try {
-      if (requestPermissionMessage) {
+      if (process.env.TARO_ENV === 'rn') {
         await requestPermissionMessage(requestPermissionMessage.types.image)
       }
       let _type = type

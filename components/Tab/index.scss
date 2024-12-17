@@ -1,5 +1,6 @@
 .Tab {
   align-items: center;
+
   &__row {
     padding-top: 16px;
     align-self: stretch;
@@ -17,10 +18,8 @@
       width: $duxuiTabLineWidth;
       height: $duxuiTabLineHeight;
       border-radius: $duxuiTabLineRadius;
-
-      &--hover {
-        background-color: $duxappPrimaryColor;
-      }
+      background-color: $duxappPrimaryColor;
+      opacity: 0;
     }
 
     &--button {
@@ -83,17 +82,11 @@
     flex: 1;
 
     &__item {
-      position: absolute;
-      left: -9999px;
-      right: 9999px;
-      top: 0;
-      bottom: 0;
+      flex: 1;
+      display: none;
 
       &--select {
-        position: relative;
-        left: 0;
-        right: 0;
-        flex: 1;
+        display: flex;
       }
     }
   }

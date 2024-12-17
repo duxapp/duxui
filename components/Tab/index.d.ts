@@ -1,4 +1,4 @@
-import { ViewProps } from '@tarojs/components'
+import { ViewProps, SwiperProps } from '@tarojs/components'
 import { ReactNode, CSSProperties } from 'react'
 import { BadgeProps } from '../Badge'
 
@@ -15,6 +15,13 @@ interface TabProps extends ViewProps {
   defaultValue?: string | number
   /** 切换标签页时的回调函数 */
   onChange?: () => void
+  /**
+   * 开启滑动切换选项卡功能
+   * 开启这个选项你得给 Tab 组件设置高度或者使用其他方法让 Tab 具有高度，否则内容不会显示
+  */
+  swiper?: boolean
+  /** 开启 swiper 后传递给 Swiper 组件的属性 */
+  swiperProps?: SwiperProps
   /** 是否禁用 */
   disabled?: boolean
   /** 高度撑满容器(flex: 1) 默认不撑起 */
