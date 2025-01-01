@@ -1,13 +1,22 @@
 import PathSvg from './util/svg-path-to-canvas'
+import { notNoneVal } from './Common'
 
 export const Path = () => {
   return null
 }
 
+Path.displayName = 'DuxSvgPath'
+
 Path.drawBefore = props => {
   return {
     pathSvg: new PathSvg(props.d)
   }
+}
+
+Path.range = (touch, props, context) => {
+  new PathSvg(props.d).to(context.ctx)
+  const matrix = context.ctx.getTransform()
+  return context.ctx.isPointInPath(touch.x * matrix.a, touch.y * matrix.d)
 }
 
 Path.bbox = (_props, _context, { pathSvg }) => {
@@ -22,15 +31,14 @@ Path.bbox = (_props, _context, { pathSvg }) => {
   }
 }
 
-Path.draw = (ctx, { beforeData, fill, stroke, strokeWidth = 1 }) => {
+Path.draw = (ctx, { beforeData, fill, stroke }) => {
 
-  if (fill) {
-    ctx.fillStyle = fill
-    beforeData.pathSvg.save().beginPath().to(ctx).fill()
+  beforeData.pathSvg.to(ctx)
+
+  if (notNoneVal(fill)) {
+    ctx.fill()
   }
-  if (stroke) {
-    ctx.lineWidth = strokeWidth
-    ctx.strokeStyle = stroke
-    beforeData.pathSvg.save().beginPath().to(ctx).stroke()
+  if (notNoneVal(stroke)) {
+    ctx.stroke()
   }
 }

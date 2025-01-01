@@ -30,11 +30,11 @@ interface LinearGradientProps extends ViewProps {
   /**
    * 渐变色列表
    */
-  colors: [string, string]
+  colors: string[]
   /**
    * 渐变色在渐变中的位置，必须是一个有序数组，取值范围为[0, 1]
    */
-  locations?: [number, number]
+  locations?: number[]
   /**
    * 是否使用角度控制渐变方向，默认值为false
    */

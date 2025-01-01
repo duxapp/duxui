@@ -1,20 +1,17 @@
 import { Children, isValidElement } from 'react'
 import { stopOpacityColor } from './Common'
 
-export const LinearGradient = () => {
+export const RadialGradient = () => {
 
   return null
 }
 
-LinearGradient.displayName = 'DuxSvgLinearGradient'
+RadialGradient.displayName = 'DuxSvgRadialGradient'
 
-LinearGradient.draw = (ctx, { x1, y1, x2, y2, children }, context, { bbox }) => {
-  const gradient = ctx.createLinearGradient(
-    bbox.x + x1 * bbox.width,
-    bbox.y + y1 * bbox.height,
-    bbox.x + x2 * bbox.width,
-    bbox.y + y2 * bbox.height,
-  )
+RadialGradient.draw = (ctx, { cx, cy, rx, ry, fx, fy, children }) => {
+  const r = Math.max(rx, ry)
+
+  const gradient = ctx.createRadialGradient(fx, fy, 0, cx, cy, r)
 
   Children.forEach(children, (child => {
     if (isValidElement(child) && child.type.displayName === 'DuxSvgStop') {

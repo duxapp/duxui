@@ -7,13 +7,14 @@ export const SvgToImage = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => {
     return {
-      capture: () => viewShot.current.capture().then(uri => {
+      capture: async () => {
+        const uri = await viewShot.current.capture()
         return {
           tempFilePath: uri
         }
-      })
+      }
     }
   }, [])
 
-  return <ViewShot {...props} ref={ref} />
+  return <ViewShot {...props} ref={viewShot} />
 })

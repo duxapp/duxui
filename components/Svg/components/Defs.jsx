@@ -1,19 +1,23 @@
-import { Children, isValidElement } from 'react'
+import { Children, cloneElement, isValidElement } from 'react'
+import { draw, margeProps } from './Common'
 
 export const Defs = () => {
 
   return null
 }
 
-Defs.draw = (ctx, { children }, context) => {
+Defs.displayName = 'DuxSvgDefs'
 
+Defs.draw = (ctx, { children }, context) => {
   Children.forEach(children, child => {
     if (isValidElement(child) && child.props.id) {
-      context.defs[child.props.id] = box => child.type.draw(ctx, child.props, context, box)
+      context.defs[child.props.id] = ({ props, ...option }) => {
+        return draw(
+          context,
+          props ? cloneElement(child, margeProps(child.props, props)) : child,
+          option
+        )
+      }
     }
   })
-
-  return {
-    stop: true
-  }
 }

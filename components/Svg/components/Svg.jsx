@@ -1,77 +1,85 @@
-import React, { useCallback, useEffect, useMemo, useRef, useImperativeHandle, forwardRef } from 'react'
-import { Canvas } from '@tarojs/components'
+import { useEffect, useMemo, useImperativeHandle, forwardRef, useCallback } from 'react'
+import { Canvas, View } from '@tarojs/components'
+import { CustomWrapper } from '@/duxapp'
 import { getSystemInfoSync, createSelectorQuery, canvasToTempFilePath } from '@tarojs/taro'
+import { draw, useForwardEvent } from './Common'
+import { SvgComponent } from './SvgComponent'
 
 let id = 0
 
-export const Svg = forwardRef(({ children, width = 300, height = 300 }, ref) => {
-  const canvasRef = useRef({
-    defs: {}
-  }).current
+export const Svg = forwardRef(({ children, width, height, ...props }, ref) => {
 
-  const canvasId = useMemo(() => `ui-svg-${++id}`, [])
+  const context = useMemo(() => {
+    const data = {
+      svgs: [],
+      defs: {},
+      layout: {
+        width,
+        height
+      }
+    }
 
-  const reload = useRef({
-    timer: null
-  })
+    // 异步加载的数据重新渲染
+    let reloadTimer
+    const reload = res => {
+      res.forEach(item => {
+        if (item?.wait) {
+          item.wait.then(() => {
+            if (!reloadTimer) {
+              reloadTimer = setTimeout(() => {
+                reloadTimer = null
+                reload(draw(data))
+              }, 0)
+            }
+          })
+        }
+      })
+    }
+    data.reload = reload
+
+    // 动画更新重新渲染
+    let changeStatus = null
+    const change = () => {
+      if (!changeStatus) {
+        const requestAnimationFrame = data.canvas.requestAnimationFrame || window.requestAnimationFrame
+        changeStatus = requestAnimationFrame(() => {
+          changeStatus = null
+          reload(draw(data))
+        })
+      }
+    }
+    const anmap = new Map()
+    data.addAnimated = animated => {
+      if (!anmap.has(animated)) {
+        anmap.set(animated, animated.addListener(change))
+      }
+    }
+
+    return data
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  context.layout = {
+    width,
+    height
+  }
+
+  const [canvasId, _id] = useMemo(() => [`ui-svg-${++id}`, id], [])
 
   useImperativeHandle(ref, () => {
     return {
       canvasToTempFilePath: option => canvasToTempFilePath({
-        canvas: canvasRef.canvas,
+        canvas: context.canvas,
         ...option
       })
     }
   })
 
-  const draw = useCallback(() => {
-    React.Children.forEach(children, child => {
-
-      const beforeData = child.type.drawBefore?.(child.props, canvasRef)
-
-      const props = {
-        beforeData
-      }
-
-      for (const key in child.props) {
-        if (Object.prototype.hasOwnProperty.call(child.props, key)) {
-          let val = child.props[key]
-          if (typeof val === 'string' && val.startsWith('url(#')) {
-            const def = val.slice(5, val.length - 1)
-            if (canvasRef.defs[def]) {
-              val = canvasRef.defs[def](child.type?.bbox?.(child.props, canvasRef, beforeData))
-            } else {
-              val = ''
-            }
-          }
-          props[key] = val
-        }
-      }
-
-      const res = child?.type?.draw?.(canvasRef.ctx, props, canvasRef)
-
-      if (res) {
-        if (res.wait) {
-          res.wait.then(() => {
-            if (!reload.current.timer) {
-              reload.current.timer = setTimeout(() => {
-                reload.current.timer = null
-                draw()
-              }, 0)
-            }
-          })
-        }
-        if (res.stop) {
-          // 停止递归
-        }
-      }
-    })
-  }, [canvasRef, children])
-
   useEffect(() => {
-    if (!canvasRef.ctx) {
-      const query = createSelectorQuery()
-      query.select(`#${canvasId}`)
+    if (!context.ctx) {
+      createSelectorQuery()
+        .in(document.getElementById(`CustomWrapper-${_id}`)?.ctx)
+        .select(`#${canvasId}`)
         .fields({ node: true, size: true })
         .exec((_res) => {
           const canvas = _res[0].node
@@ -84,22 +92,42 @@ export const Svg = forwardRef(({ children, width = 300, height = 300 }, ref) => 
             ctx.scale(dpr, dpr)
           }
 
-          canvasRef.ctx = ctx
-          canvasRef.canvas = canvas
+          context.ctx = ctx
+          context.canvas = canvas
 
-          draw()
+          context.reload(draw(context))
         })
-    } else {
-      draw()
     }
-  }, [canvasId, canvasRef, draw])
+  }, [canvasId, context, _id])
 
-  return <Canvas
-    canvasId={canvasId}
-    id={canvasId}
-    type='2d'
-    style={{ width, height }}
-  />
+  const update = useCallback(svgs => {
+    context.svgs = svgs.flat(Infinity)
+    context.reload(draw(context))
+  }, [context])
+
+  const event = useForwardEvent(context, props)
+
+  return <CustomWrapper id={_id}>
+    <View
+      {...event.handlers}
+      style={{ width, height }}
+    >
+      <Canvas
+        canvasId={canvasId}
+        id={canvasId}
+        type='2d'
+        style={{ width, height }}
+      />
+    </View>
+    <SvgComponent.Provider
+      value={{ update }}
+    >
+      <SvgComponent>
+        {children}
+      </SvgComponent>
+    </SvgComponent.Provider>
+  </CustomWrapper>
 })
 
-Svg.name = 'Svg'
+Svg.displayName = 'DuxSvg'
+

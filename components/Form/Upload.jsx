@@ -19,8 +19,8 @@ export const UploadImages = ({
   type = 'image',
   max = 9,
   disabled,
-  _designKey,
   option,
+  style,
   ...props
 }) => {
 
@@ -63,12 +63,15 @@ export const UploadImages = ({
 
   const isOne = max === 1
 
+  const itemClass = classNames('UIUplod__item', isOne && 'UIUplod__item--one', isOne && props.className)
+
   const content = [
     ...value?.map((item, index) => {
       return <View
-        className={classNames('UIUplod__item', isOne && 'UIUplod__item--one')}
+        {...isOne ? props : {}}
+        style={isOne ? style : {}}
+        className={itemClass}
         key={item}
-        {...isOne ? { _designKey } : {}}
       >
         <ItemView src={item} value={value} />
         {!disabled && <Column className='UIUplod__item__icon'>
@@ -79,10 +82,11 @@ export const UploadImages = ({
     (value?.length || 0) < max && !disabled &&
     <Column
       grow={!isOne}
-      className={classNames('UIUplod__item', isOne && 'UIUplod__item--one')}
       justify='center'
       onClick={!~progress && add}
-      {...isOne ? { _designKey } : {}}
+      style={isOne ? style : {}}
+      {...isOne ? props : {}}
+      className={itemClass}
     >
       {
         ~progress ?
@@ -102,7 +106,7 @@ export const UploadImages = ({
     return content
   }
 
-  return <Grid column={column} square gap={24} _designKey={_designKey} {...props}>
+  return <Grid column={column} square gap={24} {...props}>
     {content}
   </Grid>
 }

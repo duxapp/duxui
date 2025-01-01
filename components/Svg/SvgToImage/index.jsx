@@ -17,12 +17,11 @@ export const SvgToImage = forwardRef(({ children, option = {} }, ref) => {
     }
   })
 
-  if (isValidElement(children) && children.type.name === 'Svg') {
+  if (isValidElement(children) && children.type.displayName === 'DuxSvg') {
     return cloneElement(children, {
       ref: svg
     })
   }
 
   throw new Error('SvgToImage 的子元素只能是 Svg')
-
 })
