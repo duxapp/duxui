@@ -1,6 +1,6 @@
 import { Text } from '@tarojs/components'
 import { useEffect, useRef, useState } from 'react'
-import { asyncTimeOut, nav, route, Animated, nextTick, pxNum, currentPage, TopView } from '@/duxapp'
+import { asyncTimeOut, route, Animated, nextTick, pxNum, currentPage, TopView } from '@/duxapp'
 import { getSystemInfoSync } from '@tarojs/taro'
 import { BoxShadow } from '../BoxShadow'
 import './ShowMessage.scss'
@@ -68,7 +68,7 @@ const ShowMessage = ({
     style={{ top: statusBarHeight + 10 }}
     className='ShowMessage'
   >
-    <BoxShadow opacity={0.2} onClick={() => nav(url)} className='ShowMessage__main' radius={16}>
+    <BoxShadow opacity={0.2} onClick={() => route.nav(url)} className='ShowMessage__main' radius={16}>
       <Text className='ShowMessage__title'>{title}</Text>
       {!!content && <Text className='ShowMessage__content'>{content}</Text>}
     </BoxShadow>

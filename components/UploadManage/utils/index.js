@@ -1,9 +1,33 @@
 import { useEffect, useMemo, useState, } from 'react'
-import { ObjectManage,Queue, QuickEvent, toast } from '@/duxapp'
+import { ObjectManage, QuickEvent, toast } from '@/duxapp'
 import { uploadManageDrive } from '../drive'
 import { getExtIcon } from '../icons'
 
 export * from './util'
+
+class Queue {
+  constructor(concurrency) {
+    this.queue = []
+    this.concurrency = concurrency
+    this.runningCount = 0
+  }
+
+  enqueue(task) {
+    this.queue.push(task)
+    this.processQueue()
+  }
+
+  processQueue() {
+    while (this.runningCount < this.concurrency && this.queue.length > 0) {
+      const task = this.queue.shift()
+      this.runningCount++
+      task(() => {
+        this.runningCount--
+        this.processQueue()
+      })
+    }
+  }
+}
 
 const uploadQueue = new Queue(1)
 

@@ -1,7 +1,7 @@
 import { View, Text, Image } from '@tarojs/components'
 import { useDidShow, useDidHide, getCurrentPages } from '@tarojs/taro'
 import React, { useState, useCallback, createContext, useContext, useEffect, useRef } from 'react'
-import { QuickEvent, useRoute, currentPage, route } from '@/duxapp'
+import { QuickEvent, currentPage, route } from '@/duxapp'
 import classNames from 'classnames'
 import { Badge } from '../Badge'
 import './index.scss'
@@ -110,7 +110,7 @@ const TabBar = ({
   actionEvent
 }) => {
 
-  const { path } = useRoute()
+  const { path } = route.useRoute()
 
   // 红点数量
   const [numbers, setNumbers] = useState({})
