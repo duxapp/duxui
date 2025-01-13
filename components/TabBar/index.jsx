@@ -1,7 +1,7 @@
 import { View, Text, Image } from '@tarojs/components'
 import { useDidShow, useDidHide, getCurrentPages } from '@tarojs/taro'
 import React, { useState, useCallback, createContext, useContext, useEffect, useRef } from 'react'
-import { QuickEvent, currentPage, route } from '@/duxapp'
+import { QuickEvent, asyncTimeOut, currentPage, route } from '@/duxapp'
 import classNames from 'classnames'
 import { Badge } from '../Badge'
 import './index.scss'
@@ -147,7 +147,7 @@ const TabBar = ({
   }, [afterEvent.callbacks, beforeEvent.callbacks])
 
   useEffect(() => {
-    const { remove } = actionEvent.on((key, ...value) => {
+    const { remove } = actionEvent.on(async (key, ...value) => {
       if (key === 'switch') {
         // 切换
         itemClick({ index: value[0] })
@@ -160,7 +160,7 @@ const TabBar = ({
               return true
             }
           })
-          route.back(pages.length - index)
+          route.back(pages.length - index - 1)
         }
       } else if (key === 'setNumber') {
         // 设置红点数量
