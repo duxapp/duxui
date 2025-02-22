@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { nextTick, createSelectorQuery, getSystemInfoSync, canvasToTempFilePath } from '@tarojs/taro'
+import { nextTick, createSelectorQuery, getWindowInfo, canvasToTempFilePath } from '@tarojs/taro'
 import { Canvas } from '@tarojs/components'
 import { Layout } from '@/duxapp'
 import classNames from 'classnames'
@@ -32,7 +32,7 @@ export class Sign extends Component {
             const ctx = canvas.getContext('2d')
 
             if (process.env.TARO_ENV !== 'h5') {
-              const dpr = getSystemInfoSync().pixelRatio
+              const dpr = getWindowInfo().pixelRatio
               canvas.width = _res[0].width * dpr
               canvas.height = _res[0].height * dpr
               ctx.scale(dpr, dpr)
