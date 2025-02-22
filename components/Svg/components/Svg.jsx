@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useImperativeHandle, forwardRef, useCallback } from 'react'
 import { Canvas, View } from '@tarojs/components'
 import { CustomWrapper } from '@/duxapp'
-import { getSystemInfoSync, createSelectorQuery, canvasToTempFilePath } from '@tarojs/taro'
+import { getWindowInfo, createSelectorQuery, canvasToTempFilePath } from '@tarojs/taro'
 import { draw, useForwardEvent } from './Common'
 import { SvgComponent } from './SvgComponent'
 
@@ -86,7 +86,7 @@ export const Svg = forwardRef(({ children, width, height, ...props }, ref) => {
           const ctx = canvas.getContext('2d')
 
           if (process.env.TARO_ENV !== 'h5') {
-            const dpr = getSystemInfoSync().pixelRatio
+            const dpr = getWindowInfo().pixelRatio
             canvas.width = _res[0].width * dpr
             canvas.height = _res[0].height * dpr
             ctx.scale(dpr, dpr)
