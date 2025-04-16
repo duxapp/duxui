@@ -1,5 +1,6 @@
 import { colorToRgb } from '@/duxapp'
 import { Children, isValidElement, useRef } from 'react'
+import { createOffscreenCanvas } from '@tarojs/taro'
 import { AnimatedNode } from '../Animated/nodes/Node'
 import { AnimatedInterpolation } from '../Animated/nodes/Interpolation'
 
@@ -23,7 +24,11 @@ export const draw = (context, children = context.svgs, option) => {
 
     const beforeData = child.type.drawBefore?.(props, context)
 
-    const ctx = context.ctx
+    const currentContext = props.clipPath
+      ? createOffCanvas(context.layout.width, context.layout.height)
+      : context
+
+    const ctx = currentContext.ctx
 
     // 保存状态
     ctx.save()
@@ -77,7 +82,7 @@ export const draw = (context, children = context.svgs, option) => {
           break
 
         case 'fill':
-          ctx.fillStyle = val === 'none' ? 'transparent' : val
+          ctx.fillStyle = notNoneVal(val) ? val : 'transparent'
           // delete props[key]
           break
 
@@ -87,7 +92,7 @@ export const draw = (context, children = context.svgs, option) => {
           break
 
         case 'stroke':
-          ctx.strokeStyle = val === 'none' ? 'transparent' : val
+          ctx.strokeStyle = notNoneVal(val) ? val : 'transparent'
           // delete props[key]
           break
 
@@ -127,14 +132,12 @@ export const draw = (context, children = context.svgs, option) => {
           delete props[key]
           break
 
-        // 以后实现
-        // case 'transform':
-        //   if (!disabledTransform.includes(child.type.displayName)) {
-        //     console.log(parseTransform(val))
-        //     applyTransform(context.ctx, parseTransform(val))
-        //     delete props[key]
-        //   }
-        //   break
+        case 'transform':
+          if (!disabledTransform.includes(child.type.displayName) && Array.isArray(val)) {
+            applyTransform(context.ctx, parseTransform(val, context))
+            delete props[key]
+          }
+          break
 
         default: {
           break
@@ -158,6 +161,13 @@ export const draw = (context, children = context.svgs, option) => {
 
     const res = child?.type?.draw?.(ctx, props, context, option)
 
+    // 应用裁剪
+    if (props.clipPath) {
+      props.clipPath.draw?.(currentContext)
+      // 将离屏元素渲染到当前元素上
+      context.ctx.drawImage(currentContext.canvas, 0, 0)
+    }
+
     // 还原变换
     ctx.restore()
 
@@ -172,14 +182,15 @@ export const draw = (context, children = context.svgs, option) => {
   return result
 }
 
-const disabledUrls = ['DuxSvgImage', 'DuxSvgUse', 'DuxSvgG', 'DuxSvgDefs', 'DuxSvgStop']
+const disabledUrls = ['DuxSvgUse', 'DuxSvgG', 'DuxSvgDefs', 'DuxSvgStop', 'ClipPath']
 
-const disabledTransform = ['DuxSvgUse', 'DuxSvgDefs', 'DuxSvgStop']
+const disabledTransform = ['DuxSvgUse', 'DuxSvgDefs', 'DuxSvgStop', 'ClipPath']
 
 const yAttrs = ['y', 'y1', 'height', 'y2', 'cy', 'fy', 'dy']
 
+
 export const stopOpacityColor = (color, opacity = 1) => {
-  if (opacity === 1) {
+  if (+opacity === 1) {
     return color
   }
   return `rgba(${colorToRgb(color).join(',')},${opacity})`
@@ -223,6 +234,32 @@ export function parseAnimatedValue(val) {
     return val.__getValue()
   }
   return val
+}
+
+export function parseTransform(transform, context) {
+  return transform.map(item => {
+    const name = Object.keys(item)[0]
+    if (!name) {
+      return
+    }
+    const values = (item[name] instanceof Array ? item[name] : [item[name]]).map(v => {
+      if (v instanceof AnimatedInterpolation) {
+        context.addAnimated(v._parent)
+        // 动画属性
+        return v.__getValue()
+      } else if (v instanceof AnimatedNode) {
+        context.addAnimated(v)
+        // 动画属性
+        return v.__getValue()
+      } else {
+        return v
+      }
+    })
+    return {
+      type: name,
+      values
+    }
+  }).filter(v => v)
 }
 
 export function parseTransformProps(props, name, defaultValue, towDefault) {
@@ -280,49 +317,6 @@ function parseSvgStyle(styleString) {
   return styleObject
 }
 
-function parseTransform(transform) {
-  const result = []
-  const regex = /(\w+)\(([^)]+)\)/g
-  const transformMap = {
-    translate: [0, 0], // 默认值 x: 0, y: 0
-    scale: [1, 1], // 默认值 x: 1, y: 1
-    skew: [0, 0], // 默认值 x: 0, y: 0
-  }
-  let match
-
-  while ((match = regex.exec(transform)) !== null) {
-    const type = match[1]
-    const values = match[2]
-      .split(/[\s,]+/)
-      .map((val) => parseFloat(val))
-
-    if (type in transformMap) {
-      // 将单维度值扩展为二维
-      if (values.length === 1) {
-        values.push(transformMap[type][1])
-      }
-
-      // 合并到 transformMap
-      transformMap[type] = [
-        transformMap[type][0] + values[0],
-        transformMap[type][1] + values[1],
-      ]
-    } else {
-      // 非合并类型直接加入结果
-      result.push({ type, values })
-    }
-  }
-
-  // 将合并的类型加入结果
-  Object.entries(transformMap).forEach(([type, values]) => {
-    if (values[0] !== 0 || values[1] !== (type === 'scale' ? 1 : 0)) {
-      result.push({ type, values })
-    }
-  })
-
-  return result
-}
-
 function applyTransform(ctx, transforms, origin = []) {
 
   const [ox, oy] = restoreOrigin(ctx, origin)
@@ -340,16 +334,23 @@ function applyTransform(ctx, transforms, origin = []) {
         ctx.scale(sx, sy)
         ctx.translate(-ox, -oy)
         break
-      case 'rotate':
-      case 'rotation':
-        const angle = (values[0] * Math.PI) / 180
+      case 'rotate': {
+        const angle = getAngle(values[0])
         ctx.translate(ox, oy)
         ctx.rotate(angle)
         ctx.translate(-ox, -oy)
         break
+      }
+      case 'rotation': {
+        const angle = Number.parseFloat(values[0]) * Math.PI / 180
+        ctx.translate(ox, oy)
+        ctx.rotate(angle)
+        ctx.translate(-ox, -oy)
+        break
+      }
       case 'skew':
-        const skewX = (values[0] || 0) * (Math.PI / 180)
-        const skewY = (values[1] || 0) * (Math.PI / 180)
+        const skewX = getAngle(values[0]) || 0
+        const skewY = getAngle(values[1]) || 0
         ctx.translate(ox, oy)
         ctx.transform(1, Math.tan(skewY), Math.tan(skewX), 1, 0, 0)
         ctx.translate(-ox, -oy)
@@ -362,6 +363,10 @@ function applyTransform(ctx, transforms, origin = []) {
         console.warn(`Unsupported transform type: ${type}`)
     }
   })
+}
+
+const getAngle = val => {
+  return typeof val === 'number' ? val : (Number.parseFloat(val) * Math.PI / 180)
 }
 
 function restoreOrigin(ctx, [ox = 0, oy = 0]) {
@@ -568,4 +573,31 @@ const eventTypes = {
   touchmove: 'onTouchMove',
   touchend: 'onTouchEnd',
   touchcancel: 'onTouchCancel'
+}
+
+/**
+ * 创建离屏canvas
+ * @returns
+ */
+export const createOffCanvas = (width, height) => {
+  if (process.env.TARO_ENV === 'h5') {
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    return {
+      canvas,
+      ctx: canvas.getContext('2d')
+    }
+  } else {
+    const canvas = createOffscreenCanvas({
+      type: '2d',
+      width,
+      height
+    })
+
+    return {
+      canvas,
+      ctx: canvas.getContext('2d')
+    }
+  }
 }

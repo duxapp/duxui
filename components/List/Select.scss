@@ -1,0 +1,49 @@
+.ListSelectItem {
+  flex-direction: row;
+  align-items: center;
+
+  &__check {
+    width: 40px;
+    height: 40px;
+    border: 1px solid $duxappPrimaryColor;
+    margin-right: 10px;
+    margin-left: 10px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    &--radio {
+      border-radius: 20px;
+    }
+
+    &__child {
+      width: 20px;
+      height: 20px;
+      background-color: $duxappPrimaryColor;
+
+      &--radio {
+        border-radius: 12px;
+      }
+    }
+  }
+
+  &__content {
+    flex: 1;
+  }
+}
+
+.ListSelectSubmit {
+  width: 100%;
+  background-color: #fff;
+  padding: 25px;
+
+  &__btn {
+    height: 80px;
+    align-items: center;
+    justify-content: center;
+    background-color: $duxappPrimaryColor;
+    border-radius: 40px;
+    color: #fff;
+    font-size: 28px;
+  }
+}

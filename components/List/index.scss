@@ -1,0 +1,25 @@
+.list-empty {
+  margin-top: 150px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  opacity: 1;
+  &__icon {
+    width: 90px;
+    height: 90px;
+  }
+  &__title {
+    padding: 20px 0;
+    color: #333;
+    font-size: 32px;
+    /*postcss-pxtransform rn eject enable*/
+    word-break: break-all;
+    /*postcss-pxtransform rn eject disable*/
+  }
+}
+
+/*  #ifndef rn  */
+.virtual-waterfall-wrapper {
+  flex-direction: row;
+}
+/*  #ifndef rn  */
