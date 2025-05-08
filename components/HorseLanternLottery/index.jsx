@@ -1,6 +1,6 @@
 import { Layout, px } from '@/duxapp'
 import { useState, isValidElement, useCallback, useRef, useEffect } from 'react'
-import { getSystemInfoSync } from '@tarojs/taro'
+import { getWindowInfo } from '@tarojs/taro'
 import { Column, Row } from '../Flex'
 
 export const HorseLanternLottery = ({
@@ -158,4 +158,4 @@ const ItemSelf = ({ list, index, Item, select, ...props }) => {
   </Column>
 }
 
-const toPx = val => getSystemInfoSync().screenWidth / 750 * val
+const toPx = val => getWindowInfo().screenWidth / 750 * val

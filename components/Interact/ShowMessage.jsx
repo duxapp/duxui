@@ -1,7 +1,7 @@
 import { Text } from '@tarojs/components'
 import { useEffect, useRef, useState } from 'react'
 import { asyncTimeOut, route, Animated, nextTick, pxNum, currentPage, TopView } from '@/duxapp'
-import { getSystemInfoSync } from '@tarojs/taro'
+import { getWindowInfo } from '@tarojs/taro'
 import { BoxShadow } from '../BoxShadow'
 import './ShowMessage.scss'
 
@@ -13,7 +13,7 @@ const ShowMessage = ({
   onRemove
 }) => {
 
-  let { statusBarHeight = 0 } = getSystemInfoSync()
+  let { statusBarHeight = 0 } = getWindowInfo()
 
   if (!statusBarHeight) {
     statusBarHeight = 0
