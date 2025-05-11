@@ -1,13 +1,10 @@
 import { useEffect, useMemo, useImperativeHandle, forwardRef, useCallback } from 'react'
-import { Canvas, View } from '@tarojs/components'
-import { CustomWrapper } from '@/duxapp'
+import { Canvas } from '@tarojs/components'
 import { getSystemInfoSync, createSelectorQuery, canvasToTempFilePath } from '@tarojs/taro'
 import { draw, useForwardEvent } from './Common'
 import { SvgComponent } from './SvgComponent'
 
-let id = 0
-
-export const Svg = forwardRef(({ children, width, height, ...props }, ref) => {
+export const Svg = forwardRef(({ children, width, height, viewBox, preserveAspectRatio, ...props }, ref) => {
 
   const context = useMemo(() => {
     const data = {
@@ -15,7 +12,9 @@ export const Svg = forwardRef(({ children, width, height, ...props }, ref) => {
       defs: {},
       layout: {
         width,
-        height
+        height,
+        viewBox,
+        preserveAspectRatio
       }
     }
 
@@ -59,12 +58,16 @@ export const Svg = forwardRef(({ children, width, height, ...props }, ref) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  context.layout = {
-    width,
-    height
-  }
+  // viewBox
+  context.layout.viewBox = viewBox
+  context.layout.preserveAspectRatio = preserveAspectRatio
 
-  const [canvasId, _id] = useMemo(() => [`ui-svg-${++id}`, id], [])
+  const canvasId = useMemo(() => {
+    if (!Svg.svgId) {
+      Svg.svgId = 0
+    }
+    return `ui-svg-${++Svg.svgId}`
+  }, [])
 
   useImperativeHandle(ref, () => {
     return {
@@ -76,29 +79,33 @@ export const Svg = forwardRef(({ children, width, height, ...props }, ref) => {
   })
 
   useEffect(() => {
-    if (!context.ctx) {
-      createSelectorQuery()
-        .in(document.getElementById(`CustomWrapper-${_id}`)?.ctx)
-        .select(`#${canvasId}`)
-        .fields({ node: true, size: true })
-        .exec((_res) => {
-          const canvas = _res[0].node
-          const ctx = canvas.getContext('2d')
+    createSelectorQuery()
+      .select(`#${canvasId}`)
+      .fields({ node: true, size: true })
+      .exec((_res) => {
+        const canvas = _res[0].node
+        const ctx = canvas.getContext('2d')
 
-          if (process.env.TARO_ENV !== 'h5') {
-            const dpr = getSystemInfoSync().pixelRatio
-            canvas.width = _res[0].width * dpr
-            canvas.height = _res[0].height * dpr
-            ctx.scale(dpr, dpr)
-          }
+        if (process.env.TARO_ENV !== 'h5') {
+          const dpr = getSystemInfoSync().pixelRatio
+          canvas.width = _res[0].width * dpr
+          canvas.height = _res[0].height * dpr
+          ctx.scale(dpr, dpr)
 
-          context.ctx = ctx
-          context.canvas = canvas
+          // 重新赋值宽高，兼容百分比写法
+          context.layout.width = _res[0].width
+          context.layout.height = _res[0].height
+        } else {
+          context.layout.width = _res[0].node.offsetWidth
+          context.layout.height = _res[0].node.offsetHeight
+        }
 
-          context.reload(draw(context))
-        })
-    }
-  }, [canvasId, context, _id])
+        context.ctx = ctx
+        context.canvas = canvas
+
+        context.reload(draw(context))
+      })
+  }, [canvasId, context, width, height])
 
   const update = useCallback(svgs => {
     context.svgs = svgs.flat(Infinity)
@@ -107,18 +114,14 @@ export const Svg = forwardRef(({ children, width, height, ...props }, ref) => {
 
   const event = useForwardEvent(context, props)
 
-  return <CustomWrapper id={_id}>
-    <View
-      {...event.handlers}
+  return <>
+    <Canvas
+      canvasId={canvasId}
+      id={canvasId}
+      type='2d'
       style={{ width, height }}
-    >
-      <Canvas
-        canvasId={canvasId}
-        id={canvasId}
-        type='2d'
-        style={{ width, height }}
-      />
-    </View>
+      {...event.handlers}
+    />
     <SvgComponent.Provider
       value={{ update }}
     >
@@ -126,7 +129,7 @@ export const Svg = forwardRef(({ children, width, height, ...props }, ref) => {
         {children}
       </SvgComponent>
     </SvgComponent.Provider>
-  </CustomWrapper>
+  </>
 })
 
 Svg.displayName = 'DuxSvg'

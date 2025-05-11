@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { colorToRgb } from '@/duxapp'
 import { Children, isValidElement, useRef } from 'react'
 import { createOffscreenCanvas } from '@tarojs/taro'
@@ -9,13 +10,54 @@ export const draw = (context, children = context.svgs, option) => {
   if (!context.ctx) {
     return result
   }
+  const layout = context.layout
+  // 从头渲染逻辑
   if (children === context.svgs) {
-    context.ctx.clearRect(0, 0, context.layout.width, context.layout.height)
+    context.ctx.clearRect(0, 0, layout.width, layout.height)
+    // 应用viewBox
+    if (layout.viewBoxTransform) {
+      layout.viewBoxTransform()
+      layout.viewBoxTransform = null
+    }
+    if (layout.viewBox) {
+      if (typeof layout.viewBox === 'string') {
+        layout.viewBox = layout.viewBox.split(/\s+|,/).filter(v => v !== '').map(v => +v)
+      }
+      if (layout.viewBox.length === 4) {
+        const [minX, minY, vbWidth, vbHeight] = layout.viewBox
+
+        const params = calculateAspectRatioFit({
+          contentWidth: vbWidth,
+          contentHeight: vbHeight,
+          containerWidth: layout.width,
+          containerHeight: layout.height,
+          preserveAspectRatio: layout.preserveAspectRatio,
+          contentX: minX,
+          contentY: minY
+        })
+
+        // 应用变换
+        context.ctx.save()
+        if (params.scale.x !== undefined) {
+          // none 模式，非等比缩放
+          context.ctx.scale(params.scale.x, params.scale.y)
+        } else {
+          // 等比缩放
+          context.ctx.scale(params.scale, params.scale)
+        }
+        context.ctx.translate(params.offsetX, params.offsetY)
+
+        // 还原变换
+        layout.viewBoxTransform = () => context.ctx.restore()
+      }
+    }
   }
   Children.forEach(children, child => {
     if (!isValidElement(child)) {
       return
     }
+
+    const name = child.type.displayName
 
     const props = {
       ...parseSvgStyle(child.props.style),
@@ -24,9 +66,12 @@ export const draw = (context, children = context.svgs, option) => {
 
     const beforeData = child.type.drawBefore?.(props, context)
 
-    const currentContext = props.clipPath
-      ? createOffCanvas(context.layout.width, context.layout.height)
-      : context
+    const currentContext = {
+      ...context,
+      ...props.clipPath
+        ? createOffCanvas(layout.width, layout.height)
+        : {}
+    }
 
     const ctx = currentContext.ctx
 
@@ -42,30 +87,34 @@ export const draw = (context, children = context.svgs, option) => {
       // 处理特殊属性
       if (typeof val === 'string') {
         if (val.startsWith('url(#')) {
-          // 引用
+          // 处理引用
           const def = val.slice(5, val.length - 1)
-          if (context.defs[def] && !disabledUrls.includes(child.type.displayName)) {
-            const res = context.defs[def]({
-              bbox: child.type?.bbox?.(props, context, beforeData)
+          if (currentContext.defs[def] && !disabledUrls.includes(child.type.displayName)) {
+            const res = currentContext.defs[def]({
+              bbox: child.type?.bbox?.(props, currentContext, beforeData)
             })
             if (res[0]?.instance) {
               val = res[0].instance
             }
           }
         } else if (val.endsWith('%')) {
-          // 计算百分百值
-          val = parsePercentage(key, val, context.layout)
+          // 计算百分比值
+          if (originPercentage[name]?.includes(key)) {
+            val = parseFloat(val) / 100
+          } else {
+            val = parsePercentage(key, val, currentContext.layout)
+          }
           // eslint-disable-next-line no-restricted-globals
         } else if (!isNaN(val)) {
           // 将字符串类型的数字转换为数字
           val = +val
         }
       } else if (val instanceof AnimatedInterpolation) {
-        context.addAnimated(val._parent)
+        currentContext.addAnimated(val._parent)
         // 动画属性
         val = val.__getValue()
       } else if (val instanceof AnimatedNode) {
-        context.addAnimated(val)
+        currentContext.addAnimated(val)
         // 动画属性
         val = val.__getValue()
       }
@@ -134,7 +183,7 @@ export const draw = (context, children = context.svgs, option) => {
 
         case 'transform':
           if (!disabledTransform.includes(child.type.displayName) && Array.isArray(val)) {
-            applyTransform(context.ctx, parseTransform(val, context))
+            applyTransform(currentContext.ctx, parseTransform(val, currentContext))
             delete props[key]
           }
           break
@@ -159,7 +208,7 @@ export const draw = (context, children = context.svgs, option) => {
 
     props.beforeData = beforeData
 
-    const res = child?.type?.draw?.(ctx, props, context, option)
+    const res = child?.type?.draw?.(ctx, props, currentContext, option)
 
     // 应用裁剪
     if (props.clipPath) {
@@ -187,6 +236,10 @@ const disabledUrls = ['DuxSvgUse', 'DuxSvgG', 'DuxSvgDefs', 'DuxSvgStop', 'ClipP
 const disabledTransform = ['DuxSvgUse', 'DuxSvgDefs', 'DuxSvgStop', 'ClipPath']
 
 const yAttrs = ['y', 'y1', 'height', 'y2', 'cy', 'fy', 'dy']
+
+const originPercentage = {
+  DuxSvgLinearGradient: ['x1', 'x2', 'y1', 'y2']
+}
 
 
 export const stopOpacityColor = (color, opacity = 1) => {
@@ -218,6 +271,12 @@ export const parsePercentage = (key, val, layout) => {
     ] * percentage / 100
   }
   return val
+}
+
+export const parseOriginPercentage = val => {
+  return typeof val === 'string' ?
+    parseFloat(val) / (val.endsWith('%') ? 100 : 1) :
+    val
 }
 
 function parseNumberArray(val) {
@@ -599,5 +658,147 @@ export const createOffCanvas = (width, height) => {
       canvas,
       ctx: canvas.getContext('2d')
     }
+  }
+}
+
+/**
+ * 计算 preserveAspectRatio 相关的变换参数
+ * @param {Object} options
+ * @param {number} options.contentWidth - 内容原始宽度 (viewBox宽度或图片宽度)
+ * @param {number} options.contentHeight - 内容原始高度 (viewBox高度或图片高度)
+ * @param {number} options.containerWidth - 容器宽度 (画布宽度或指定宽度)
+ * @param {number} options.containerHeight - 容器高度 (画布高度或指定高度)
+ * @param {string} [preserveAspectRatio='xMidYMid meet'] - SVG preserveAspectRatio 值
+ * @param {number} [contentX=0] - 内容原始X偏移 (viewBox的minX或图片的0)
+ * @param {number} [contentY=0] - 内容原始Y偏移 (viewBox的minY或图片的0)
+ * @returns {Object} 变换参数 { scale, offsetX, offsetY, sourceX, sourceY, sourceWidth, sourceHeight }
+ */
+export const calculateAspectRatioFit = ({
+  contentWidth,
+  contentHeight,
+  containerWidth,
+  containerHeight,
+  preserveAspectRatio = 'xMidYMid meet',
+  contentX = 0,
+  contentY = 0,
+  isImage = false
+}) => {
+  const [align, meetOrSlice = 'meet'] = preserveAspectRatio.split(/\s+/)
+  const isSlice = meetOrSlice === 'slice'
+
+  let scale, offsetX = 0, offsetY = 0
+  let sourceX = 0, sourceY = 0
+  let sourceWidth = contentWidth, sourceHeight = contentHeight
+  let destX = 0, destY = 0, destWidth, destHeight
+
+  if (align === 'none') {
+    // 非等比缩放
+    scale = {
+      x: containerWidth / contentWidth,
+      y: containerHeight / contentHeight
+    }
+    offsetX = -contentX * scale.x
+    offsetY = -contentY * scale.y
+    destWidth = containerWidth
+    destHeight = containerHeight
+  } else {
+    // 等比缩放
+    scale = isSlice
+      ? Math.max(containerWidth / contentWidth, containerHeight / contentHeight)
+      : Math.min(containerWidth / contentWidth, containerHeight / contentHeight)
+
+    const scaledWidth = contentWidth * scale
+    const scaledHeight = contentHeight * scale
+
+    // 对于Image的slice模式，目标区域就是整个容器
+    if (isImage && isSlice) {
+      destWidth = containerWidth
+      destHeight = containerHeight
+    } else {
+      destWidth = scaledWidth
+      destHeight = scaledHeight
+    }
+
+    // 计算目标位置偏移
+    if (isImage && isSlice) {
+      // Image在slice模式下直接填满，不需要偏移
+      offsetX = -contentX * scale
+      offsetY = -contentY * scale
+    } else {
+      // 其他情况根据对齐方式计算偏移
+      switch (align) {
+        case 'xMinYMin':
+          offsetX = -contentX * scale
+          offsetY = -contentY * scale
+          break
+        case 'xMidYMin':
+          offsetX = (containerWidth - scaledWidth) / 2 - contentX * scale
+          offsetY = -contentY * scale
+          break
+        case 'xMaxYMin':
+          offsetX = containerWidth - scaledWidth - contentX * scale
+          offsetY = -contentY * scale
+          break
+        case 'xMinYMid':
+          offsetX = -contentX * scale
+          offsetY = (containerHeight - scaledHeight) / 2 - contentY * scale
+          break
+        case 'xMidYMid': // 默认
+          offsetX = (containerWidth - scaledWidth) / 2 - contentX * scale
+          offsetY = (containerHeight - scaledHeight) / 2 - contentY * scale
+          break
+        case 'xMaxYMid':
+          offsetX = containerWidth - scaledWidth - contentX * scale
+          offsetY = (containerHeight - scaledHeight) / 2 - contentY * scale
+          break
+        case 'xMinYMax':
+          offsetX = -contentX * scale
+          offsetY = containerHeight - scaledHeight - contentY * scale
+          break
+        case 'xMidYMax':
+          offsetX = (containerWidth - scaledWidth) / 2 - contentX * scale
+          offsetY = containerHeight - scaledHeight - contentY * scale
+          break
+        case 'xMaxYMax':
+          offsetX = containerWidth - scaledWidth - contentX * scale
+          offsetY = containerHeight - scaledHeight - contentY * scale
+          break
+      }
+    }
+
+    // 计算源裁剪区域 (仅 slice 模式需要)
+    if (isSlice) {
+      if (scale === containerWidth / contentWidth) {
+        // 高度方向需要裁剪
+        sourceHeight = containerHeight / scale
+        if (align.includes('YMid')) {
+          sourceY = (contentHeight - sourceHeight) / 2
+        } else if (align.includes('YMax')) {
+          sourceY = contentHeight - sourceHeight
+        }
+      } else {
+        // 宽度方向需要裁剪
+        sourceWidth = containerWidth / scale
+        if (align.includes('xMid')) {
+          sourceX = (contentWidth - sourceWidth) / 2
+        } else if (align.includes('xMax')) {
+          sourceX = contentWidth - sourceWidth
+        }
+      }
+    }
+  }
+
+  return {
+    scale,
+    offsetX,
+    offsetY,
+    sourceX,
+    sourceY,
+    sourceWidth,
+    sourceHeight,
+    destX,
+    destY,
+    destWidth: destWidth || (align === 'none' ? containerWidth : contentWidth * scale),
+    destHeight: destHeight || (align === 'none' ? containerHeight : contentHeight * scale)
   }
 }

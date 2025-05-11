@@ -32,23 +32,23 @@ function setMonth(date, month) {
  * @param {*} mode
  * @returns
  */
-function formatTimeStr(str = '', mode) {
+function formatTimeStr(str, mode) {
   let date = ''
   let time = ''
-  if (!str) {
-    str = dayjs().format('YYYY-MM-DD HH:mm:ss')
-  }
   if (mode === DATETIME) {
+    if (!str) {
+      str = dayjs().format('YYYY-MM-DD HH:mm')
+    }
     const times = str.split(' ')
     date = times[0]
     time = times[1] || ''
   } else if (mode === TIME) {
-    time = str
+    time = str || dayjs().format('HH:mm')
   } else {
-    date = str
+    date = str || dayjs().format('YYYY-MM-DD')
   }
   let [year, month, day] = date.split('-')
-  let [hour, minute] = time.split('-')
+  let [hour, minute] = time.split(':')
   year = ~~year || 2000
   month = ~~month || 1
   day = ~~day || 1
