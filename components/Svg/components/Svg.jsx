@@ -31,6 +31,17 @@ export const Svg = forwardRef(({ children, width, height, viewBox, preserveAspec
               }, 0)
             }
           })
+        } else if (item.onLayout) {
+          const layout = item.onLayout
+          const value = layout.value()
+          const newLayout = value?.nativeEvent.layout
+          if (layout.el.svgContext) {
+            const elLayout = layout.el.svgContext.layout
+            if (value && (!elLayout || elLayout.x !== newLayout.x || elLayout.y !== newLayout.y || elLayout.width !== newLayout.width || elLayout.height !== newLayout.height)) {
+              layout.callback(value)
+            }
+            layout.el.svgContext.layout = newLayout
+          }
         }
       })
     }
@@ -122,13 +133,9 @@ export const Svg = forwardRef(({ children, width, height, viewBox, preserveAspec
       style={{ width, height }}
       {...event.handlers}
     />
-    <SvgComponent.Provider
-      value={{ update }}
-    >
-      <SvgComponent>
-        {children}
-      </SvgComponent>
-    </SvgComponent.Provider>
+    <SvgComponent value={{ update }}>
+      {children}
+    </SvgComponent>
   </>
 })
 

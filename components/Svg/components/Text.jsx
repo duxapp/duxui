@@ -112,7 +112,7 @@ const parseChildren = (
         if (notUndefined(dy)) {
           oldDys.shift()
         }
-        const bbox = textBbox(ctx, text[0], xy.x, xy.y, props.fontSize, props.textAnchor)
+        const bbox = textBbox(ctx, text[0], xy.x, xy.y, props.textAnchor)
         ctx.restore()
         xy.x += dxi
         xy.y += dyi
@@ -131,7 +131,7 @@ const parseChildren = (
       if (text.length) {
         ctx.save()
         setStyle(ctx, props)
-        const bbox = textBbox(ctx, text, xy.x, xy.y, props.fontSize, props.textAnchor)
+        const bbox = textBbox(ctx, text, xy.x, xy.y, props.textAnchor)
         ctx.restore()
         arr.push({
           t: text,
@@ -179,7 +179,7 @@ const setStyle = (ctx, {
   }
 }
 
-const textBbox = (ctx, text, x, y, fs = 10, textAnchor = 'start') => {
+const textBbox = (ctx, text, x, y, textAnchor = 'start') => {
   const metrics = ctx.measureText(text)
 
   if (process.env.TARO_ENV === 'h5') {
@@ -192,9 +192,9 @@ const textBbox = (ctx, text, x, y, fs = 10, textAnchor = 'start') => {
   } else {
     return {
       x: x - (textAnchor === 'middle' ? metrics.width / 2 : textAnchor === 'start' ? 0 : metrics.width),
-      y,
+      y: y - metrics.fontBoundingBoxAscent,
       width: metrics.width,
-      height: fs,
+      height: metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent,
     }
   }
 }

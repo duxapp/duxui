@@ -1,6 +1,13 @@
 import { Component, CSSProperties } from 'react'
 
 interface names {
+  'bianji'
+  'wenben'
+  'yidong'
+  'juxing'
+  'tupian'
+  'radio-on'
+  'xian'
   'banxuanze'
   'voice-right'
   'voice-right_01'

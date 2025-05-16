@@ -50,9 +50,12 @@ G.bbox = ({ children, ...props }, context) => {
   }
 }
 
-G.draw = (ctx, { children, x = 0, y = 0, ...props }, context) => {
+G.drawBefore = ({x = 0, y = 0}, { ctx }) => {
   ctx.save()
   ctx.translate(x, y)
+}
+
+G.draw = (ctx, { children, x, y, ...props }, context) => {
   const res = draw(context, Children.map(children, child => {
     if (isValidElement(child)) {
       return cloneElement(child, margeProps(child.props, props))

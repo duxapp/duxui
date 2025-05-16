@@ -1,9 +1,10 @@
 /* eslint-disable no-restricted-globals */
 import { colorToRgb } from '@/duxapp'
 import { Children, isValidElement, useRef } from 'react'
-import { createOffscreenCanvas } from '@tarojs/taro'
+import { createOffscreenCanvas, getSystemInfoSync } from '@tarojs/taro'
 import { AnimatedNode } from '../Animated/nodes/Node'
 import { AnimatedInterpolation } from '../Animated/nodes/Interpolation'
+import { toNativeEvent } from '../utils'
 
 export const draw = (context, children = context.svgs, option) => {
   const result = []
@@ -52,6 +53,7 @@ export const draw = (context, children = context.svgs, option) => {
       }
     }
   }
+
   Children.forEach(children, child => {
     if (!isValidElement(child)) {
       return
@@ -81,6 +83,17 @@ export const draw = (context, children = context.svgs, option) => {
     ctx.fillStyle = 'black'
     ctx.strokeStyle = 'transparent'
 
+    // 当前元素信息
+    const getBbox = (() => {
+      let val
+      return () => {
+        if (!val) {
+          val = child.type?.bbox?.(props, currentContext, beforeData)
+        }
+        return val
+      }
+    })()
+
     for (const key in props) {
       let val = props[key]
 
@@ -89,25 +102,16 @@ export const draw = (context, children = context.svgs, option) => {
         if (val.startsWith('url(#')) {
           // 处理引用
           const def = val.slice(5, val.length - 1)
-          if (currentContext.defs[def] && !disabledUrls.includes(child.type.displayName)) {
+          if (currentContext.defs[def] && !disabledUrls.includes(name)) {
             const res = currentContext.defs[def]({
-              bbox: child.type?.bbox?.(props, currentContext, beforeData)
+              bbox: getBbox()
             })
             if (res[0]?.instance) {
               val = res[0].instance
             }
           }
-        } else if (val.endsWith('%')) {
-          // 计算百分比值
-          if (originPercentage[name]?.includes(key)) {
-            val = parseFloat(val) / 100
-          } else {
-            val = parsePercentage(key, val, currentContext.layout)
-          }
-          // eslint-disable-next-line no-restricted-globals
-        } else if (!isNaN(val)) {
-          // 将字符串类型的数字转换为数字
-          val = +val
+        } else {
+          val = parseNumber(val, name, key, currentContext.layout)
         }
       } else if (val instanceof AnimatedInterpolation) {
         currentContext.addAnimated(val._parent)
@@ -123,81 +127,80 @@ export const draw = (context, children = context.svgs, option) => {
         props[key] = val
       }
 
+      // 是否删除公共属性
+      let delProps = true
+
       // 处理公共属性
       switch (key) {
         case 'opacity':
           ctx.globalAlpha = +val
-          delete props[key]
           break
 
         case 'fill':
           ctx.fillStyle = notNoneVal(val) ? val : 'transparent'
-          // delete props[key]
+          delProps = false
           break
 
         case 'fillOpacity':
           ctx.globalAlpha = +val
-          delete props[key]
           break
 
         case 'stroke':
           ctx.strokeStyle = notNoneVal(val) ? val : 'transparent'
-          // delete props[key]
+          delProps = false
           break
 
         case 'strokeWidth':
           ctx.lineWidth = +val
-          delete props[key]
           break
 
         case 'strokeOpacity':
           const currentAlpha = ctx.globalAlpha || 1
           ctx.globalAlpha = currentAlpha * +val
-          delete props[key]
           break
 
         case 'strokeLinecap':
           ctx.lineCap = val
-          delete props[key]
           break
 
         case 'strokeLinejoin':
           ctx.lineJoin = val
-          delete props[key]
           break
 
         case 'strokeDasharray':
           if (val === 'none') {
             ctx.setLineDash([])
-          } else {
+          } else if (typeof val === 'string') {
             const dashArray = val.split(',').map(Number)
             ctx.setLineDash(dashArray)
+          } else if (Array.isArray(val)) {
+            ctx.setLineDash(val)
           }
-          delete props[key]
           break
 
         case 'strokeDashoffset':
           ctx.lineDashOffset = +val
-          delete props[key]
           break
 
         case 'transform':
-          if (!disabledTransform.includes(child.type.displayName) && Array.isArray(val)) {
+          if (!disabledTransform.includes(name) && Array.isArray(val)) {
             applyTransform(currentContext.ctx, parseTransform(val, currentContext))
-            delete props[key]
           }
           break
 
         default: {
+          delProps = false
           break
         }
       }
+      if (delProps) {
+        delete props[key]
+      }
     }
     // 应用属性上的变换
-    if (!disabledTransform.includes(child.type.displayName)) {
+    if (!disabledTransform.includes(name)) {
       const transforms = getTransforms(props)
       if (transforms.length) {
-
         applyTransform(
           ctx,
           transforms,
@@ -215,6 +218,25 @@ export const draw = (context, children = context.svgs, option) => {
       props.clipPath.draw?.(currentContext)
       // 将离屏元素渲染到当前元素上
       context.ctx.drawImage(currentContext.canvas, 0, 0)
+    }
+
+    // 计算布局信息
+    if (typeof props.onLayout === 'function') {
+      const bbox = getBbox()
+      if (bbox) {
+        const transform = ctx.getTransform()
+        result.push({
+          onLayout: {
+            el: child,
+            callback: props.onLayout,
+            value: () => ({
+              nativeEvent: {
+                layout: getTransformedBbox(transform, bbox)
+              }
+            })
+          }
+        })
+      }
     }
 
     // 还原变换
@@ -241,6 +263,21 @@ const originPercentage = {
   DuxSvgLinearGradient: ['x1', 'x2', 'y1', 'y2']
 }
 
+const parseNumber = (val, name, key, layout) => {
+  if (val.endsWith('%')) {
+    // 计算百分比值
+    if (originPercentage[name]?.includes(key)) {
+      return parseFloat(val) / 100
+    } else {
+      return parsePercentage(key, val, layout)
+    }
+    // eslint-disable-next-line no-restricted-globals
+  } else if (!isNaN(val)) {
+    // 将字符串类型的数字转换为数字
+    return +val
+  }
+  return val
+}
 
 export const stopOpacityColor = (color, opacity = 1) => {
   if (+opacity === 1) {
@@ -296,24 +333,46 @@ export function parseAnimatedValue(val) {
 }
 
 export function parseTransform(transform, context) {
+  const result = {}
+  const xyz = ['X', 'Y', 'Z']
   return transform.map(item => {
-    const name = Object.keys(item)[0]
-    if (!name) {
+    const originName = Object.keys(item)[0]
+    if (!originName) {
       return
     }
-    const values = (item[name] instanceof Array ? item[name] : [item[name]]).map(v => {
+    const value = item[originName]
+    let index = xyz.findIndex(key => originName.endsWith(key))
+    const name = ~index ? originName.slice(0, originName.length - 1) : originName
+    if (!~index) {
+      index = 0
+    }
+    if (!result[name]) {
+      result[name] = {
+        type: name,
+        values: []
+      }
+    }
+    const values = (Array.isArray(value) ? value : [value]).map(v => {
       if (v instanceof AnimatedInterpolation) {
-        context.addAnimated(v._parent)
+        context?.addAnimated(v._parent)
         // 动画属性
         return v.__getValue()
       } else if (v instanceof AnimatedNode) {
-        context.addAnimated(v)
+        context?.addAnimated(v)
         // 动画属性
         return v.__getValue()
       } else {
         return v
       }
     })
+    if (originName === 'scale' && !Array.isArray(item[name])) {
+      values.push(values[0])
+    }
+    if (index) {
+      values.unshift(...new Array(index).fill(name === 'scale' ? 1 : 0))
+    } else if (values.length === 1) {
+      values.push(name === 'scale' ? 1 : 0)
+    }
     return {
       type: name,
       values
@@ -527,71 +586,102 @@ export function inverseTransformPoint(resultPoint, transforms, origin = [0, 0]) 
 
 export const useForwardEvent = (context, svgProps) => {
   const touchTarget = useRef()
-  const touch = e => {
-    if (e.type === 'touchstart') {
-      let xy = getEventXY(e)
-      for (let i = context.svgs.length - 1; i >= 0; i--) {
-        const item = context.svgs[i]
-        const props = {}
-        for (const key in item.props) {
-          const val = item.props[key]
-          if (typeof val === 'string') {
-            if (val.endsWith('%')) {
-              // 计算百分百值
-              props[key] = parsePercentage(key, val, context.layout)
-              // eslint-disable-next-line no-restricted-globals
-            } else if (!isNaN(val)) {
-              // 将字符串类型的数字转换为数字
-              props[key] = +val
-            } else {
-              props[key] = val
-            }
-          } else {
-            props[key] = parseAnimatedValue(val)
-          }
+  const checkTouchTarget = (xy, children, parent, parentTransforms = []) => {
+    children = Children.toArray(children)
+    for (let i = children.length - 1; i >= 0; i--) {
+      const child = children[i]
+      const name = child.type.displayName
+      const props = {}
+      for (const key in child.props) {
+        const val = child.props[key]
+        if (typeof val === 'string') {
+          props[key] = parseNumber(val, name, key, context.layout)
+        } else {
+          props[key] = parseAnimatedValue(val)
         }
-        xy = inverseTransformPoint(
-          xy,
-          getTransforms(props),
-          parseTransformProps(props, 'origin', [0, 0])?.values
-        )
-        if (item.type.range?.(xy, props, context)) {
+      }
+      const transforms = [
+        ...parentTransforms,
+        [getTransforms(props), parseTransformProps(props, 'origin', [0, 0])?.values]
+      ]
+      if (Array.isArray(props.transform)) {
+        transforms.push([parseTransform(props.transform)])
+      }
+
+      if (name === 'DuxSvgG') {
+        // 判断子元素事件 svg xy属性需要单独处理为变换
+        transforms.push([
+          [
+            {
+              type: 'translate',
+              values: [props.x ?? 0, props.y ?? 0]
+            }
+          ]
+        ])
+        if (checkTouchTarget(xy, child.props.children, {
+          props,
+          parent,
+          touch: xy
+        }, transforms)) {
+          return true
+        }
+      } else {
+        let itemxy = xy
+        transforms.forEach(transform => {
+          itemxy = inverseTransformPoint(itemxy, ...transform)
+        })
+        if (child.type.range?.(itemxy, props, context)) {
           // 命中目标
           touchTarget.current = {
             props,
+            parent,
             touch: xy
           }
-          break
+          return true
         }
       }
-      // 未命中触发Svg本身的事件
-      touchTarget.current = touchTarget.current || {
+    }
+  }
+
+  const touch = e => {
+    if (e.type === 'touchstart') {
+      const xy = getEventXY(e)
+      touchTarget.current = {
         props: svgProps,
         touch: xy
       }
+      checkTouchTarget(xy, context.svgs, touchTarget.current)
+      const events = ['onPress', 'onTouchStart', 'onTouchMove', 'onTouchEnd', 'onLongPress', 'onPressIn', 'onPressOut']
+      while (touchTarget.current) {
+        if (events.some(key => key in touchTarget.current.props)) {
+          break
+        }
+        touchTarget.current = touchTarget.current.parent
+      }
     }
-    const name = eventTypes[e.type]
     const target = touchTarget.current
     if (!target) {
       return
     }
-    target.props[name]?.(e)
-    if (target.props && !target.props.disabled) {
+    const name = eventTypes[e.type]
+    const props = target.props
+    props[name]?.(e)
+    if (props && !props.disabled) {
       if (e.type === 'touchstart') {
-        target.props.onPressIn?.(e)
+        props.onPressIn?.(toNativeEvent(e))
       }
       if (e.type === 'touchend') {
-        target.props.onPressOut?.(e)
+        props.onPressOut?.(toNativeEvent(e))
         const xy = getEventXY(e)
         if (
           xy.x === target.touch.x
           && xy.y === target.touch.y
         ) {
-          target.props.onPress?.(e)
+          props.onPress?.(toNativeEvent(e))
         }
       }
       if (e.type === 'longpress') {
-        target.props.onLongPress?.(e)
+        props.onLongPress?.(toNativeEvent(e))
       }
     }
 
@@ -800,5 +890,48 @@ export const calculateAspectRatioFit = ({
     destY,
     destWidth: destWidth || (align === 'none' ? containerWidth : contentWidth * scale),
     destHeight: destHeight || (align === 'none' ? containerHeight : contentHeight * scale)
+  }
+}
+
+let dpr = 1
+
+if (process.env.TARO_ENV !== 'h5') {
+  dpr = getSystemInfoSync().pixelRatio
+}
+
+/**
+ * 获取变换之后的元素bbox
+ * @param {*} transform
+ * @param {*} bbox
+ * @returns
+ */
+function getTransformedBbox(transform, bbox) {
+  const { a, b, c, d, e, f } = transform
+
+  // 原始 bbox 的 4 个顶点
+  const points = [
+    { x: bbox.x, y: bbox.y },
+    { x: bbox.x + bbox.width, y: bbox.y },
+    { x: bbox.x + bbox.width, y: bbox.y + bbox.height },
+    { x: bbox.x, y: bbox.y + bbox.height }
+  ]
+
+  // 应用变换矩阵
+  const transformedPoints = points.map(p => ({
+    x: (a * p.x + c * p.y + e) / dpr,
+    y: (b * p.x + d * p.y + f) / dpr
+  }))
+
+  // 计算新的 bbox
+  const minX = Math.min(...transformedPoints.map(p => p.x))
+  const maxX = Math.max(...transformedPoints.map(p => p.x))
+  const minY = Math.min(...transformedPoints.map(p => p.y))
+  const maxY = Math.max(...transformedPoints.map(p => p.y))
+
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY
   }
 }
