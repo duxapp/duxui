@@ -46,14 +46,14 @@ const SelectRenderForm = props => {
     return props.range?.filter(item => ('' + (isObject ? item[props.nameKey || 'name'] : item))?.includes(keyword))
   }, [keyword, props.nameKey, props.range])
 
-  return <Column className='gap-3 items-center'>
-    <Column className='bg-page r-2 p-2 mh-3 self-stretch items-start'>
+  return <Column className='gap-3'>
+    <Column className='bg-page r-2 p-2 mh-3 items-start'>
       <Input.Search value={keyword} placeholder='输入关键词搜索' onChange={setKeyword} className='w-full' />
     </Column>
     {
       !rangeList?.length ?
         <Empty title='没有可选数据' /> :
-        <SelectorPicker {...props} className='self-stretch' range={rangeList} />
+        <SelectorPicker {...props} range={rangeList} />
     }
   </Column>
 }

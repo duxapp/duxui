@@ -16,8 +16,5 @@
   &__main {
     transform: scaleX(0.1) scaleY(0.1);
     opacity: 0.2;
-    /*  #ifdef harmony  */
-    align-items: center;
-    /*  #endif  */
   }
 }

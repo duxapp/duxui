@@ -27,7 +27,7 @@ export const NumberKeyboard = ({
       keyLeft,
       numbers[9],
       keyRight === 'backspace' ?
-        { key: 'backspace', render: <DuxuiIcon className='w-full text-center' name='backspace' size={46} color={duxappTheme.textColor1} />, onClick: onBackspace } :
+        { key: 'backspace', render: <DuxuiIcon name='backspace' size={46} color={duxappTheme.textColor1} />, onClick: onBackspace } :
         keyRight
     ].map(item => {
       if (typeof item === 'object') {
@@ -36,7 +36,7 @@ export const NumberKeyboard = ({
           item.onClick = () => onKeyPress?.('' + item.key)
         }
         if (!isValidElement(item.render)) {
-          item.render = <Text size={7} className='w-full text-center' align='center'>{item.render ?? item.key}</Text>
+          item.render = <Text size={7} align='center'>{item.render ?? item.key}</Text>
         }
         if (!item.width) {
           item.width = 1
@@ -45,7 +45,7 @@ export const NumberKeyboard = ({
       }
       return {
         key: item,
-        render: <Text size={7} className='w-full text-center' align='center'>{item}</Text>,
+        render: <Text size={7} align='center'>{item}</Text>,
         onClick: () => onKeyPress?.('' + item)
       }
     }).reduce((prev, current, index) => {
@@ -58,9 +58,9 @@ export const NumberKeyboard = ({
     }, [])
   }, [keyLeft, keyRight, onBackspace, onKeyPress, random])
 
-  return <Column className={classNames('gap-2 p-2 items-center', className)} style={style} {...props}>
+  return <Column className={classNames('gap-2 p-2', className)} style={style} {...props}>
     {
-      lines.map((line, lineIndex) => <Row className='gap-2 self-stretch items-center' key={lineIndex}>
+      lines.map((line, lineIndex) => <Row className='gap-2' key={lineIndex}>
         {line.map((item) => <KeyItem key={item.key} keyText={item.key} {...item} />)}
       </Row>)
     }
@@ -71,20 +71,16 @@ const KeyItem = ({ keyText, onClick, render, height = 1 }) => {
 
   if (typeof keyText === 'undefined') {
     return <Column
-      items='center'
-      justify='center'
+      className='w-0'
       grow
-      className='r-1'
       style={{
         height: px(height * 90 + (height - 1) * 16)
       }}
-    >
-      <Text className='w-full'></Text>
-    </Column>
+    />
   }
 
   return <TouchableOpacity
-    className='r-1 bg-white flex-grow items-center justify-center'
+    className='r-1 bg-white flex-grow items-center justify-center w-0'
     style={{
       height: px(height * 90 + (height - 1) * 16)
     }}

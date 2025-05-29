@@ -14,7 +14,6 @@ export const Grid = ({
   className,
   style,
   itemStyle,
-  __hmStyle,
   ...props
 }) => {
 
@@ -42,15 +41,15 @@ export const Grid = ({
     return _group
   }, [children, column])
 
-  return <View className={classNames('items-center', className)} style={{ ...style, rowGap: px(rowGap) }} {...props}>
+  return <View className={className} style={{ ...style, rowGap: px(rowGap) }} {...props}>
     {
       group.map((item, index) => {
-        return <View className='Grid__row self-stretch' key={index} style={{ columnGap: px(columnGap) }}>
+        return <View className='Grid__row' key={index} style={{ columnGap: px(columnGap) }}>
           {
             item.map((child, childIndex) => <View
               key={childIndex}
               style={itemStyle}
-              className={classNames('Grid__item flex-grow self-stretch', square && 'Grid__square')}
+              className={classNames('Grid__item', square && 'Grid__square')}
             >
               {
                 square && React.isValidElement(child)

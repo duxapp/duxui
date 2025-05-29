@@ -62,7 +62,6 @@ export const Avatar = ({
   className,
   style,
   children,
-  __hmStyle,
   ...props
 }) => {
 

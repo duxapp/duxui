@@ -41,33 +41,25 @@
 
         &--select {
           left: 5px;
-          /*  #ifndef harmony  */
           right: 5px;
-          /*  #endif  */
           border-radius: 16px;
         }
 
         &--start {
-          /*  #ifndef harmony  */
           left: 5px;
-          /*  #endif  */
           right: -1px;
           border-radius: 16px 0 0 16px;
         }
 
         &--end {
           left: -1px;
-          /*  #ifndef harmony  */
           right: 5px;
-          /*  #endif  */
           border-radius: 0 16px 16px 0;
         }
 
         &--center {
           left: -1px;
-          /*  #ifndef harmony  */
           right: -1px;
-          /*  #endif  */
           background-color: color.adjust($duxappPrimaryColor, $lightness: 30%);
         }
       }
@@ -79,33 +71,25 @@
 
         &--select {
           left: 5px;
-          /*  #ifndef harmony  */
           right: 5px;
-          /*  #endif  */
           border-radius: 16px;
         }
 
         &--start {
-          /*  #ifndef harmony  */
           left: 5px;
-          /*  #endif  */
           right: -1px;
           border-radius: 16px 0 0 16px;
         }
 
         &--end {
           left: -1px;
-          /*  #ifndef harmony  */
           right: 5px;
-          /*  #endif  */
           border-radius: 0 16px 16px 0;
         }
 
         &--center {
           left: -1px;
-          /*  #ifndef harmony  */
           right: -1px;
-          /*  #endif  */
         }
       }
 
@@ -117,10 +101,8 @@
         height: 100%;
         padding: 5px;
         justify-content: space-between;
-        align-items: center;
 
         &__item {
-          align-self: stretch;
           height: 46px;
           align-items: center;
           justify-content: center;

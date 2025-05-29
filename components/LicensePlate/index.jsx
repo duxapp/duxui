@@ -45,9 +45,9 @@ const Keyboard = ({ onInput, onBackspace: onBackspaceInput }) => {
 }
 
 const Province = ({ onKey, onBackspace }) => {
-  return <Grid column={7} square gap={16} className='self-stretch'>
+  return <Grid column={7} square gap={16}>
     {
-      carCity.map(item => <TouchableOpacity key={item.name} className='r-1 items-center justify-center bg-white'
+      carCity.map(item => <TouchableOpacity key={item.name} className='r-1 justify-center bg-white items-center'
         onClick={() => onKey(item.name)}
       >
         <Text bold>{item.name}</Text>
@@ -68,9 +68,9 @@ const City = ({ province, onKey, onBackspace }) => {
     return Array(_empty < 0 ? 4 : _empty).fill(1)
   }, [citys.length])
 
-  return <Grid column={5} square gap={16} className='self-stretch'>
+  return <Grid column={5} square gap={16}>
     {
-      citys.map(item => <TouchableOpacity key={item} className='r-1 items-center justify-center bg-white'
+      citys.map(item => <TouchableOpacity key={item} className='r-1 justify-center bg-white items-center'
         onClick={() => onKey(item)}
       >
         <Text bold>{item}</Text>
@@ -91,11 +91,11 @@ const Key = ({ onKey, onBackspace }) => {
     ]
   }, [])
 
-  return <Column className='self-stretch items-center'>
-    <Row className='gap-1 self-stretch'>
+  return <Column>
+    <Row className='gap-1'>
       {
         num.map(item => <TouchableOpacity
-          className='flex-grow bg-white r-1 items-center justify-center'
+          className='flex-grow bg-white r-1 justify-center items-center'
           key={item}
           style={{ height: px(80) }}
           onClick={() => onKey(item)}
@@ -104,10 +104,10 @@ const Key = ({ onKey, onBackspace }) => {
         </TouchableOpacity>)
       }
     </Row>
-    <Grid column={9} gap={10} square className='mt-1 self-stretch'>
+    <Grid column={9} gap={10} square className='mt-1'>
       {
         az.map(item => <TouchableOpacity key={item}
-          className='r-1 items-center justify-center bg-white'
+          className='r-1 justify-center bg-white items-center'
           onClick={() => onKey(item)}
         >
           <Text bold>{item}</Text>
@@ -119,7 +119,7 @@ const Key = ({ onKey, onBackspace }) => {
 }
 
 const Del = ({ style, onBackspace }) => {
-  return <TouchableOpacity className='items-center justify-center' style={style} onClick={onBackspace}>
+  return <TouchableOpacity className='justify-center items-center' style={style} onClick={onBackspace}>
     <DuxuiIcon name='backspace' size={62} />
   </TouchableOpacity>
 }
@@ -166,7 +166,7 @@ export const LicensePlate = ({ onChange, ...props }) => {
   return <context.Provider value={state}>
     <Input onClick={() => setShow(true)} {...props} />
     {show && <PullView ref={pullView} masking={false} onClose={() => setShow(false)}>
-      <BoxShadow className='p-3 bg-page gap-3 rt-3 items-center' style={{ backgroundColor: duxappTheme.pageColor }}>
+      <BoxShadow className='p-3 bg-page gap-3 rt-3' style={{ backgroundColor: duxappTheme.pageColor }}>
         <context.Provider value={state}>
           <Row justify='end' items='center' self='stretch'>
             <Text type='primary' onClick={() => pullView.current.close()}>关闭</Text>

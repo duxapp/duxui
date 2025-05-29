@@ -119,19 +119,12 @@
   &__linear {
     position: absolute;
     top: 0;
-    /*  #ifdef harmony  */
-    left: -$duxuiButtonMPadding;
-    // 鸿蒙定位问题，宽度不包含padding
-    width: 110%;
-    /*  #endif  */
-    /*  #ifndef harmony  */
     left: 0;
     /*  #ifndef rn  */
     width: 100%;
     /*  #endif  */
     /*  #ifdef rn  */
     width: 110%;
-    /*  #endif  */
     /*  #endif  */
     height: 100%;
   }

@@ -1,14 +1,7 @@
 .Tab {
 
-  /*  #ifdef harmony  */
-  align-items: center;
-  /*  #endif  */
-
   &__row {
     padding-top: 16px;
-    /*  #ifdef harmony  */
-    align-self: stretch;
-    /*  #endif  */
   }
 
   &__item {
@@ -83,9 +76,6 @@
 
   &__con {
     overflow: hidden;
-    /*  #ifdef harmony  */
-    align-self: stretch;
-    /*  #endif  */
     flex: 1;
 
     &__item {

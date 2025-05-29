@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "b-validate": "^1.5.3",
+    "qrcode": "~1.5.4",
     "react-native-view-shot": "~4.0.3",
     "react-native-fast-shadow": "~0.1.1",
     "array-tree-filter": "^2.1.0"

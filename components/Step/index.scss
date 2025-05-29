@@ -1,7 +1,4 @@
-.step-comp {
-  &__row {
-    width: 100%;
-  }
+.Step {
 
   &__item {
     overflow: hidden;
@@ -40,20 +37,14 @@
         position: absolute;
         border-top-width: 2px;
         border-top-color: #e6e6e6;
-        /*  #ifdef harmony  */
         top: 50%;
-        height: 1px; // 鸿蒙没有高度边框不生效
-        /*  #endif  */
       }
 
       &--column {
         position: absolute;
         border-left-width: 2px;
         border-left-color: #e6e6e6;
-        /*  #ifdef harmony  */
         left: 50%;
-        width: 1px; // 鸿蒙没有高度边框不生效
-        /*  #endif  */
       }
     }
 

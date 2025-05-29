@@ -3,18 +3,12 @@
   flex-shrink: 0;
   border-color: #f5f5f5;
   border-top-width: 1Px;
-  /*  #ifdef harmony  */
-  height: 1Px;
-  /*  #endif  */
 }
 
 .Divider-Vertical {
   flex-shrink: 0;
   border-left-width: 1Px;
   border-color: #f5f5f5;
-  /*  #ifdef harmony  */
-  width: 1px;
-  /*  #endif  */
 }
 
 .Divider {

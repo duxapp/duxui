@@ -56,7 +56,7 @@ export const PickerView = ({
   }, [range, value])
 
   return <TaroPickerView onChange={change} value={select} {...props} className={classNames('PickerView', grow && 'flex-grow', className)}>
-    {process.env.TARO_ENV === 'harmony' ? <Text align='center'>鸿蒙端暂不支持 Picker</Text> : children}
+    {children}
   </TaroPickerView>
 }
 

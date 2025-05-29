@@ -21,14 +21,7 @@ export const BoxShadow = ({
     style={{
       ...radius ? { borderRadius: px(radius) } : {},
       ...style,
-      boxShadow: process.env.TARO_ENV === 'harmony'
-        ? {
-          radius: border,
-          color: `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1})`,
-          offsetX: x,
-          offsetY: y,
-        }
-        : `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1}) ${px(x)} ${px(y)} ${px(border)}`
+      boxShadow: `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1}) ${px(x)} ${px(y)} ${px(border)}`
     }}
     className={classNames('overflow-hidden bg-white', className)}
     {...props}

@@ -402,12 +402,7 @@ export const Calendar = ({
     }
   }, [onlyCurrentWeek, selectDay, month])
 
-  const [width, setWidth] = useState(0)
-
-  const RootView = process.env.TARO_ENV === 'harmony' ? Layout : View
-
-  return <RootView className={classNames('Calendar', className)} style={style}
-    onLayout={e => setWidth(e.width)}
+  return <View className={classNames('Calendar', className)} style={style}
     {...props}
   >
     {!onlyCurrentWeek && <View className='Calendar__head' style={navStyle}>
@@ -416,7 +411,6 @@ export const Calendar = ({
       <DuxuiIcon name='direction_right' className='Calendar__head__icon' onClick={next} />
     </View>}
     {
-      (process.env.TARO_ENV !== 'harmony' || width > 0) &&
       list.map((week, index) => {
         if (onlyCurrentWeek && selelctOfWeekIndex !== index && index) {
           return null
@@ -427,7 +421,6 @@ export const Calendar = ({
               header={!index}
               key={day.text + '-' + dayIndex}
               week={dayIndex + 1}
-              width={width / 7}
               {...day}
               onClick={click}
             />)
@@ -435,7 +428,7 @@ export const Calendar = ({
         </View>
       })
     }
-  </RootView>
+  </View>
 }
 
 /**
@@ -475,7 +468,6 @@ const Day = ({
   week,
   renderTop,
   renderBottom,
-  width,
   style,
   textStyle,
   customStyle,
@@ -490,29 +482,13 @@ const Day = ({
     })
   }, [onClick, text, disable, week])
 
-  const selectItemWidth = !select || !width ? 0
-    : selectType === 'select' ? width - pxNum(10)
-      : selectType === 'center' ? width + pxNum(2)
-        : width - pxNum(4)
-
-  const customItemWidth = !customType || !width ? 0
-    : customType === 'select' ? width - pxNum(10)
-      : customType === 'center' ? width + pxNum(2)
-        : width - pxNum(4)
-
   return <View className={classNames('Calendar__row__item', header && 'Calendar__row__item--head')} onClick={click}>
     {customType && <View
       className={`Calendar__row__item__custom Calendar__row__item__custom--${customType}`}
-      style={process.env.TARO_ENV === 'harmony' ?
-        { ...customStyle, width: customItemWidth } :
-        customStyle}
+      style={customStyle}
     />}
     {select && <View
-      style={
-        process.env.TARO_ENV === 'harmony' ?
-          { ...style, width: selectItemWidth } :
-          style
-      }
+      style={style}
       className={`Calendar__row__item__select Calendar__row__item__select--${selectType}`}
     />}
     <Text

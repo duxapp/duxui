@@ -26,4 +26,8 @@ interface StepProps extends ViewProps {
   itemStyle?: CSSProperties
 }
 
+/**
+ * 步骤条组件
+ * 可以用于展示类似物流信息状态等
+ */
 export const Step: React.FC<StepProps>

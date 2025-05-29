@@ -324,7 +324,7 @@ const PullContent = forwardRef(({
     >
       {
         option.current.children ||
-        <Grid column={option.current.column} gap={36} className='self-stretch'>
+        <Grid column={option.current.column} gap={36}>
           {
             option.current.options.map(item => <Text
               align={option.current.align}

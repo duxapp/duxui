@@ -1,6 +1,5 @@
-import { Layout, px } from '@/duxapp'
+import { Layout, px, pxNum } from '@/duxapp'
 import { useState, isValidElement, useCallback, useRef, useEffect } from 'react'
-import { getSystemInfoSync } from '@tarojs/taro'
 import { Column, Row } from '../Flex'
 
 export const HorseLanternLottery = ({
@@ -104,18 +103,20 @@ export const HorseLanternLottery = ({
 
   }, [disabled, max, onDisabledClick, onEnd, onStart])
 
-  return <Layout style={{ ...style, gap: px(gap) }} onLayout={setLayout} {...props}>
+  const gapStyle = { gap: px(gap) }
+
+  return <Layout style={{ ...style, ...gapStyle }} onLayout={setLayout} {...props}>
     {
       !!layout.width && <>
-        <Row style={{ gap: px(gap) }}>
+        <Row style={gapStyle}>
           {
             Array(column).fill(1).map((_i, index) => {
-              return <ItemSelf key={index} list={list} index={index} Item={Item} select={select} grow />
+              return <ItemSelf key={index} list={list} index={index} Item={Item} select={select} grow className='w-0' />
             })
           }
         </Row>
-        <Row style={{ gap: px(gap) }}>
-          <Column grow style={{ gap: px(gap) }}>
+        <Row style={gapStyle}>
+          <Column grow className='w-0' style={gapStyle}>
             {
               Array(row - 2).fill(1).map((_i, index) => {
                 return <ItemSelf key={index} list={list} index={(row - 2 - index - 1) + column + row + column - 2} Item={Item} select={select} />
@@ -123,7 +124,7 @@ export const HorseLanternLottery = ({
             }
           </Column>
           <Column className='flex-shrink'
-            style={{ width: (layout.width - toPx(gap) * (column - 1)) / column * (column - 2) + toPx(gap) * (column - 3) }}
+            style={{ width: (layout.width - pxNum(gap) * (column - 1)) / column * (column - 2) + pxNum(gap) * (column - 3) }}
             onClick={start}
           >
             {
@@ -132,7 +133,7 @@ export const HorseLanternLottery = ({
                 <Start />
             }
           </Column>
-          <Column grow style={{ gap: px(gap) }}>
+          <Column grow className='w-0' style={gapStyle}>
             {
               Array(row - 2).fill(1).map((_i, index) => {
                 return <ItemSelf key={index} list={list} index={index + column} Item={Item} select={select} />
@@ -140,10 +141,10 @@ export const HorseLanternLottery = ({
             }
           </Column>
         </Row>
-        <Row style={{ gap: px(gap) }}>
+        <Row style={gapStyle}>
           {
             Array(column).fill(1).map((_i, index) => {
-              return <ItemSelf key={index} list={list} index={(column - index - 2) + column + row - 1} Item={Item} select={select} grow />
+              return <ItemSelf key={index} list={list} index={(column - index - 2) + column + row - 1} Item={Item} select={select} grow className='w-0' />
             })
           }
         </Row>
@@ -157,5 +158,3 @@ const ItemSelf = ({ list, index, Item, select, ...props }) => {
     <Item list={list} item={list[index]} index={index} select={index === select} />
   </Column>
 }
-
-const toPx = val => getSystemInfoSync().screenWidth / 750 * val

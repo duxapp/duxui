@@ -71,7 +71,7 @@
 ## 主要更改
 - Taro更新到4.0.5 RN更新到0.75
 - 完善大量组件类型提示
-- 完善开发文档[http://duxapp.cn/](http://duxapp.cn/)
+- 完善开发文档[http://duxapp.com/](http://duxapp.com/)
 - 完善多个组件
 - 优化从Taro导入组件的防止兼容新版本RN
 

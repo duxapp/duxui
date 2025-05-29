@@ -3,12 +3,15 @@
   border-radius: 16px;
   padding: 24px;
   min-width: 300px;
+
   &__input {
     textalignvertical: top;
     width: 100%;
     font-size: 28px;
     line-height: 36px;
     color: $duxappTextColor1;
+    background-color: transparent;
+
     .taro-textarea {
       background-color: transparent;
     }

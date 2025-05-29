@@ -229,7 +229,7 @@ const AddAudio = ({
   }, [status])
 
   return <PullView ref={pullView} onClose={onClose}>
-    <Column className='rt-3 bg-white p-3 gap-3 items-center'>
+    <Column className='rt-3 bg-white p-3 gap-3'>
       <Text align='center' bold>音频录制</Text>
       {
         result.path ?
@@ -275,7 +275,7 @@ const AddAudio = ({
             }
           </>
       }
-      <Row className='gap-4 p-3 mt-3 self-stretch' style={{ height: px(160) }}>
+      <Row className='gap-4 p-3 mt-3' style={{ height: px(160) }}>
         {
           !!result.path && <>
             <Button type='primary' plain className='flex-grow'
