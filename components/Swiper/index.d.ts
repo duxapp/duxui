@@ -19,6 +19,9 @@ interface SwiperItemProps extends TaroSwiperItem {
 /**
  * 幻灯片
  */
-export const Swiper: React.FC<SwiperProps> & {
-  Item: React.FC<SwiperItemProps>
-}
+export const Swiper: React.FC<SwiperProps>
+
+/**
+ * 幻灯片
+ */
+export const SwiperItem: React.FC<SwiperItemProps>

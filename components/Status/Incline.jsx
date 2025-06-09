@@ -4,7 +4,7 @@ import { View } from '../common/View'
 import { useStatusContext } from './util'
 import './common.scss'
 
-export const Incline = ({ children, type = 'primary', textStyle, style, className, ...props }) => {
+export const StatusIncline = ({ children, type = 'primary', textStyle, style, className, ...props }) => {
   const { horizontal, vertical } = useStatusContext()
 
   return <View style={style}

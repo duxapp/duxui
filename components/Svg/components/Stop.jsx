@@ -1,6 +1,12 @@
-export const Stop = () => {
+import { pure } from './Common'
 
-  return null
-}
+export const Stop = /*@__PURE__*/ pure(() => {
+  const Stop_ = () => {
 
-Stop.displayName = 'DuxSvgStop'
+    return null
+  }
+
+  Stop_.displayName = 'DuxSvgStop'
+
+  return Stop_
+})

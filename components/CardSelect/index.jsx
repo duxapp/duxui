@@ -5,12 +5,12 @@ import React, { Children, cloneElement, createContext, useCallback, useContext, 
 import { duxuiTheme } from '@/duxui/utils'
 import './index.scss'
 
-const context = createContext({
+const context = /*@__PURE__*/ createContext({
   isCheck: value => false,
   check: value => void 0
 })
 
-const CardSelectGroup = ({
+export const CardSelectGroup = ({
   value,
   onChange,
   checkbox,
@@ -106,5 +106,3 @@ export const CardSelect = ({
     }
   </View>
 }
-
-CardSelect.Group = CardSelectGroup

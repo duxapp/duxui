@@ -47,8 +47,6 @@ export const Swiper = ({
   </Column>
 }
 
-const SwiperItem = props => {
+export const SwiperItem = props => {
   return <TaroSwiperItem {...props} />
 }
-
-Swiper.Item = SwiperItem

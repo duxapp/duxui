@@ -44,6 +44,6 @@ interface CardSelectProps extends ViewProps {
   radiusType?: 'square' | 'round' | 'round-min'
 }
 
-export const CardSelect: React.FC<CardSelectProps> & {
-  Group: React.FC<CardSelectGroupProps>
-}
+export const CardSelect: React.FC<CardSelectProps>
+
+export const CardSelectGroup: React.FC<CardSelectGroupProps>

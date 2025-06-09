@@ -35,7 +35,7 @@ interface StatusCommonProps extends ViewProps {
 /**
  * 在角落显示状态
  */
-export const Status: React.FC<StatusProps> & {
-  Incline: React.FC<StatusInclineProps>
-  Common: React.FC<StatusCommonProps>
-}
+export const Status: React.FC<StatusProps>
+
+export const StatusIncline: React.FC<StatusInclineProps>
+export const StatusCommon: React.FC<StatusCommonProps>

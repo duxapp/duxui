@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { duxappTheme, px } from '@/duxapp'
 import { Column } from '../Flex'
 import { Text } from '../Text'
-import { Form } from './Form'
+import { useFormItemProxy } from './Form'
 import './Textarea.scss'
 
 export const Textarea = ({
@@ -23,7 +23,7 @@ export const Textarea = ({
   ...props
 }) => {
 
-  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+  const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
 
   return <Column
     style={style}

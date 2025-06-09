@@ -21,7 +21,7 @@ export const BoxShadow = ({
     style={{
       ...radius ? { borderRadius: px(radius) } : {},
       ...style,
-      boxShadow: `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1}) ${px(x)} ${px(y)} ${px(border)}`
+      boxShadow: `${px(x, true)} ${px(y, true)} ${px(border, true)} 0 rgba(${rgb[0]},${rgb[1]},${rgb[2]},${opacity || 1})`
     }}
     className={classNames('overflow-hidden bg-white', className)}
     {...props}

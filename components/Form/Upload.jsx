@@ -8,7 +8,7 @@ import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
 import { Grid } from '../Grid'
 import { Column } from '../Flex'
-import { Form } from './Form'
+import { useFormItemProxy } from './Form'
 import './Upload.scss'
 
 export const UploadImages = ({
@@ -172,7 +172,7 @@ export const Upload = ({
   ...props
 }) => {
 
-  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+  const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
 
   if (max === 1) {
     return <UploadImage {...props} value={val} onChange={setVal} />

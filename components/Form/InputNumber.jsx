@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
-import { Form } from './Form'
+import { useFormItemProxy } from './Form'
 import { Input } from './Input'
 import './InputNumber.scss'
 
@@ -19,7 +19,7 @@ export const InputNumber = ({
   ...props
 }) => {
 
-  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+  const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
 
   const stepPrecision = step.toString().includes('.') ? step.toString().split('.')[1].length : 0
 

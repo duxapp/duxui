@@ -5,7 +5,7 @@ import { Painting } from './Painting'
 import { Vector } from './Vector'
 import { TextInput } from './Text'
 
-const GAnimated = Animated.createAnimatedComponent(G)
+const GAnimated = /*@__PURE__*/ Animated.createAnimatedComponent(G)
 
 export const SvgEditor = forwardRef(({
   defaultValue = [],

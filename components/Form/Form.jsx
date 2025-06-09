@@ -8,7 +8,7 @@ import { Button } from '../Button'
 import { Space } from '../Space'
 import './Form.scss'
 
-export const formContext = createContext({
+export const formContext = /*@__PURE__*/ createContext({
   data: {},
   values: {},
   setValue: (field, value) => undefined,
@@ -188,7 +188,7 @@ export const Form = forwardRef(({
   </formContext.Provider>
 })
 
-const FormItem = ({
+export const FormItem = ({
   label,
   labelProps,
   containerProps,
@@ -317,7 +317,7 @@ const FormItem = ({
   </Column>
 }
 
-const Submit = ({ children, ...props }) => {
+export const FormSubmit = ({ children, ...props }) => {
   const form = useFormContext()
   if (isValidElement(children)) {
     return cloneElement(children, {
@@ -332,7 +332,7 @@ const Submit = ({ children, ...props }) => {
   </Button>
 }
 
-const Reset = ({ children, ...props }) => {
+export const FormReset = ({ children, ...props }) => {
   const form = useFormContext()
   if (isValidElement(children)) {
     return cloneElement(children, {
@@ -347,9 +347,9 @@ const Reset = ({ children, ...props }) => {
   </Button>
 }
 
-const arrayContext = createContext({})
+const arrayContext = /*@__PURE__*/ createContext({})
 
-const ArrayForm = ({
+export const FormArray = ({
   value,
   onChange,
   renderTop,
@@ -398,7 +398,7 @@ const ArrayForm = ({
   </formContext.Provider>
 }
 
-const ArrayAction = ({
+export const FormArrayAction = ({
   action,
   children
 }) => {
@@ -420,7 +420,7 @@ const ArrayAction = ({
   return null
 }
 
-const ObjectForm = ({
+export const FormObject = ({
   value,
   onChange,
   children
@@ -458,7 +458,7 @@ const ObjectForm = ({
   </formContext.Provider>
 }
 
-const useFormItemProxy = ({ value, onChange, defaultValue } = {}) => {
+export const useFormItemProxy = ({ value, onChange, defaultValue } = {}) => {
 
   const [val, setVal] = useState(value ?? defaultValue)
 
@@ -504,12 +504,3 @@ const useFormItemProxy = ({ value, onChange, defaultValue } = {}) => {
 
   return [val, input]
 }
-
-Form.Item = FormItem
-Form.Submit = Submit
-Form.Reset = Reset
-Form.Object = ObjectForm
-Form.Array = ArrayForm
-Form.ArrayAction = ArrayAction
-Form.useFormContext = useFormContext
-Form.useFormItemProxy = useFormItemProxy

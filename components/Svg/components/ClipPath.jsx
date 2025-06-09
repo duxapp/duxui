@@ -1,27 +1,31 @@
 import { isValidElement } from 'react'
-import { createOffCanvas, draw } from './Common'
+import { createOffCanvas, draw, pure } from './Common'
 
-export const ClipPath = () => {
+export const ClipPath = /*@__PURE__*/ pure(() => {
+  const ClipPath_ = () => {
 
-  return null
-}
+    return null
+  }
 
-ClipPath.displayName = 'DuxSvgClipPath'
+  ClipPath_.displayName = 'DuxSvgClipPath'
 
-ClipPath.draw = (ctx, { children }, context) => {
+  ClipPath_.draw = (ctx, { children }, context) => {
 
-  const mask = createOffCanvas(context.layout.width, context.layout.height)
+    const mask = createOffCanvas(context.layout.width, context.layout.height)
 
-  return {
-    instance: {
-      draw: content => {
-        if (isValidElement(children)) {
-          mask.ctx.globalCompositeOperation = 'xor'
-          draw({ ...context, ctx: mask.ctx }, children)
-          content.ctx.globalCompositeOperation = 'destination-in'
-          content.ctx.drawImage(mask.canvas, 0, 0)
+    return {
+      instance: {
+        draw: content => {
+          if (isValidElement(children)) {
+            mask.ctx.globalCompositeOperation = 'xor'
+            draw({ ...context, ctx: mask.ctx }, children)
+            content.ctx.globalCompositeOperation = 'destination-in'
+            content.ctx.drawImage(mask.canvas, 0, 0)
+          }
         }
       }
     }
   }
-}
+
+  return ClipPath_
+})

@@ -893,11 +893,7 @@ export const calculateAspectRatioFit = ({
   }
 }
 
-let dpr = 1
-
-if (process.env.TARO_ENV !== 'h5') {
-  dpr = getSystemInfoSync().pixelRatio
-}
+const dpr = process.env.TARO_ENV !== 'h5' ? getSystemInfoSync().pixelRatio : 1
 
 /**
  * 获取变换之后的元素bbox
@@ -935,3 +931,9 @@ function getTransformedBbox(transform, bbox) {
     height: maxY - minY
   }
 }
+
+/**
+ * 编译优化
+ * @returns
+ */
+export const pure = callback => callback()

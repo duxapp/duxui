@@ -4,53 +4,10 @@ import classNames from 'classnames'
 import { Space } from '../Space'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
-import { Form } from './Form'
+import { useFormItemProxy } from './Form'
 import { Row } from '../Flex'
 
-const context = createContext({ check: noop })
-
-const RadioGroup = ({
-  children,
-  value,
-  onChange,
-  defaultValue,
-  disabled,
-  direction = 'horizontal',
-  vertical,
-  style,
-  virtual,
-  className,
-  ...props
-}) => {
-
-  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
-
-  const horizontal = direction === 'horizontal' && !vertical
-
-  const check = useCallback(_val => {
-    if (val === _val || disabled) {
-      return
-    }
-    setVal(_val)
-  }, [setVal, val, disabled])
-
-
-  return <context.Provider value={{ check, currentValue: val }}>
-    {
-      virtual ?
-        children :
-        <Space row={horizontal}
-          items={horizontal ? 'center' : 'stretch'}
-          wrap={horizontal}
-          style={style}
-          {...props}
-          className={classNames('flex-grow', className)}
-        >
-          {children}
-        </Space>
-    }
-  </context.Provider>
-}
+const context = /*@__PURE__*/ createContext({ check: noop })
 
 export const Radio = ({ value, label, disabled, checked, onClick, children: Child, style, ...props }) => {
   const { check, currentValue } = useContext(context)
@@ -88,4 +45,45 @@ export const Radio = ({ value, label, disabled, checked, onClick, children: Chil
   </Row>
 }
 
-Radio.Group = RadioGroup
+export const RadioGroup = ({
+  children,
+  value,
+  onChange,
+  defaultValue,
+  disabled,
+  direction = 'horizontal',
+  vertical,
+  style,
+  virtual,
+  className,
+  ...props
+}) => {
+
+  const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
+
+  const horizontal = direction === 'horizontal' && !vertical
+
+  const check = useCallback(_val => {
+    if (val === _val || disabled) {
+      return
+    }
+    setVal(_val)
+  }, [setVal, val, disabled])
+
+
+  return <context.Provider value={{ check, currentValue: val }}>
+    {
+      virtual ?
+        children :
+        <Space row={horizontal}
+          items={horizontal ? 'center' : 'stretch'}
+          wrap={horizontal}
+          style={style}
+          {...props}
+          className={classNames('flex-grow', className)}
+        >
+          {children}
+        </Space>
+    }
+  </context.Provider>
+}

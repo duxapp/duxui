@@ -1,7 +1,7 @@
 import { View, Text, Image } from '@tarojs/components'
 import { useDidShow, useDidHide, getCurrentPages } from '@tarojs/taro'
 import React, { useState, useCallback, createContext, useContext, useEffect, useRef } from 'react'
-import { QuickEvent, asyncTimeOut, currentPage, route } from '@/duxapp'
+import { QuickEvent, currentPage, route } from '@/duxapp'
 import classNames from 'classnames'
 import { Badge } from '../Badge'
 import './index.scss'
@@ -13,12 +13,12 @@ const usePageShow = () => {
   return show
 }
 
-const screenContext = createContext({
+const screenContext = /*@__PURE__*/ createContext({
   hover: false,
   index: -1
 })
 
-const tabbarContext = createContext({
+const tabbarContext = /*@__PURE__*/ createContext({
   show: false
 })
 

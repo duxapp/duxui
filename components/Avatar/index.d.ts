@@ -45,6 +45,6 @@ interface AvatarGroupProps extends ViewProps {
   maxProps?: Omit<AvatarProps, 'children'>
 }
 
-export const Avatar: React.FC<AvatarProps> & {
-  Group: React.FC<AvatarGroupProps>
-}
+export const Avatar: React.FC<AvatarProps>
+
+export const AvatarGroup: React.FC<AvatarGroupProps>

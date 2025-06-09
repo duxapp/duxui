@@ -87,7 +87,7 @@ export const Tab = ({
     style={expand && scroll ? undefined : tabStyle}
   >
     {
-      list.map((item, index) => <TabItem
+      list.map((item, index) => <TabItemRender
         type={type}
         buttonColor={buttonColor}
         buttonRound={buttonRound}
@@ -124,7 +124,7 @@ export const Tab = ({
                   }}
                 />
                 <Space row wrap className='Tab__expand__content absolute left-0 right-0' style={{ top: layout.top }}>
-                  {list.map((item, index) => <TabItem
+                  {list.map((item, index) => <TabItemRender
                     type={type}
                     buttonColor='page'
                     buttonRound={buttonRound}
@@ -195,7 +195,7 @@ const RenderContent = ({
   </View>
 }
 
-const TabItem = ({
+const TabItemRender = ({
   type,
   buttonColor,
   buttonRound,
@@ -280,11 +280,9 @@ const LineAn = ({
 
 let an = Animated.create({ duration: 100 })
 
-const Item = ({ children }) => {
+export const TabItem = ({ children }) => {
   return children
 }
-
-Tab.Item = Item
 
 const BadgeText = ({ children, badgeProps, outside }) => {
   if (!badgeProps || (!badgeProps.count && !badgeProps.dot)) {

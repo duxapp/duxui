@@ -23,21 +23,21 @@ interface NumberKeyboardProps extends ColumnProps {
   keyRight?: CustomKey
 }
 
-export const NumberKeyboard: React.FC<NumberKeyboardProps> & {
-  /**
-   * 使用控制器 用于快速生成键盘输入的值
-   * @returns
-   */
-  useController: (option?: {
-    /** 默认值 */
-    defaultValue?: string,
-    /** 是否转换为数字 */
-    number?: boolean
-  }) => [
-      staring | number,
-      {
-        onKeyPress: (key: string) => void,
-        onBackspace: () => void
-      }
-    ]
-}
+export const NumberKeyboard: React.FC<NumberKeyboardProps>
+
+/**
+ * 使用控制器 用于快速生成键盘输入的值
+ * @returns
+ */
+export const useNumberKeyboardController: (option?: {
+  /** 默认值 */
+  defaultValue?: string,
+  /** 是否转换为数字 */
+  number?: boolean
+}) => [
+    staring | number,
+    {
+      onKeyPress: (key: string) => void,
+      onBackspace: () => void
+    }
+  ]

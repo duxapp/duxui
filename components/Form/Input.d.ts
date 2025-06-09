@@ -36,6 +36,9 @@ interface InputSearchProps extends InputProps {
 
 }
 
-export const Input: React.FC<InputProps> & {
-  Search: React.FC<InputSearchProps>
-}
+export const Input: React.FC<InputProps>
+
+/**
+ * 带有防抖效果的输入框
+ */
+export const InputSearch: React.FC<InputSearchProps>

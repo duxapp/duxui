@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { createContext, memo, useContext } from 'react'
 import './index.scss'
 
-const context = createContext({ child: false })
+const context = /*@__PURE__*/ createContext({ child: false })
 
 const isTexts = ['string', 'number', 'boolean', 'undefined']
 

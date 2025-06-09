@@ -52,6 +52,6 @@ interface CheckboxProps extends SpaceProps {
   disabled?: boolean
 }
 
-export const Checkbox: FC<CheckboxProps> & {
-  Group: FC<CheckboxGroupProps>
-}
+export const Checkbox: FC<CheckboxProps>
+
+export const CheckboxGroup: FC<CheckboxGroupProps>

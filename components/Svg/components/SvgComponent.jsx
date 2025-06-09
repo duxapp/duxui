@@ -1,6 +1,6 @@
 import { Children, createContext, isValidElement, useContext, useEffect, useRef, Fragment } from 'react'
 
-const context = createContext({
+const context = /*@__PURE__*/ createContext({
   update: () => null
 })
 
@@ -98,7 +98,7 @@ export const SvgComponent = ({ children, value }) => {
   return res
 }
 
-SvgComponent.Provider = context.Provider
+export const SvgComponentProvider = context.Provider
 
 const recursionSetValue = (keys, arr, value) => {
   if (keys.length === 1) {

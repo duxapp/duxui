@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import searchIcon from './images/search.png'
 import './index.scss'
 
-const context = createContext({ setKeyword: noop })
+const context = /*@__PURE__*/ createContext({ setKeyword: noop })
 
 const useContext = () => useReactContext(context)
 
@@ -168,5 +168,3 @@ export const Elevator = ({
     </Absolute>}
   </context.Provider>
 }
-
-Elevator.Search = ElevatorSearch

@@ -4,59 +4,9 @@ import classNames from 'classnames'
 import { Space } from '../Space'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
-import { Form } from './Form'
+import { useFormItemProxy } from './Form'
 
-const context = createContext({ check: noop })
-
-const CheckboxGroup = ({
-  children,
-  value = [],
-  defaultValue,
-  onChange,
-  disabled,
-  direction = 'horizontal',
-  vertical,
-  style,
-  className,
-  virtual,
-  ...props
-}) => {
-
-  const [val, setVal] = Form.useFormItemProxy({
-    onChange,
-    value,
-    defaultValue
-  })
-
-  const horizontal = direction === 'horizontal' && !vertical
-
-  const check = useCallback(_val => {
-    if (disabled) {
-      return
-    }
-
-    setVal(old => {
-      const select = old ? [...old] : []
-      const index = select.indexOf(_val)
-      if (~index) {
-        select.splice(index, 1)
-      } else {
-        select.push(_val)
-      }
-      return select
-    })
-  }, [setVal, disabled])
-
-  return <context.Provider value={{ check, currentValue: val }}>
-    {
-      virtual ?
-        children :
-        <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} {...props} style={style} className={classNames('flex-grow', className)}>
-          {children}
-        </Space>
-    }
-  </context.Provider>
-}
+const context = /*@__PURE__*/ createContext({ check: noop })
 
 /**
  * 用于计算出选中的内容显示值
@@ -108,4 +58,52 @@ export const Checkbox = ({
   </Space>
 }
 
-Checkbox.Group = CheckboxGroup
+export const CheckboxGroup = ({
+  children,
+  value = [],
+  defaultValue,
+  onChange,
+  disabled,
+  direction = 'horizontal',
+  vertical,
+  style,
+  className,
+  virtual,
+  ...props
+}) => {
+
+  const [val, setVal] = useFormItemProxy({
+    onChange,
+    value,
+    defaultValue
+  })
+
+  const horizontal = direction === 'horizontal' && !vertical
+
+  const check = useCallback(_val => {
+    if (disabled) {
+      return
+    }
+
+    setVal(old => {
+      const select = old ? [...old] : []
+      const index = select.indexOf(_val)
+      if (~index) {
+        select.splice(index, 1)
+      } else {
+        select.push(_val)
+      }
+      return select
+    })
+  }, [setVal, disabled])
+
+  return <context.Provider value={{ check, currentValue: val }}>
+    {
+      virtual ?
+        children :
+        <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} wrap={horizontal} {...props} style={style} className={classNames('flex-grow', className)}>
+          {children}
+        </Space>
+    }
+  </context.Provider>
+}

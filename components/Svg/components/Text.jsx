@@ -1,67 +1,75 @@
 import { isValidElement } from 'react'
-import { notNoneVal, notUndefined } from './Common'
+import { notNoneVal, notUndefined, pure } from './Common'
 
-export const Text = () => {
-  return null
-}
+export const Text = /*@__PURE__*/ pure(() => {
+  const Text_ = () => {
+    return null
+  }
 
-export const TSpan = () => {
-  return null
-}
+  Text_.displayName = 'DuxSvgText'
 
-Text.displayName = 'DuxSvgText'
+  Text_.drawBefore = (props, { ctx }) => {
+    return parseChildren(ctx, props)
+  }
 
-TSpan.displayName = 'DuxSvgTSpan'
+  Text_.bbox = (props, context, beforeData) => {
 
-Text.drawBefore = (props, { ctx }) => {
-  return parseChildren(ctx, props)
-}
+    if (!beforeData.length) {
+      return {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      }
+    }
 
-Text.bbox = (props, context, beforeData) => {
+    let minX = Infinity
+    let minY = Infinity
+    let maxX = -Infinity
+    let maxY = -Infinity
 
-  if (!beforeData.length) {
+    beforeData.forEach(({ bbox: { x, y, width, height } }) => {
+      minX = Math.min(minX, x)
+      minY = Math.min(minY, y)
+      maxX = Math.max(maxX, x + width)
+      maxY = Math.max(maxY, y + height)
+    })
+
     return {
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
+      x: minX,
+      y: minY,
+      width: maxX - minX,
+      height: maxY - minY,
     }
   }
 
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
+  Text_.draw = (ctx, { beforeData }) => {
 
-  beforeData.forEach(({ bbox: { x, y, width, height } }) => {
-    minX = Math.min(minX, x)
-    minY = Math.min(minY, y)
-    maxX = Math.max(maxX, x + width)
-    maxY = Math.max(maxY, y + height)
-  })
-
-  return {
-    x: minX,
-    y: minY,
-    width: maxX - minX,
-    height: maxY - minY,
+    beforeData.forEach(item => {
+      ctx.save()
+      setStyle(ctx, item.props)
+      if (notNoneVal(item.props.fill)) {
+        ctx.fillText(item.t, item.x, item.y)
+      }
+      if (notNoneVal(item.props.stroke)) {
+        ctx.strokeText(item.t, item.x, item.y)
+      }
+      ctx.restore()
+    })
   }
-}
 
-Text.draw = (ctx, { beforeData }) => {
+  return Text_
+})
 
-  beforeData.forEach(item => {
-    ctx.save()
-    setStyle(ctx, item.props)
-    if (notNoneVal(item.props.fill)) {
-      ctx.fillText(item.t, item.x, item.y)
-    }
-    if (notNoneVal(item.props.stroke)) {
-      ctx.strokeText(item.t, item.x, item.y)
-    }
-    ctx.restore()
-  })
-}
+export const TSpan = /*@__PURE__*/ pure(() => {
+  const TSpan_ = () => {
+    return null
+  }
+
+  TSpan_.displayName = 'DuxSvgTSpan'
+
+  return TSpan_
+})
 
 const parsed = d => {
   if (Array.isArray(d)) {

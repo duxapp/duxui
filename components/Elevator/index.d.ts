@@ -39,6 +39,6 @@ interface DividerSearchProps {
   placeholder?: string
 }
 
-export const Elevator: React.FC<ElevatorProps> & {
-  Search: React.FC<DividerSearchProps>
-}
+export const Elevator: React.FC<ElevatorProps>
+
+export const ElevatorSearch: React.FC<DividerSearchProps>

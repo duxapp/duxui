@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
-import { Form } from './Form'
+import { useFormItemProxy } from './Form'
 import './InputCode.scss'
 
 export const InputCode = ({
@@ -12,7 +12,7 @@ export const InputCode = ({
   ...props
 }) => {
 
-  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+  const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
 
   const arr = useMemo(() => {
     const _value = '' + val

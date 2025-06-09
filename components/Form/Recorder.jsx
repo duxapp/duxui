@@ -8,7 +8,7 @@ import { Grid } from '../Grid'
 import { Text } from '../Text'
 import { Button } from '../Button'
 import { formConfig } from './config'
-import { Form } from './Form'
+import { useFormItemProxy } from './Form'
 import './Upload.scss'
 
 export const Recorder = ({
@@ -19,7 +19,7 @@ export const Recorder = ({
   ...props
 }) => {
 
-  const [val, setValue] = Form.useFormItemProxy({ value, onChange, defaultValue })
+  const [val, setValue] = useFormItemProxy({ value, onChange, defaultValue })
 
   if (max === 1) {
     return <RecorderOne {...props} value={val} onChange={setValue} />
@@ -50,7 +50,7 @@ const AudioRecorder = ({
 
   const add = useCallback(async () => {
     try {
-      const file = await AddAudio.add()
+      const file = await recorderStart()
       const upload = formConfig.getUploadTempFile()
       const urls = await upload([
         file
@@ -326,7 +326,7 @@ const TimerPlay = () => {
   return <DuxuiIcon name={icons[icon]} size={72} className='text-primary' />
 }
 
-AddAudio.add = () => {
+export const recorderStart = () => {
   return new Promise((resolve, reject) => {
     const { remove } = TopView.add([
       AddAudio,
@@ -343,8 +343,6 @@ AddAudio.add = () => {
     ])
   })
 }
-
-Recorder.start = AddAudio.add
 
 const audioPlay = (() => {
   let innerAudioContext = null

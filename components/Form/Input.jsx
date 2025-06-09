@@ -2,7 +2,7 @@ import { Input as TaroInput } from '@tarojs/components'
 import classNames from 'classnames'
 import { duxappTheme } from '@/duxapp'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Form } from './Form'
+import { useFormItemProxy } from './Form'
 import './Input.scss'
 
 export const Input = ({
@@ -18,7 +18,7 @@ export const Input = ({
   ...props
 }) => {
 
-  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+  const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
 
   return <TaroInput
     onInput={setVal}
@@ -64,5 +64,3 @@ export const InputSearch = ({
 
   return <Input onChange={input} value={val ?? ''} {...props} />
 }
-
-Input.Search = InputSearch

@@ -3,7 +3,7 @@ import React, { createContext, useCallback, useContext, useMemo, useRef, useStat
 
 const eventFunc = () => ({ remove: () => { } })
 
-const context = createContext({
+const context = /*@__PURE__*/ createContext({
   refreshStatus: false,
   onRefresh: eventFunc,
   setRefresh: noop,

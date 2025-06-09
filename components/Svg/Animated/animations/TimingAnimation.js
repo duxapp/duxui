@@ -11,11 +11,11 @@
 'use strict'
 
 import { Animation } from './Animation'
+import { Easing } from '../Easing'
 
 let _easeInOut
 function easeInOut() {
   if (!_easeInOut) {
-    const Easing = require('../Easing').Easing
     _easeInOut = Easing.inOut(Easing.ease)
   }
   return _easeInOut

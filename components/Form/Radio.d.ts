@@ -47,6 +47,6 @@ interface RadioProps extends SpaceProps {
   disabled?: boolean
 }
 
-export const Radio: FC<RadioProps> & {
-  Group: FC<RadioGroupProps>
-}
+export const Radio: FC<RadioProps>
+
+export const RadioGroup: FC<RadioGroupProps>

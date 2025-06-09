@@ -8,19 +8,19 @@ interface LicensePlateProps {
   onChange?: (value: string) => void
 }
 
-interface KeyboardProps {
+interface LicensePlateKeyboardProps {
   /** 输入事件 */
   onInput?: (key: string) => void
   /** 删除事件 */
   onBackspace?: () => void
 }
 
-interface InputProps extends InputCodeProps {
+interface LicensePlateInputProps extends InputCodeProps {
   /** 车牌长度 默认7 新能源为8 默认7 */
   length?: number
 }
 
-interface ProviderProps {
+interface LicensePlateProviderProps {
   /** 子元素 */
   children?: number
 }
@@ -28,9 +28,9 @@ interface ProviderProps {
 /**
  * 车牌号码键盘输入
  */
-export const LicensePlate: React.FC<LicensePlateProps> & {
-  Keyboard: React.FC<KeyboardProps>
-  Input: React.FC<InputProps>
-  Provider: React.FC<ProviderProps>
-  context: Context
-}
+export const LicensePlate: React.FC<LicensePlateProps>
+
+export const LicensePlateKeyboard: React.FC<LicensePlateKeyboardProps>
+export const LicensePlateInput: React.FC<LicensePlateInputProps>
+export const LicensePlateProvider: React.FC<LicensePlateProviderProps>
+export const LicensePlateContext: Context

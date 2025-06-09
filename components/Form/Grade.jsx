@@ -3,7 +3,7 @@ import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
 import { Space } from '../Space'
 import { Row } from '../Flex'
-import { Form } from './Form'
+import { useFormItemProxy } from './Form'
 import './Grade.scss'
 
 const arr = [...new Array(5)]
@@ -18,7 +18,7 @@ export const Grade = ({
   ...props
 }) => {
 
-  const [val, setVal] = Form.useFormItemProxy({
+  const [val, setVal] = useFormItemProxy({
     value,
     onChange,
     defaultValue

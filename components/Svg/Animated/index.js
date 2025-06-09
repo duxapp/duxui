@@ -1,6 +1,3 @@
-import Implementation from './Implementation'
+export { default as Animated } from './Implementation'
 
 export * from './Easing'
-
-export const Animated = Implementation
-

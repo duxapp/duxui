@@ -24,12 +24,12 @@ interface CardProps extends BoxShadowProps {
   items?: 'start' | 'end' | 'center' | 'baseline' | 'stretch'
 }
 
-interface TitleProps {
+interface CardTitleProps {
   numberOfLines?: number // 标题最大行数，默认为 1
   line?: boolean // 是否显示标题左侧的线，默认为 true
   children?: ReactNode // 子元素
 }
 
-export const Card: React.FC<CardProps> & {
-  Title: React.FC<TitleProps>
-}
+export const Card: React.FC<CardProps>
+
+export const CardTitle: React.FC<CardTitleProps>

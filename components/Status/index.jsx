@@ -1,8 +1,9 @@
 import classNames from 'classnames'
 import { View } from '../common/View'
-import { Incline } from './Incline'
-import { Common } from './Common'
 import { context, useStatusContext } from './util'
+
+export * from './Incline'
+export * from './Common'
 
 export const Status = ({ children, horizontal = 'left', vertical = 'top', status, style, className, ...props }) => {
 
@@ -17,8 +18,5 @@ export const Status = ({ children, horizontal = 'left', vertical = 'top', status
     }
   </context.Provider>
 }
-
-Status.Incline = Incline
-Status.Common = Common
 
 export { useStatusContext }

@@ -38,23 +38,22 @@ interface RecorderProps extends GridProps {
 /**
  * 音频录制表单
  */
-export const Recorder: React.FC<RecorderProps> & {
+export const Recorder: React.FC<RecorderProps>
 
+/**
+ * 弹出音频录制功能，异步返回录制的值
+ */
+export const recorderStart: () => Promise<{
   /**
-   * 弹出音频录制功能，异步返回录制的值
+   * 临时文件位置
    */
-  start: () => Promise<{
-    /**
-     * 临时文件位置
-     */
-    path: string
-    /**
-     * 录音大小
-     */
-    size: number
-    /**
-     * 录音时长 ms
-     */
-    duration: number
-  }>
-}
+  path: string
+  /**
+   * 录音大小
+   */
+  size: number
+  /**
+   * 录音时长 ms
+   */
+  duration: number
+}>

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { DatePicker, SelectorPicker, MultiSelectorPicker } from '../Picker'
 import { ModalForm } from './Modal'
 import { Column } from '../Flex'
-import { Input } from './Input'
+import { InputSearch } from './Input'
 import { Empty } from '../Empty'
 
 export const PickerSelect = ({
@@ -48,7 +48,7 @@ const SelectRenderForm = props => {
 
   return <Column className='gap-3'>
     <Column className='bg-page r-2 p-2 mh-3 items-start'>
-      <Input.Search value={keyword} placeholder='输入关键词搜索' onChange={setKeyword} className='w-full' />
+      <InputSearch value={keyword} placeholder='输入关键词搜索' onChange={setKeyword} className='w-full' />
     </Column>
     {
       !rangeList?.length ?

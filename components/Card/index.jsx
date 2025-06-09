@@ -47,7 +47,7 @@ export const Card = ({
 
 }
 
-const Title = ({
+export const CardTitle = ({
   numberOfLines = 1,
   line = true,
   children,
@@ -61,5 +61,3 @@ const Title = ({
     <Text className='CardTitle__text' style={sizeStyle} numberOfLines={numberOfLines}>{children}</Text>
   </View>
 }
-
-Card.Title = Title

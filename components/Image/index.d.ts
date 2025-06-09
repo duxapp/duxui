@@ -17,6 +17,6 @@ interface ImageGroupProps {
   children?: ReactNode
 }
 
-export const Image: React.FC<ImageProps> & {
-  Group: React.FC<ImageGroupProps>
-}
+export const Image: React.FC<ImageProps>
+
+export const ImageGroup: React.FC<ImageGroupProps>

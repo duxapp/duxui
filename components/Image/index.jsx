@@ -7,7 +7,7 @@ import { duxuiTheme } from '@/duxui/utils'
 import { View } from '../common/View'
 import './index.scss'
 
-const context = createContext({
+const context = /*@__PURE__*/ createContext({
   group: false,
   addImage: noop,
   removeImage: noop,
@@ -19,7 +19,7 @@ const context = createContext({
   }
 })
 
-const ImageGroup = ({ children }) => {
+export const ImageGroup = ({ children }) => {
 
   const images = useRef([])
 
@@ -100,5 +100,3 @@ export const Image = memo(({
     {...props}
   />
 })
-
-Image.Group = ImageGroup

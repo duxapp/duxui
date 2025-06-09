@@ -39,7 +39,7 @@ const useCheck = (max = 99) => {
   ]
 }
 
-export const context = createContext({ type: '', isCheck: noop, choice: noop, submit: noop })
+export const context = /*@__PURE__*/ createContext({ type: '', isCheck: noop, choice: noop, submit: noop })
 
 const useContext = () => useReactContext(context)
 

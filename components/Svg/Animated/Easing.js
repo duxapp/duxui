@@ -1,4 +1,4 @@
-let ease
+import _bezier from './bezier'
 
 export const Easing = {
   step0(n) {
@@ -14,10 +14,10 @@ export const Easing = {
   },
 
   ease(t) {
-    if (!ease) {
-      ease = Easing.bezier(0.42, 0, 1, 1)
+    if (!Easing.easeBezier) {
+      Easing.easeBezier = Easing.bezier(0.42, 0, 1, 1)
     }
-    return ease(t)
+    return Easing.easeBezier(t)
   },
 
   quad(t) {
@@ -78,7 +78,6 @@ export const Easing = {
     x2,
     y2,
   ) {
-    const _bezier = require('./bezier').default
     return _bezier(x1, y1, x2, y2)
   },
 

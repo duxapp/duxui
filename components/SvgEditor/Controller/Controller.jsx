@@ -156,7 +156,7 @@ const MenuItem = ({ name, mode, onSelect }) => {
   />
 }
 
-const useSvgEditor = () => {
+export const useSvgEditorController = () => {
 
   const [mode, setMode] = useState('edit')
 
@@ -224,5 +224,3 @@ const useSvgEditor = () => {
     }
   }
 }
-
-SvgEditorController.useController = useSvgEditor

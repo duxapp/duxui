@@ -1,17 +1,17 @@
 import { px } from '@/duxapp'
 import { Column } from '../../Flex'
-import { Form } from '../../Form/Form'
+import { Form, FormItem } from '../../Form/Form'
 import { Range, Color, FillRadio } from './Common'
 
 const StrokeFrom = ({ addMenu }) => {
   return <>
-    <Form.Item field='strokeWidth'>
+    <FormItem field='strokeWidth'>
       <Range max={16} name='粗细' />
-    </Form.Item>
+    </FormItem>
     <MenuLine />
-    <Form.Item field='stroke'>
+    <FormItem field='stroke'>
       <Color addMenu={addMenu} />
-    </Form.Item>
+    </FormItem>
   </>
 }
 
@@ -23,13 +23,13 @@ const PathMenu = ({ defaultValues, onChange, addMenu }) => {
 
 const TextMenu = ({ defaultValues, onChange, addMenu }) => {
   return <Form defaultValues={defaultValues} onChange={onChange}>
-    <Form.Item field='fill'>
+    <FormItem field='fill'>
       <Color addMenu={addMenu} />
-    </Form.Item>
+    </FormItem>
     <MenuLine />
-    <Form.Item field='fontSize'>
+    <FormItem field='fontSize'>
       <Range min={12} max={64} name='字号' />
-    </Form.Item>
+    </FormItem>
   </Form>
 }
 
@@ -37,9 +37,9 @@ const RectMenu = ({ defaultValues, onChange, addMenu }) => {
   return <Form defaultValues={defaultValues} onChange={onChange}>
     <StrokeFrom addMenu={addMenu} />
     <MenuLine />
-    <Form.Item field='isFill'>
+    <FormItem field='isFill'>
       <FillRadio />
-    </Form.Item>
+    </FormItem>
   </Form>
 }
 
@@ -47,9 +47,9 @@ const EllipseMenu = ({ defaultValues, onChange, addMenu }) => {
   return <Form defaultValues={defaultValues} onChange={onChange}>
     <StrokeFrom addMenu={addMenu} />
     <MenuLine />
-    <Form.Item field='isFill'>
+    <FormItem field='isFill'>
       <FillRadio />
-    </Form.Item>
+    </FormItem>
   </Form>
 }
 

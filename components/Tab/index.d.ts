@@ -56,6 +56,6 @@ interface TabItemProps {
   badgeProps?: BadgeProps
 }
 
-export const Tab: React.FC<TabProps> & {
-  Item: React.FC<TabItemProps>
-}
+export const Tab: React.FC<TabProps>
+
+export const TabItem: React.FC<TabItemProps>

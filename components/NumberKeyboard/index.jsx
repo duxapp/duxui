@@ -90,7 +90,7 @@ const KeyItem = ({ keyText, onClick, render, height = 1 }) => {
   </TouchableOpacity>
 }
 
-NumberKeyboard.useController = ({
+export const useNumberKeyboardController = ({
   defaultValue = '',
   number
 } = {}) => {

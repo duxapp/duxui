@@ -64,7 +64,7 @@ export const Divider = ({
 }
 
 
-const DividerGroup = ({
+export const DividerGroup = ({
   vertical,
   children,
   ...props
@@ -82,5 +82,3 @@ const DividerGroup = ({
     </>
   })
 }
-
-Divider.Group = DividerGroup

@@ -89,15 +89,15 @@ export const SvgEditor: React.FC<SvgEditorProps> & SvgEditorRef
 /**
  * SVG编辑器控制器
  */
-export const SvgEditorController: React.FC<SvgEditorControllerProps> & {
-  useController: () => {
-    /**
-     * 传递给编辑器的属性
-     */
-    editor: SvgEditorProps
-    /**
-     * 传递给控制器的属性
-     */
-    controller: SvgEditorControllerProps
-  }
+export const SvgEditorController: React.FC<SvgEditorControllerProps>
+
+export const useSvgEditorController: () => {
+  /**
+   * 传递给编辑器的属性
+   */
+  editor: SvgEditorProps
+  /**
+   * 传递给控制器的属性
+   */
+  controller: SvgEditorControllerProps
 }

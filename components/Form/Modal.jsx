@@ -7,7 +7,7 @@ import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
 import { Divider } from '../Divider'
 import { Space } from '../Space'
-import { useFormContext, formContext, Form } from './Form'
+import { useFormContext, formContext, useFormItemProxy } from './Form'
 import './Modal.scss'
 
 const context = createContext({
@@ -37,7 +37,7 @@ export const ModalForm = ({
   ...props
 }) => {
 
-  const [val, setVal] = Form.useFormItemProxy({ value, onChange, defaultValue })
+  const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
 
   const refs = useRef({})
   refs.current = { onSubmitBefore, onChange: setVal }

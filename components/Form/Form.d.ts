@@ -173,62 +173,66 @@ interface FormArrayActionProps {
    * @returns 操作后的数组值
    * @example
    * // 新增项目项目
-   *  <Form.ArrayAction
+   *  <FormArrayAction
    *    action={list => {
    *      list.push('默认值')
    *      return list
    *    }}
    *  >
    *    <Text size={48}>新增</Text>
-   *  </Form.ArrayAction>
+   *  </FormArrayAction>
    */
   action: (array: any[]) => any[]
   /** 子元素 需要是一个就有 onClick 事件的组件 */
   children: ReactElement
 }
 
-export const Form: React.FC<FormProps> & {
-  /**
-   * 表单项 需要放在Form内部
-   */
-  Item: React.FC<FormItemProps>
-  /**
-   * 表单提交按钮 点击出发onSubmit事件 需要放在Form内部
-   */
-  Submit: React.FC<FormSubmitProps>
-  /**
-   * 表单重置按钮 需要放在Form内部
-   */
-  Reset: React.FC<FormSubmitProps>
-  /**
-   * 对象表单 可以将表单结构封装成 {object: {a: 1,b: 2}, other: 1} 这样结构的数据
-   * 此组件是一个表单组件 必须放在 Form.Item 的直接子元素中
-   */
-  Object: React.FC<FormObjectProps>
-  /**
-   * 数组表单 可以将表单结构封装成 {array: [1,2,3], other: 1} 这样结构的数据
-   * 此组件是一个表单组件 必须放在 Form.Item 的直接子元素中
-   */
-  Array: React.FC<FormArrayProps>
-  /**
-   * 对数组表单的操作
-   * 这个组件需要写在 Form.Array 的renderItem、renderTop、renderBottom或者itemContainer中否则不会生效
-   */
-  ArrayAction: React.FC<FormArrayActionProps>
-  /**
-   * 获取表单上下文
-   * @returns
-   */
-  useFormContext: () => FormRef
-  /**
-   * 给表单代理值和事件
-   * 传入的value需要是一个基本类型值或者是一个简单对象，否则会导致死循环
-   * @param props
-   * @returns
-   */
-  useFormItemProxy: (props: {
-    value?: string
-    onChange: (val: string | any) => void,
-    defaultValue?: string
-  }) => [any, (val: any) => void]
-}
+/**
+ * 表单
+ */
+export const Form: React.FC<FormProps>
+
+/**
+ * 表单项 需要放在Form内部
+ */
+export const FormItem: React.FC<FormItemProps>
+/**
+ * 表单提交按钮 点击出发onSubmit事件 需要放在Form内部
+ */
+export const FormSubmit: React.FC<FormSubmitProps>
+/**
+ * 表单重置按钮 需要放在Form内部
+ */
+export const FormReset: React.FC<FormResetProps>
+/**
+ * 对象表单 可以将表单结构封装成 {object: {a: 1,b: 2}, other: 1} 这样结构的数据
+ * 此组件是一个表单组件 必须放在 Form.Item 的直接子元素中
+ */
+export const FormObject: React.FC<FormObjectProps>
+/**
+ * 数组表单 可以将表单结构封装成 {array: [1,2,3], other: 1} 这样结构的数据
+ * 此组件是一个表单组件 必须放在 Form.Item 的直接子元素中
+ */
+export const FormArray: React.FC<FormArrayProps>
+/**
+ * 对数组表单的操作
+ * 这个组件需要写在 Form.Array 的renderItem、renderTop、renderBottom或者itemContainer中否则不会生效
+ */
+export const FormArrayAction: React.FC<FormArrayActionProps>
+
+/**
+ * 获取表单上下文
+ * @returns
+ */
+export const useFormContext: () => FormRef
+/**
+ * 给表单代理值和事件
+ * 传入的value需要是一个基本类型值或者是一个简单对象，否则会导致死循环
+ * @param props
+ * @returns
+ */
+export const useFormItemProxy: (props: {
+  value?: string
+  onChange: (val: string | any) => void,
+  defaultValue?: string
+}) => [any, (val: any) => void]

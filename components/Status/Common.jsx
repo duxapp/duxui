@@ -4,7 +4,7 @@ import { Text } from '../Text'
 import { useStatusContext } from './util'
 import './common.scss'
 
-export const Common = ({ children, type = 'primary', size = 'm', radius, textStyle, style, className, ...props }) => {
+export const StatusCommon = ({ children, type = 'primary', size = 'm', radius, textStyle, style, className, ...props }) => {
   const { horizontal, vertical, className: statusClass } = useStatusContext()
 
   return <View style={style}

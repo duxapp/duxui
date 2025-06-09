@@ -77,6 +77,6 @@ interface MenuItemClickHandler {
   toggle: () => void
 }
 
-export const Menu: FC<MenuProps> & {
-  Item: FC<MenuItemProps & { ref?: Ref<MenuItemClickHandler> }>
-}
+export const Menu: FC<MenuProps>
+
+export const MenuItem: FC<MenuItemProps & { ref?: Ref<MenuItemClickHandler> }>

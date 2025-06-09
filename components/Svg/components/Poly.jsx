@@ -1,62 +1,70 @@
-import { notNoneVal } from './Common'
+import { notNoneVal, pure } from './Common'
 
-export const Polygon = () => {
+export const Polygon = /*@__PURE__*/ pure(() => {
+  const Polygon_ = () => {
 
-  return null
-}
-
-Polygon.displayName = 'DuxSvgPolygon'
-
-Polygon.drawBefore = props => {
-  return {
-    points: props.points?.split(' ').map(item => item.split(','))
+    return null
   }
-}
 
-Polygon.bbox = (props, context, { points }) => bbox(points)
+  Polygon_.displayName = 'DuxSvgPolygon'
 
-Polygon.range = reage
-
-Polygon.draw = (ctx, { beforeData, fill, stroke }) => {
-  ctx.beginPath()
-  draw(ctx, beforeData.points, true)
-  if (notNoneVal(fill)) {
-    ctx.fill()
+  Polygon_.drawBefore = props => {
+    return {
+      points: props.points?.split(' ').map(item => item.split(','))
+    }
   }
-  if (notNoneVal(stroke)) {
-    ctx.stroke()
+
+  Polygon_.bbox = (props, context, { points }) => bbox(points)
+
+  Polygon_.range = reage
+
+  Polygon_.draw = (ctx, { beforeData, fill, stroke }) => {
+    ctx.beginPath()
+    draw(ctx, beforeData.points, true)
+    if (notNoneVal(fill)) {
+      ctx.fill()
+    }
+    if (notNoneVal(stroke)) {
+      ctx.stroke()
+    }
+    ctx.closePath()
   }
-  ctx.closePath()
-}
 
-export const Polyline = () => {
+  return Polygon_
+})
 
-  return null
-}
+export const Polyline = /*@__PURE__*/ pure(() => {
+  const Polyline_ = () => {
 
-Polyline.displayName = 'DuxSvgPolyline'
-
-Polyline.drawBefore = props => {
-  return {
-    points: props.points?.split(' ').map(item => item.split(','))
+    return null
   }
-}
 
-Polyline.bbox = (props, context, { points }) => bbox(points)
+  Polyline_.displayName = 'DuxSvgPolyline'
 
-Polyline.range = reage
-
-Polyline.draw = (ctx, { beforeData, fill, stroke }) => {
-  ctx.beginPath()
-  draw(ctx, beforeData.points)
-  if (notNoneVal(fill)) {
-    ctx.fill()
+  Polyline_.drawBefore = props => {
+    return {
+      points: props.points?.split(' ').map(item => item.split(','))
+    }
   }
-  if (notNoneVal(stroke)) {
-    ctx.stroke()
+
+  Polyline_.bbox = (props, context, { points }) => bbox(points)
+
+  Polyline_.range = reage
+
+  Polyline_.draw = (ctx, { beforeData, fill, stroke }) => {
+    ctx.beginPath()
+    draw(ctx, beforeData.points)
+    if (notNoneVal(fill)) {
+      ctx.fill()
+    }
+    if (notNoneVal(stroke)) {
+      ctx.stroke()
+    }
+    ctx.closePath()
   }
-  ctx.closePath()
-}
+
+  return Polyline_
+})
 
 const draw = (ctx, points = '', gon) => {
   points.forEach((item, index) => {
@@ -96,7 +104,7 @@ function reage(touch, { points }) {
 
     // 判断射线是否穿过多边形边
     const intersect = ((yi > y) !== (yj > y)) &&
-                      (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi)
+      (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi)
     if (intersect) inside = !inside
   }
 

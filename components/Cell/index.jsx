@@ -6,7 +6,7 @@ import { Divider } from '../Divider'
 import { BoxShadow } from '../BoxShadow'
 import './index.scss'
 
-const context = createContext({ group: false })
+const context = /*@__PURE__*/ createContext({ group: false })
 
 const Root = ({
   children,
@@ -26,7 +26,7 @@ const Root = ({
   </BoxShadow>
 }
 
-const Group = ({
+export const CellGroup = ({
   line = true,
   radius = duxappTheme.common.radiusValue,
   children,
@@ -85,5 +85,3 @@ export const Cell = ({
     }
   </Root>
 }
-
-Cell.Group = Group

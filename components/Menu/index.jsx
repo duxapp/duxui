@@ -9,92 +9,11 @@ import { Grid } from '../Grid'
 import { formContext, useFormContext } from '../Form'
 import './index.scss'
 
-const menuContext = createContext({
+const menuContext = /*@__PURE__*/ createContext({
   itemClick: () => void 0,
   onIndex: () => void 0,
   onSetClick: () => void 0
 })
-
-const MenuItem = (() => {
-  let key = 0
-  return forwardRef(({
-    title,
-    options,
-    cancel,
-    checkbox,
-    column = 1,
-    align,
-    value,
-    onChange,
-    children,
-    onClick,
-    className,
-    renderIcon,
-    ...props
-  }, ref) => {
-
-    const { itemClick, showIndex, onIndex, onSetClick, pull } = useContext(menuContext)
-
-    const index = useMemo(() => {
-      const k = key++
-      onIndex(k)
-      return k
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const click = async e => {
-      if (onClick) {
-        // 通知关闭打开的菜单
-        pull && itemClick({
-          close: true,
-          index
-        })
-        !pull && onClick(e)
-        return
-      }
-      try {
-        const item = await itemClick({
-          options,
-          column,
-          align,
-          value,
-          index,
-          children
-        })
-        if (checkbox) {
-          // fix 多选模式暂未开发
-        } else {
-          onChange?.(item.value === value && cancel ? void 0 : item.value)
-        }
-      } catch (error) {
-
-      }
-    }
-
-    !pull && onSetClick(index, click)
-
-    useImperativeHandle(ref, () => {
-      return {
-        toggle: click
-      }
-    })
-
-    const isOpen = showIndex === index
-
-    const type = isOpen ? 'primary' : void 0
-
-    const label = children ? title : (options?.find(v => v.value === value)?.name || title)
-
-    return <Row className={classNames('MenuItem', className)} grow items='center' justify='center' {...props} onClick={click}>
-      <Text type={type} numberOfLines={1}>{label}</Text>
-      {renderIcon || <DuxuiIcon
-        color={isOpen ? duxappTheme.primaryColor : duxappTheme.textColor1}
-        size={32}
-        name={isOpen ? 'direction_up-fill' : 'direction-down_fill'}
-      />}
-    </Row>
-  })
-})()
 
 export const Menu = ({
   round,
@@ -232,6 +151,87 @@ export const Menu = ({
   </>
 }
 
+export const MenuItem = (() => {
+  let key = 0
+  return forwardRef(({
+    title,
+    options,
+    cancel,
+    checkbox,
+    column = 1,
+    align,
+    value,
+    onChange,
+    children,
+    onClick,
+    className,
+    renderIcon,
+    ...props
+  }, ref) => {
+
+    const { itemClick, showIndex, onIndex, onSetClick, pull } = useContext(menuContext)
+
+    const index = useMemo(() => {
+      const k = key++
+      onIndex(k)
+      return k
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const click = async e => {
+      if (onClick) {
+        // 通知关闭打开的菜单
+        pull && itemClick({
+          close: true,
+          index
+        })
+        !pull && onClick(e)
+        return
+      }
+      try {
+        const item = await itemClick({
+          options,
+          column,
+          align,
+          value,
+          index,
+          children
+        })
+        if (checkbox) {
+          // fix 多选模式暂未开发
+        } else {
+          onChange?.(item.value === value && cancel ? void 0 : item.value)
+        }
+      } catch (error) {
+
+      }
+    }
+
+    !pull && onSetClick(index, click)
+
+    useImperativeHandle(ref, () => {
+      return {
+        toggle: click
+      }
+    })
+
+    const isOpen = showIndex === index
+
+    const type = isOpen ? 'primary' : void 0
+
+    const label = children ? title : (options?.find(v => v.value === value)?.name || title)
+
+    return <Row className={classNames('MenuItem', className)} grow items='center' justify='center' {...props} onClick={click}>
+      <Text type={type} numberOfLines={1}>{label}</Text>
+      {renderIcon || <DuxuiIcon
+        color={isOpen ? duxappTheme.primaryColor : duxappTheme.textColor1}
+        size={32}
+        name={isOpen ? 'direction_up-fill' : 'direction-down_fill'}
+      />}
+    </Row>
+  })
+})()
+
 const duration = 100
 
 const PullContent = forwardRef(({
@@ -361,5 +361,3 @@ const PullContent = forwardRef(({
     </Row>
   </Absolute>
 })
-
-Menu.Item = MenuItem

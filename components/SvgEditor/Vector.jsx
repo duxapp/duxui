@@ -131,28 +131,3 @@ const types = {
     }
   }
 }
-
-function calculateSVGEllipseParams(point1, point2) {
-  // 提取坐标
-  const x1 = point1[0]
-  const y1 = point1[1]
-  const x2 = point2[0]
-  const y2 = point2[1]
-
-  // 计算矩形边界
-  const xMin = Math.min(x1, x2)
-  const xMax = Math.max(x1, x2)
-  const yMin = Math.min(y1, y2)
-  const yMax = Math.max(y1, y2)
-
-  // 计算椭圆中心 (cx, cy)
-  const cx = (xMin + xMax) / 2
-  const cy = (yMin + yMax) / 2
-
-  // 计算椭圆的 x 半径 (rx) 和 y 半径 (ry)
-  const rx = (xMax - xMin) / 2
-  const ry = (yMax - yMin) / 2
-
-  // 返回 SVG 椭圆参数
-  return { cx, cy, rx, ry }
-}

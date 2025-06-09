@@ -24,7 +24,8 @@ interface CellGroupProps extends BoxShadowProps {
   radius?: string
 }
 
-export const Cell: React.FC<CellProps> & {
-  /** 单元格分组 */
-  Group: React.FC<CellGroupProps>
-}
+/** 单元格 */
+export const Cell: React.FC<CellProps>
+
+/** 单元格分组 */
+export const CellGroup: React.FC<CellGroupProps>

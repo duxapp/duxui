@@ -52,6 +52,6 @@ interface DividerGruopProps {
   color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
 }
 
-export const Divider: React.FC<DividerProps> & {
-  Group: React.FC<DividerGruopProps>
-}
+export const Divider: React.FC<DividerProps>
+
+export const DividerGroup: React.FC<DividerGruopProps>
