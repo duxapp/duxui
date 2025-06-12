@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState, forwardRef, useImperativeHandle } from 'react'
 import { TouchableOpacity, View, Text, Dimensions } from 'react-native'
-import { getSystemInfoSync } from '@tarojs/taro'
-import { Absolute } from '@/duxapp'
+import { Absolute, getWindowInfo } from '@/duxapp'
 import { DuxuiIcon } from '../DuxuiIcon'
 import './index.scss'
 
@@ -47,7 +46,7 @@ export const DropDown = forwardRef(({
       return
     }
     view.current.measureInWindow?.((x, y, width, height) => {
-      const { statusBarHeight } = getSystemInfoSync()
+      const { statusBarHeight } = getWindowInfo()
       setPosition({ left: x, top: y + height + statusBarHeight, opacity: 0 })
       setShow(true)
     })

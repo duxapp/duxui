@@ -43,7 +43,7 @@ $duxuiFormItemPadding: 24px;
 $duxuiFormItemLabelWidth: 140px;`]
 }
 
-module.exports = theme => {
+export default theme => {
   Object.keys(theme).forEach(key => {
     const value = theme[key]
     switch (key) {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, memo, useRef } from 'react'
 import { View, Text, Image } from '@tarojs/components'
-import { useDidShow, getSystemInfoSync } from '@tarojs/taro'
-import { noop, ScrollView } from '@/duxapp'
+import { useDidShow } from '@tarojs/taro'
+import { getWindowInfo, noop, ScrollView } from '@/duxapp'
 import { ListLoading } from './Loading'
 import { ListSelect } from './Select'
 import { FlatList } from './FlatList'
@@ -172,7 +172,7 @@ export {
   ListLoading
 }
 
-const itemSize = px => px * getSystemInfoSync().screenWidth / 750
+const itemSize = px => px * getWindowInfo().screenWidth / 750
 
 const Empty = ({
   onEmptyClick,

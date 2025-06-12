@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
-import { colorToRgb } from '@/duxapp'
+import { colorToRgb, getWindowInfo } from '@/duxapp'
 import { Children, isValidElement, useRef } from 'react'
-import { createOffscreenCanvas, getSystemInfoSync } from '@tarojs/taro'
+import { createOffscreenCanvas } from '@tarojs/taro'
 import { AnimatedNode } from '../Animated/nodes/Node'
 import { AnimatedInterpolation } from '../Animated/nodes/Interpolation'
 import { toNativeEvent } from '../utils'
@@ -893,8 +893,6 @@ export const calculateAspectRatioFit = ({
   }
 }
 
-const dpr = process.env.TARO_ENV !== 'h5' ? getSystemInfoSync().pixelRatio : 1
-
 /**
  * 获取变换之后的元素bbox
  * @param {*} transform
@@ -911,6 +909,8 @@ function getTransformedBbox(transform, bbox) {
     { x: bbox.x + bbox.width, y: bbox.y + bbox.height },
     { x: bbox.x, y: bbox.y + bbox.height }
   ]
+
+  const dpr = process.env.TARO_ENV !== 'h5' ? getWindowInfo().pixelRatio : 1
 
   // 应用变换矩阵
   const transformedPoints = points.map(p => ({

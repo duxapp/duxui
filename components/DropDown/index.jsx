@@ -1,7 +1,6 @@
 import { useCallback, useState, forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
 import { View, Text } from '@tarojs/components'
-import { Layout, getRect, Absolute } from '@/duxapp'
-import { getSystemInfoSync } from '@tarojs/taro'
+import { Layout, getRect, Absolute, getWindowInfo } from '@/duxapp'
 import { DuxuiIcon } from '../DuxuiIcon'
 import './index.scss'
 
@@ -60,7 +59,7 @@ export const DropDown = forwardRef(({
 
   const menuLayout = useCallback(layout => {
     (async () => {
-      const { windowWidth: width, windowHeight: height } = getSystemInfoSync()
+      const { windowWidth: width, windowHeight: height } = getWindowInfo()
       const newposition = { ...clickSize.current, opacity: 1 }
       // 此处需要修改
       const { left: x, top: y, width: viewWidth, height: viewHeight } = await getRect('.' + currentClass)

@@ -1,7 +1,6 @@
 import { useCallback, useState, createContext, useContext, useRef, forwardRef, useImperativeHandle, useMemo, useEffect } from 'react'
-import { Layout, Absolute, duxappTheme, Animated, nextTick, pxNum, asyncTimeOut, transformStyle, px } from '@/duxapp'
+import { Layout, Absolute, duxappTheme, Animated, nextTick, pxNum, asyncTimeOut, transformStyle, px, getWindowInfo } from '@/duxapp'
 import classNames from 'classnames'
-import { getSystemInfoSync } from '@tarojs/taro'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -292,7 +291,7 @@ const PullContent = forwardRef(({
     }
   })
 
-  const screenHeight = getSystemInfoSync().screenHeight
+  const screenHeight = getWindowInfo().screenHeight
 
   return <Absolute>
     <Column
