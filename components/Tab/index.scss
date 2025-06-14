@@ -26,7 +26,7 @@
       padding: 8px 32px;
       border-radius: 8px;
       margin: 0 14px;
-      background-color: #fff;
+      background-color: $duxappWhiteColor;
 
       &-c {
         &-page {
@@ -55,7 +55,7 @@
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    background-color: #fff;
+    background-color: $duxappWhiteColor;
 
     &__mask {
       background-color: rgba(0, 0, 0, 0.5);
@@ -67,7 +67,7 @@
     }
 
     &__content {
-      background-color: #fff;
+      background-color: $duxappWhiteColor;
       padding: 24px;
       z-index: 1;
       border-radius: 0 0 16px 16px;

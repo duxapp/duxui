@@ -60,7 +60,8 @@
         &--center {
           left: -1px;
           right: -1px;
-          background-color: color.adjust($duxappPrimaryColor, $lightness: 30%);
+          opacity: 0.3;
+          // background-color: color.adjust($duxappPrimaryColor, $lightness: 30%);
         }
       }
 

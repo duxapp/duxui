@@ -108,39 +108,43 @@
     min-width: 156px;
   }
 
+  &--bg {
+    opacity: 0.3;
+  }
+
   &--default {
     background-color: $duxappTextColor3;
   }
 
   &--primary {
-    background-color: color.adjust($duxappPrimaryColor, $lightness: 30%);
+    background-color: $duxappPrimaryColor;
   }
 
   &--secondary {
-    background-color: color.adjust($duxappSecondaryColor, $lightness: 30%);
+    background-color: $duxappSecondaryColor;
   }
 
   &--success {
-    background-color: color.adjust($duxappSuccessColor, $lightness: 30%);
+    background-color: $duxappSuccessColor;
   }
 
   &--danger {
-    background-color: color.adjust($duxappDangerColor, $lightness: 30%);
+    background-color: $duxappDangerColor;
   }
 
   &--warning {
-    background-color: color.adjust($duxappWarningColor, $lightness: 30%);
+    background-color: $duxappWarningColor;
   }
 
   &--custom1 {
-    background-color: color.adjust($duxappCustomColor1, $lightness: 30%);
+    background-color: $duxappCustomColor1;
   }
 
   &--custom2 {
-    background-color: color.adjust($duxappCustomColor2, $lightness: 30%);
+    background-color: $duxappCustomColor2;
   }
 
   &--custom3 {
-    background-color: color.adjust($duxappCustomColor3, $lightness: 30%);
+    background-color: $duxappCustomColor3;
   }
 }

@@ -1,4 +1,4 @@
-import { px } from '@/duxapp'
+import { duxappTheme, px } from '@/duxapp'
 import { Swiper as TaroSwiper, SwiperItem as TaroSwiperItem } from '@tarojs/components'
 import { useState, Children } from 'react'
 import { Column, Row } from '../Flex'
@@ -13,7 +13,7 @@ export const Swiper = ({
   circular,
   vertical,
   dot,
-  dotColor = '#fff',
+  dotColor = duxappTheme.whiteColor,
   dotSelectColor = dotColor,
   dotDistance = 24,
   ...props

@@ -8,10 +8,11 @@ export const StatusCommon = ({ children, type = 'primary', size = 'm', radius, t
   const { horizontal, vertical, className: statusClass } = useStatusContext()
 
   return <View style={style}
-    className={classNames(statusClass, 'StatusCommon', 'StatusCommon--' + type, 'StatusCommon--' + size, radius && ('StatusCommon--' + vertical + '-' + horizontal), className)}
+    className={classNames(statusClass, 'StatusCommon', 'StatusCommon--' + size, radius && ('StatusCommon--' + vertical + '-' + horizontal), className)}
     {...props}
   >
-    <Text type={type} size={textSizes[size]} style={textStyle}>{children}</Text>
+    <View className={classNames('absolute inset-0 StatusCommon--bg', 'StatusCommon--' + type)} />
+    <Text type={type} size={textSizes[size]} className='z-1' style={textStyle}>{children}</Text>
   </View>
 }
 

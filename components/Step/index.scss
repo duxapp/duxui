@@ -36,14 +36,14 @@
       &--row {
         position: absolute;
         border-top-width: 2px;
-        border-top-color: #e6e6e6;
+        border-top-color: $duxappTextColor2;
         top: 50%;
       }
 
       &--column {
         position: absolute;
         border-left-width: 2px;
-        border-left-color: #e6e6e6;
+        border-left-color: $duxappTextColor2;
         left: 50%;
       }
     }

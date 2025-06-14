@@ -140,9 +140,9 @@ export const ModalForm = ({
           )}
         >
           {!!title && <Row items='center' justify='between' className='ModalForm__head'>
-            <DuxuiIcon name='close' color='#fff' />
+            <DuxuiIcon name='close' className='text-white' />
             <Text bold>{title}</Text>
-            <DuxuiIcon name='close' color='#a3a5b6' onClick={() => setShow(false)} />
+            <DuxuiIcon name='close' className='text-c1' onClick={() => setShow(false)} />
           </Row>}
           {renderHeader}
           {form}
@@ -307,9 +307,9 @@ export const ModalForms = ({
           )}
           >
             {!!title && <Row items='center' justify='between' className='ModalForm__head'>
-              <DuxuiIcon name='close' color='#fff' />
+              <DuxuiIcon name='close' className='text-white' />
               <Text bold>{title}</Text>
-              <DuxuiIcon name='close' color='#a3a5b6' onClick={() => setShow(false)} />
+              <DuxuiIcon name='close' className='text-c1' onClick={() => setShow(false)} />
             </Row>}
             {renderForm}
             {

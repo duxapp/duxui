@@ -1,11 +1,11 @@
 .Menu {
-  background-color: #fff;
+  background-color: $duxappWhiteColor;
   &__mask {
     background-color: #000;
     opacity: 0;
   }
   &__content {
-    background-color: #fff;
+    background-color: $duxappWhiteColor;
     padding: 24px;
     opacity: 0;
     &--round {

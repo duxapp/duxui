@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, useEffect, isValidElement, useRef } from 'react'
 import { View, Text } from '@tarojs/components'
-import { dayjs, deepEqua, Layout, pxNum, toast, useDeepObject } from '@/duxapp'
+import { dayjs, deepEqua, toast, useDeepObject } from '@/duxapp'
 import classNames from 'classnames'
 import { dateAdd, dateToStr, getMaxDay, strFormatToDate } from './date'
 import { DuxuiIcon } from '../DuxuiIcon'

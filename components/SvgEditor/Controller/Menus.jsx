@@ -1,4 +1,4 @@
-import { px } from '@/duxapp'
+import { duxappTheme, px } from '@/duxapp'
 import { Column } from '../../Flex'
 import { Form, FormItem } from '../../Form/Form'
 import { Range, Color, FillRadio } from './Common'
@@ -68,5 +68,5 @@ export const menus = {
 }
 
 export const MenuLine = () => {
-  return <Column className='flex-shrink' style={{ height: px(36), width: 1, backgroundColor: '#e8e8e8' }} />
+  return <Column className='flex-shrink' style={{ height: px(36), width: 1, backgroundColor: duxappTheme.textColor2 }} />
 }

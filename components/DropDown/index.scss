@@ -10,7 +10,7 @@
   }
   &__main {
     position: absolute;
-    background-color: #fff;
+    background-color: $duxappWhiteColor;
     border-radius: 20px;
     overflow: hidden;
     align-items: start;
@@ -24,7 +24,7 @@
     justify-content: space-between;
     &--line {
       border-top-width: 1px;
-      border-top-color: #e5e5e5;
+      border-top-color: $duxappLineColor;
       margin: 0 50px;
       align-items: center;
     }
@@ -34,6 +34,7 @@
     &__text {
       font-size: 32px;
       margin-right: 50px;
+      color: $duxappTextColor1;
     }
   }
 }

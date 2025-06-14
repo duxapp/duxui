@@ -7,18 +7,18 @@
   &__main {
     width: 702px;
     padding: 24px;
-    background-color: #fff;
+    background-color: $duxappWhiteColor;
     align-items: start;
   }
 
   &__title {
     font-size: 32px;
-    color: #333;
+    color: $duxappTextColor1;
   }
 
   &__content {
     font-size: 24px;
     margin-top: 20px;
-    color: #999;
+    color: $duxappTextColor2;
   }
 }

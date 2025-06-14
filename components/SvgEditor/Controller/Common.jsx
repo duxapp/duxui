@@ -57,7 +57,7 @@ export const Color = ({ value, onChange, addMenu }) => {
       style={{ width: px(36), backgroundColor: value, borderColor: duxappTheme.pageColor }}
     />
     <DuxuiIcon name='direction_left'
-      className='text-s4 tect-c2'
+      className='text-s4 text-c2'
       style={{
         transform: transformStyle({
           rotateZ: '-90deg'
@@ -82,7 +82,7 @@ const colors = [
 export const FillRadio = ({ value, onChange }) => {
   return <Row items='center' className='gap-2'>
     <Column className='items-center justify-center square r-1'
-      style={{ width: px(46), backgroundColor: !value ? '#f2f2f2' : 'transparent' }}
+      style={{ width: px(46), backgroundColor: !value ? duxappTheme.pageColor : 'transparent' }}
       onClick={() => value && onChange(false)}
     >
       <Column
@@ -91,7 +91,7 @@ export const FillRadio = ({ value, onChange }) => {
       />
     </Column>
     <Column className='items-center justify-center square r-1'
-      style={{ width: px(46), backgroundColor: value ? '#f2f2f2' : 'transparent' }}
+      style={{ width: px(46), backgroundColor: value ? duxappTheme.pageColor : 'transparent' }}
       onClick={() => !value && onChange(true)}
     >
       <Column

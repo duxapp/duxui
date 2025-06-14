@@ -1,6 +1,7 @@
 import { Text as TaroText } from '@tarojs/components'
 import { pxTransform } from '@tarojs/taro'
 import classNames from 'classnames'
+import { duxappTheme } from '@/duxapp'
 import { createContext, memo, useContext } from 'react'
 import './index.scss'
 
@@ -12,7 +13,8 @@ export const Text = memo(({
   type,
   color,
   bold,
-  size,
+  size = 3,
+  lineHeight = 1.4,
   underline,
   break: breakWord,
   numberOfLines,
@@ -33,8 +35,12 @@ export const Text = memo(({
 
   if (size >= 12) {
     _style.fontSize = pxTransform(size)
-    if (!child) {
-      _style.lineHeight = pxTransform(size * 1.4)
+  }
+  if (!child && !_style.lineHeight) {
+    if (size < 8 && !child) {
+      _style.lineHeight = pxTransform(duxappTheme[`textSize${size}`] * lineHeight)
+    } else {
+      _style.lineHeight = pxTransform(size * lineHeight)
     }
   }
 
@@ -53,7 +59,6 @@ export const Text = memo(({
     bold ?? bold ? 'Text-bold' : 'Text-nobold',
     breakWord && 'Text-break',
     size && size < 10 && 'Text-s-' + size,
-    !child ? (size ? (size < 10 ? 'Text-s-l-' + size : '') : 'Text-s-l-3') : '',
     _delete && 'Text-delete',
     underline && 'Text-underline',
     grow && 'w-0 flex-grow',

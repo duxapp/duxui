@@ -15,6 +15,8 @@ interface TextProps extends TaroTextProps {
   break?: boolean
   /** 文字大小 数字1-7使用的是主题配置的字号 数字大于等于12时，将使用px处理 */
   size?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | number
+  /** 行距倍数 默认1.4 */
+  lineHeight?: number
   /** 是否有删除线 */
   delete?: boolean
   /** 是否有下划线 */

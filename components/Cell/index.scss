@@ -1,12 +1,12 @@
 .CellGroup {
   padding: 0 30px;
-  background-color: #fff;
+  background-color: $duxappWhiteColor;
 }
 .Cell {
   padding: 30px;
   align-items: center;
   flex-direction: row;
-  background-color: #fff;
+  background-color: $duxappWhiteColor;
   &__left {
     margin-right: 24px;
     flex-shrink: 0;
@@ -20,12 +20,12 @@
   &__title {
     font-size: 28px;
     font-weight: bold;
-    color: #373d52;
+    color: $duxappTextColor1;
   }
   &__subtitle {
     margin-top: 8px;
     font-size: 24px;
-    color: #73778e;
+    color: $duxappTextColor2;
   }
   &__right {
     flex-direction: row;
@@ -35,7 +35,7 @@
   &__desc {
     flex: 1;
     text-align: right;
-    color: #a1a6b6;
+    color: $duxappTextColor3;
     font-size: 28px;
   }
 }
