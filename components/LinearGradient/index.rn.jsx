@@ -1,6 +1,6 @@
-import { View } from '@tarojs/components'
 import { Svg, LinearGradient as SvgLinearGradient, Rect, Stop } from 'react-native-svg'
 import { useMemo } from 'react'
+import { View } from '../common'
 
 const deg = degree => {
   if (typeof degree !== 'number' || Math.abs(degree) === Infinity) throw new Error('角度必须是数字类型')
@@ -80,6 +80,7 @@ export const LinearGradient = ({
   useAngle,
   angle = 0,
   style,
+  className,
   children,
   ...props
 }) => {
@@ -95,24 +96,41 @@ export const LinearGradient = ({
     }
   }, [useAngle, start, end, angle])
 
-  return <View {...props} style={style} className='overflow-hidden'>
-    {colors.length > 1 && <Svg className='inset-0 absolute'>
-      <SvgLinearGradient id='gradient' x1={`${userProps.start.x * 100}%`} y1={`${userProps.start.y * 100}%`} x2={`${userProps.end.x * 100}%`} y2={`${userProps.end.y * 100}%`}>
-        {
-          colors.map((color, index) => {
-            const offset = locations[index] || (index / (colors.length - 1))
-            let stopOpacity = 1
-            // 计算rgba不透明度
-            if (color.startsWith('rgba(')) {
-              stopOpacity = color.split(',')[3].trim()
-              stopOpacity = +stopOpacity.substring(0, stopOpacity.length - 1)
-            }
-            return <Stop key={index} offset={`${offset * 100}%`} stopColor={color} stopOpacity={stopOpacity} />
-          })
-        }
-      </SvgLinearGradient>
-      <Rect x='0' y='0' width='100%' height='100%' fill='url(#gradient)' />
-    </Svg>}
-    {children}
-  </View>
+  const rootProps = {
+    ...props,
+    style,
+    className: 'overflow-hidden'
+  }
+
+  if (children) {
+    return <View {...rootProps}>
+      <SvgLinear colors={colors} userProps={userProps} locations={locations} className='inset-0 absolute' />
+      {children}
+    </View>
+  } else {
+    return <SvgLinear colors={colors} userProps={userProps} locations={locations} {...rootProps} />
+  }
+}
+
+const SvgLinear = ({ colors, userProps, locations, ...props }) => {
+  if (colors.length < 2) {
+    return
+  }
+  return <Svg {...props}>
+    <SvgLinearGradient id='gradient' x1={`${userProps.start.x * 100}%`} y1={`${userProps.start.y * 100}%`} x2={`${userProps.end.x * 100}%`} y2={`${userProps.end.y * 100}%`}>
+      {
+        colors.map((color, index) => {
+          const offset = locations[index] || (index / (colors.length - 1))
+          let stopOpacity = 1
+          // 计算rgba不透明度
+          if (color.startsWith('rgba(')) {
+            stopOpacity = color.split(',')[3].trim()
+            stopOpacity = +stopOpacity.substring(0, stopOpacity.length - 1)
+          }
+          return <Stop key={index} offset={`${offset * 100}%`} stopColor={color} stopOpacity={stopOpacity} />
+        })
+      }
+    </SvgLinearGradient>
+    <Rect x='0' y='0' width='100%' height='100%' fill='url(#gradient)' />
+  </Svg>
 }

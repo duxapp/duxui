@@ -98,6 +98,14 @@
     text-decoration: line-through;
   }
 
+  $line-heights: 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58;
+
+  @each $height in $line-heights {
+    &-l-#{$height} {
+      line-height: #{$height}px;
+    }
+  }
+
   /*postcss-pxtransform rn eject enable*/
   &-ellipsis {
     //超出一行文字自动隐藏

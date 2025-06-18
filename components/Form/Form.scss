@@ -1,5 +1,6 @@
 .FormItem {
-  padding: $duxuiFormItemPadding 0;
+  padding-top: $duxuiFormItemPadding;
+  padding-bottom: $duxuiFormItemPadding;
   gap: 16px;
 
   &--no-padding {

@@ -26,7 +26,8 @@
       justify-content: center;
       background-color: $duxappWhiteColor;
       border-radius: 22px;
-      border: 1px solid $duxappLineColor;
+      border-width: 1px;
+      border-color: $duxappLineColor;
     }
   }
 }

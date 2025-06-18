@@ -15,7 +15,8 @@
 
   &__btns {
     margin-top: 36px;
-    border-top: 1Px solid $duxappLineColor;
+    border-top-width: 1Px;
+    border-top-color: $duxappLineColor;
     height: 110px;
   }
 }

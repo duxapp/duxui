@@ -92,7 +92,7 @@ export const Button = _props => {
         colors={color}
         useAngle
         angle={colorAngle}
-        className='Button__linear z-0'
+        className='absolute inset-0 z-0'
       />}
       {loading && <Loading
         color={_plain || (type === 'default' && !color) ? 'dark' : 'blank'}

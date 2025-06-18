@@ -1,7 +1,7 @@
 import { Text as TaroText } from '@tarojs/components'
 import { pxTransform } from '@tarojs/taro'
 import classNames from 'classnames'
-import { duxappTheme } from '@/duxapp'
+import { duxappTheme, px } from '@/duxapp'
 import { createContext, memo, useContext } from 'react'
 import './index.scss'
 
@@ -36,11 +36,16 @@ export const Text = memo(({
   if (size >= 12) {
     _style.fontSize = pxTransform(size)
   }
+  let lineHeightClass = ''
   if (!child && !_style.lineHeight) {
-    if (size < 8 && !child) {
-      _style.lineHeight = pxTransform(duxappTheme[`textSize${size}`] * lineHeight)
+    let lh = size * lineHeight
+    if (size < 8) {
+      lh = duxappTheme[`textSize${size}`] * lineHeight
+    }
+    if (lh > 54 || lh < 22) {
+      _style.lineHiehgt = px(lh)
     } else {
-      _style.lineHeight = pxTransform(size * lineHeight)
+      lineHeightClass = 'Text-l-' + findClosestNumber(lineArr, lh)
     }
   }
 
@@ -54,6 +59,7 @@ export const Text = memo(({
 
   const cn = classNames(
     !child && 'Text',
+    lineHeightClass,
     type && 'Text-' + type,
     typeof color === 'number' ? ('Text-c-' + color) : '',
     bold ?? bold ? 'Text-bold' : 'Text-nobold',
@@ -90,3 +96,28 @@ export const Text = memo(({
     {render}
   </context.Provider>
 })
+
+const lineArr = [24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58]
+
+const findClosestNumber = (arr, target) => {
+  if (arr.length === 0) return null;
+
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2);
+    if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid;
+    }
+  }
+
+  // 检查 left 和 left-1 哪个更接近
+  if (left > 0 && Math.abs(target - arr[left - 1]) < Math.abs(target - arr[left])) {
+    return arr[left - 1];
+  } else {
+    return arr[left];
+  }
+}

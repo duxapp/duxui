@@ -1,5 +1,5 @@
 import { View } from '@tarojs/components'
-import { memo, useCallback } from 'react'
+import { useCallback } from 'react'
 
 const directionMap = [
   ['top left', 'top', 'top right'],
@@ -26,7 +26,7 @@ const defaultProps = {
   colors: []
 }
 
-export const LinearGradient = memo(({
+export const LinearGradient = ({
   start = defaultProps.start,
   end = defaultProps.end,
   colors = defaultProps.colors,
@@ -80,4 +80,4 @@ export const LinearGradient = memo(({
   >
     {children}
   </View>
-})
+}

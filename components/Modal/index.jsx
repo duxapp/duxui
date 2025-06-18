@@ -112,5 +112,5 @@ export const Modal = ({ children, show, animation = true, maskClosable = true, o
     }
   }, [children, show, animation, overlayOpacity, close, group])
 
-  return <></>
+  return null
 }

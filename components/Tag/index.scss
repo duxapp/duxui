@@ -48,41 +48,42 @@
   }
 
   &--plain {
+    border-width: 1px;
 
     &--default {
-      border: 1px solid $duxappTextColor2;
+      border-color: $duxappTextColor2;
     }
 
     &--primary {
-      border: 1px solid $duxappPrimaryColor;
+      border-color: $duxappPrimaryColor;
     }
 
     &--secondary {
-      border: 1px solid $duxappSecondaryColor;
+      border-color: $duxappSecondaryColor;
     }
 
     &--success {
-      border: 1px solid $duxappSuccessColor;
+      border-color: $duxappSuccessColor;
     }
 
     &--danger {
-      border: 1px solid $duxappDangerColor;
+      border-color: $duxappDangerColor;
     }
 
     &--warning {
-      border: 1px solid $duxappWarningColor;
+      border-color: $duxappWarningColor;
     }
 
     &--custom1 {
-      border: 1px solid $duxappCustomColor1;
+      border-color: $duxappCustomColor1;
     }
 
     &--custom2 {
-      border: 1px solid $duxappCustomColor2;
+      border-color: $duxappCustomColor2;
     }
 
     &--custom3 {
-      border: 1px solid $duxappCustomColor3;
+      border-color: $duxappCustomColor3;
     }
   }
 

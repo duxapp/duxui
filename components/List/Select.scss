@@ -5,7 +5,8 @@
   &__check {
     width: 40px;
     height: 40px;
-    border: 1px solid $duxappPrimaryColor;
+    border-width: 1px;
+    border-color: $duxappPrimaryColor;
     margin-right: 10px;
     margin-left: 10px;
     flex-shrink: 0;

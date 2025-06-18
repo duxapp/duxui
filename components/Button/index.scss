@@ -91,15 +91,18 @@
 
   &--s {
     height: $duxuiButtonSHeight;
-    padding: 0 $duxuiButtonSPadding;
+    padding-left: $duxuiButtonSPadding;
+    padding-right: $duxuiButtonSPadding;
   }
   &--m {
     height: $duxuiButtonMHeight;
-    padding: 0 $duxuiButtonMPadding;
+    padding-left: $duxuiButtonMPadding;
+    padding-right: $duxuiButtonMPadding;
   }
   &--l {
     height: $duxuiButtonLHeight;
-    padding: 0 $duxuiButtonLPadding;
+    padding-left: $duxuiButtonLPadding;
+    padding-right: $duxuiButtonLPadding;
   }
   &--fs-s {
     font-size: $duxuiButtonSFontSize;
@@ -115,18 +118,6 @@
   }
   &--linear {
     border-width: 0;
-  }
-  &__linear {
-    position: absolute;
-    top: 0;
-    left: 0;
-    /*  #ifndef rn  */
-    width: 100%;
-    /*  #endif  */
-    /*  #ifdef rn  */
-    width: 110%;
-    /*  #endif  */
-    height: 100%;
   }
   &--round {
     border-radius: 750px;

@@ -9,14 +9,16 @@
       padding: 12px 0 24px 0;
       font-size: 24px;
       font-weight: bold;
-      border-bottom: 1px solid $duxappLineColor;
+      border-bottom-width: 1px;
+      border-bottom-color: $duxappLineColor;
     }
 
     &__item {
       padding: 24px 0;
       font-size: 28px;
       color: $duxappTextColor1;
-      border-bottom: 1px solid $duxappLineColor;
+      border-bottom-width: 1px;
+      border-bottom-color: $duxappLineColor;
     }
   }
 
