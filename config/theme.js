@@ -47,7 +47,7 @@ export default {
 
   card: {
     shadow: true,
-    radius: duxappTheme.common.radiusValue,
+    radius: duxappTheme.radius,
     margin: 24
   },
 

@@ -2,7 +2,7 @@ import { previewImage } from '@tarojs/taro'
 import { Image as TaroImage } from '@tarojs/components'
 import { createContext, useRef, useCallback, useContext, useMemo, useEffect, memo } from 'react'
 import classNames from 'classnames'
-import { noop } from '@/duxapp'
+import { noop, px } from '@/duxapp'
 import { duxuiTheme } from '@/duxui/utils'
 import { View } from '../common/View'
 import './index.scss'
@@ -81,7 +81,10 @@ export const Image = memo(({
   }, [data.group, data.preview, onClick, preview, src, images])
 
   if (square) {
-    return <View className={classNames('Image--img-square__root Image', 'Image--' + radiusType, className)} style={style}>
+    return <View
+      className={classNames('Image--img-square__root Image', 'Image--' + radiusType, className)}
+      style={typeof square === 'number' ? { width: px(square), ...style } : style}
+    >
       <TaroImage
         className={classNames('Image--img-square', process.env.TARO_ENV !== 'weapp' && 'Image--img-square--height')}
         mode='aspectFill'

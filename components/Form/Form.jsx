@@ -1,5 +1,5 @@
 import { deepCopy, noop, useDeepObject } from '@/duxapp/utils'
-import { isValidElement, cloneElement, Fragment, createContext, useContext, useEffect, useMemo, useState, useCallback, useRef, forwardRef, useImperativeHandle } from 'react'
+import { isValidElement, cloneElement, Fragment, createContext, useContext, useEffect, useMemo, useState, useCallback, useRef, forwardRef, useImperativeHandle, Children } from 'react'
 import classNames from 'classnames'
 import { Schema } from 'b-validate'
 import { Text } from '../Text'
@@ -206,9 +206,11 @@ export const FormItem = ({
   rules,
   trigger = 'onChange',
   triggerPropName = 'value',
-  field,
-  // 当有的表单一个需要编辑多个字段时，指定此方式
-  fields,
+  name,
+  field = name,
+  wholeForm,
+  fields = wholeForm,
+  form: findForm,
   ...props
 }) => {
 
@@ -251,9 +253,7 @@ export const FormItem = ({
   }
 
   // 缓存子元素的值更改函数
-  const triggerEvent = child?.props?.[trigger]
-  const triggerEventRef = useRef(triggerEvent)
-  triggerEventRef.current = triggerEvent
+  const triggerEventRef = useRef()
 
   const { setValues, setValue, itemPadding } = form
 
@@ -266,13 +266,47 @@ export const FormItem = ({
     }
   }, [fields, setValues, setValue, field])
 
-  if (isValidElement(child) && (typeof field !== 'undefined' || fields)) {
-    child = cloneElement(child, {
+  const cloneForm = item => {
+    triggerEventRef.current = item.props[trigger]
+    return cloneElement(item, {
       [trigger]: change,
-      field: child.props.field || field,
-      [triggerPropName]: child[triggerPropName] ?? (fields ? form.values : value),
+      field: item.props.field || field,
+      [triggerPropName]: item[triggerPropName] ?? (fields ? form.values : value),
       disabled: disabled ?? form.disabled
     })
+  }
+
+  const findFormItem = eles => {
+    let find
+    const res = Children.map(eles, (item => {
+      if (!find && isValidElement(item) && item.type === findForm) {
+        find = true
+        return cloneForm(item)
+      } else if (!find && isValidElement(item) && item.props.children) {
+        const childRes = findFormItem(item.props.children)
+        if (childRes.find) {
+          find = true
+          return cloneElement(item, {
+            children: childRes.child
+          })
+        } else {
+          return item
+        }
+      }
+      return item
+    }))
+    return {
+      find,
+      child: res
+    }
+  }
+
+  if (typeof field !== 'undefined' || fields) {
+    if (findForm) {
+      child = findFormItem(child).child
+    } else if (isValidElement(child)) {
+      child = cloneForm(child)
+    }
   }
 
   if (typeof label === 'undefined') {

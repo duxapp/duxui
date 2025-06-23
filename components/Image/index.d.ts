@@ -8,8 +8,12 @@ interface ImageProps extends TaroImageProps {
   images?: string[]
   /** 圆角类型 */
   radiusType?: 'square' | 'round-min'
-  /** 将图片显示为正方形，需要指定 width 属性 */
-  square?: boolean
+  /**
+   * 将图片显示为正方形
+   * 传入数字可直接指定宽度
+   * 如果传入true，需要通过其他方式指定图片宽度
+   */
+  square?: boolean | number
 }
 
 interface ImageGroupProps {

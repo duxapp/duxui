@@ -28,7 +28,7 @@ const Root = ({
 
 export const CellGroup = ({
   line = true,
-  radius = duxappTheme.common.radiusValue,
+  radius = duxappTheme.radius,
   children,
   className,
   style
@@ -57,7 +57,7 @@ export const Cell = ({
   desc,
   renderIcon,
   isLink,
-  radius = duxappTheme.common.radiusValue,
+  radius = duxappTheme.radius,
   ...props
 }) => {
   return <Root radius={radius} isLink={isLink} {...props}>

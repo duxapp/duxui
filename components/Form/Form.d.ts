@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ComponentType, ReactElement } from 'react'
 import { SchemaRuleType } from 'b-validate'
 import { TextProps } from '../Text'
 import { SpaceProps } from '../Space'
@@ -77,12 +77,24 @@ interface FormItemChildProps extends FormChildProps {
 }
 
 interface FormItemProps extends ColumnProps {
-  /** 字段名称 */
+  /**
+   * 字段名称
+   */
+  name?: string | number
+  /**
+   * 控制是否管理整个表单的值
+   * 开启后，子表单的 value 将是整个表单的值，onChange 相当于 setValues
+   * 此参数和 `name` 不能同时使用
+   */
+  wholeForm?: boolean
+  /**
+   * @deprecated 已弃用，请使用 `name` 代替
+   * 字段名称
+   */
   field?: string | number
   /**
-   * 如果一个表单需要控制多个字段则传入此参数
-   * 此参数和field不能同时使用
-   * 开启之后 子表单 value将是整个表单的值 onChange 相当于 setValues
+   * @deprecated 已弃用，请使用 `wholeForm` 代替
+   * 控制是否管理整个表单的值
    */
   fields?: boolean
   /**
@@ -107,11 +119,26 @@ interface FormItemProps extends ColumnProps {
   required?: boolean
   /** 禁用表单 */
   disabled?: boolean
+  /**
+   * 如果子元素是多个组件，或者嵌套，用于指定表单项目
+   * 会在所有子元素中递归查找到这个类型的元素作为表单项
+   * @example
+   * <FormItem name='g' form={Input}>
+   *   <Column className='gap-3 p-3 mv-3'>
+   *     <Input placeholder='输入重量' type='digitpad' align='center' />
+   *     <Divider size={4} color='primary' />
+   *   </Column>
+   * </FormItem>
+   */
+  form?: ComponentType<any>
   /** 通过哪个事件名称触发表单改变 默认为 onChange */
   trigger?: string
   /** 给表单绑定的值的属性名称 默认为 value */
   triggerPropName?: string
-  /** 表单验证规则 详情见 b-validate */
+  /**
+   * 表单验证规则 详情见 b-validate
+   * https://github.com/PengJiyuan/b-validate?tab=readme-ov-file#schema
+   */
   rules?: SchemaRuleType[]
 }
 

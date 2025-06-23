@@ -1,0 +1,22 @@
+.ConfirmForm {
+  &__main {
+    width: 606px;
+    background-color: #fff;
+    border-radius: 32px;
+    padding-top: 48px;
+  }
+
+  &__input {
+    margin-top: 48px;
+    margin-left: 32px;
+    margin-right: 32px;
+  }
+
+  &__divider {
+    margin-top: 32px;
+  }
+
+  &__btns {
+    height: 110px;
+  }
+}

@@ -13,7 +13,7 @@ export const Text = memo(({
   type,
   color,
   bold,
-  size = 3,
+  size,
   lineHeight = 1.4,
   underline,
   break: breakWord,
@@ -38,12 +38,13 @@ export const Text = memo(({
   }
   let lineHeightClass = ''
   if (!child && !_style.lineHeight) {
-    let lh = size * lineHeight
-    if (size < 8) {
-      lh = duxappTheme[`textSize${size}`] * lineHeight
+    const s = size ?? 3
+    let lh = s * lineHeight
+    if (s < 8) {
+      lh = duxappTheme[`textSize${s}`] * lineHeight
     }
     if (lh > 54 || lh < 22) {
-      _style.lineHiehgt = px(lh)
+      _style.lineHeight = px(lh)
     } else {
       lineHeightClass = 'Text-l-' + findClosestNumber(lineArr, lh)
     }

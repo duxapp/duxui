@@ -15,6 +15,11 @@ interface AvatarProps extends ViewProps {
   /** 头像背景颜色 */
   bgColor?: string
   /** 头像图片地址 */
+  src?: string
+  /**
+   * @deprecated 已弃用，请使用 `src` 代替
+   * 头像图片地址
+   */
   url?: string
   /** 头像图标，可以是任何支持的 React 组件 */
   icon?: ReactElement

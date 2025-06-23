@@ -32,7 +32,7 @@ $duxuiAvatarMSize: 84px;
 $duxuiAvatarLSize: 120px;`],
   card: [`
 // Card组件
-$duxuiCardRadius: #{$duxappCommonRadius};
+$duxuiCardRadius: #{$duxappRadius};
 $duxuiCardMargin: 24px;`],
   divider: [`
 // Divider组件
