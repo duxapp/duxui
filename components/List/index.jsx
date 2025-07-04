@@ -41,13 +41,15 @@ export const createList = usePageData => {
     useVirtualList,
     virtualListProps,
     virtualWaterfallProps,
+    // 传递列表项目的属性，不支持动态动态更新
+    itemProps,
     ...props
   }) => {
 
     const [list, action] = usePageData({ url, data, ...requestOption }, { field: listField, listCallback, cache, ...option })
 
     const ref = useRef({})
-    ref.current = { list, action }
+    ref.current = { ...itemProps, list, action }
 
     useDidShow(() => {
       if (option?.ready === false) {
@@ -79,9 +81,9 @@ export const createList = usePageData => {
     const { type } = ListSelect.useContext()
 
     const RenderItem = useMemo(() => {
-      const Item_ = ({ data: itemData, id, index, item = itemData?.[index], ...itemProps }) => {
+      const Item_ = ({ data: itemData, id, index, item = itemData?.[index], ...otherProps }) => {
         return <ListSelect.Item item={item} index={index} id={id}>
-          <Item item={item} id={type ? undefined : id} index={index} {...itemProps} {...ref.current} />
+          <Item item={item} id={type ? undefined : id} index={index} {...otherProps} {...ref.current} />
         </ListSelect.Item>
       }
       if (process.env.TARO_ENV === 'rn') {

@@ -41,12 +41,12 @@ export const Tab = ({
     const _tabPane = []
     let _badgeType = null
     const _list = Children.map(children, (_child, index) => {
-      const paneKey = _child?.props?.paneKey ?? index
+      const paneKey = _child?.props?.value ?? _child?.props?.paneKey ?? index
 
       if (_badgeType !== 'count') {
-        if (typeof _child.props.badgeProps?.count !== 'undefined') {
+        if (typeof _child?.props.badgeProps?.count !== 'undefined') {
           _badgeType = 'count'
-        } else if (typeof _child.props.badgeProps?.dot === 'boolean') {
+        } else if (typeof _child?.props.badgeProps?.dot === 'boolean') {
           _badgeType = 'dot'
         }
       }

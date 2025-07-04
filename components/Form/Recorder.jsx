@@ -97,12 +97,12 @@ const AudioRecorder = ({
             <Text color={2} size={2}>{(progress * 100).toFixed(1)}%</Text>
           </> :
           <>
-            <Column style={{ width: px(46) }} items='center' justify='center' self='center'
+            <Column style={{ width: px(tip ? 46 : 64) }} items='center' justify='center' self='center'
               className='square r-max border-w1 border-danger'
             >
-              <Column style={{ width: px(18) }} className='square r-1 bg-danger' />
+              <Column style={{ width: px(tip ? 18 : 28) }} className='square r-1 bg-danger' />
             </Column>
-            <Text color={2} size={2}>{tip}</Text>
+            {!!tip && <Text color={2} size={2}>{tip}</Text>}
           </>
       }
     </Column>

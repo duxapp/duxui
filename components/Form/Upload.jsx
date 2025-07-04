@@ -95,8 +95,8 @@ export const UploadImages = ({
             <Text color={2} size={2}>{(progress * 100).toFixed(1)}%</Text>
           </> :
           <>
-            <Text color={2} size={48}><DuxuiIcon name='add-select' /></Text>
-            <Text color={2} size={2}>{addText}</Text>
+            <DuxuiIcon name='add-select' className='text-c2' size={addText ? 48 : 64} />
+            {!!addText && <Text color={2} size={2}>{addText}</Text>}
           </>
       }
     </Column>

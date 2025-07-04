@@ -6,7 +6,7 @@ import { Divider } from '../Divider'
 import './index.scss'
 
 const ConfirmForm = ({
-  defaultValue = '',
+  defaultValue,
   title = '请输入',
   form: Form,
   verify,
@@ -53,7 +53,7 @@ const ConfirmForm = ({
               : console.error('confirmForm: 传入的form不是一个有效的元素')
         }
       </Column>
-      <Divider padding={0} className='ConfirmForm__divider' />
+      <Divider className='ConfirmForm__divider' />
       <Row className='ConfirmForm__btns'>
         {cancel && <Row grow items='center' justify='center'
           onClick={async () => {

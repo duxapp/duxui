@@ -1,8 +1,9 @@
 {
   "name": "duxui",
   "description": "DUXUI库",
-  "version": "1.1.14",
+  "version": "1.1.18",
   "dependencies": [
-    "duxappStyle"
+    "duxappStyle",
+    "react-native-view-shot"
   ]
 }

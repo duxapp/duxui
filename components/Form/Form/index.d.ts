@@ -1,9 +1,9 @@
 import { ComponentType, ReactElement } from 'react'
 import { SchemaRuleType } from 'b-validate'
-import { TextProps } from '../Text'
-import { SpaceProps } from '../Space'
-import { ButtonProps } from '../Button'
-import { ColumnProps } from '../Flex'
+import { TextProps } from '../../Text'
+import { SpaceProps } from '../../Space'
+import { ButtonProps } from '../../Button'
+import { ColumnProps } from '../../Flex'
 
 interface Values {
   [key: string]: any
@@ -21,12 +21,14 @@ interface FormRef {
   values: Values,
   /** 经过计算之后的默认值 */
   defaultValues: Values
-  /** 表单结果值 将会在点击提交按钮时改变 */
-  data: Values
   /** 通过字段设置表单值 */
   setValue: (field: string, value: any) => void
-  /** 批量设置表单值 */
-  setValues: (values: Values) => void
+  /**
+   * 批量设置表单值
+   * @values 要设置的值
+   * @param merge 是否合并，默认 true
+   */
+  setValues: (values: Values, merge?: boolean) => void
   /** 提交表单 */
   submit: () => void
   /** 重置表单 */
@@ -54,7 +56,16 @@ interface FormProps {
   /** 表单改变事件 */
   onChange?: (values: Values) => void
   /** 表单提交事件 */
-  onSubmit?: (values: Values) => void
+  onSubmit?: (values: Values) => void | boolean | Promise<boolean>
+  /**
+   * 是否开启表单填写缓存
+   * 填写一个用于保存缓存的字段名，即表示开启
+   * 开启后，会将当前填写的数据进行缓存，如果未提交保存，下次打开使用这个缓存加载
+   * 在 onSubmit 事件返回true的时候将会把这个缓存清除
+   * 如果 onSubmit 提交事件之后，表单继续被编辑，表单还会被保存，请处理这个逻辑
+   * 如果读取到 cache，优先级高于 defaultValues
+   */
+  cache?: string
   /** 是否禁用表单 */
   disabled?: boolean
   /** 表单项是否垂直布局 */

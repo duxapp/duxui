@@ -39,19 +39,19 @@ export const Checkbox = ({
 
   return <Space
     row items='center' size={8}
-    onClick={e => {
-      if (!disabled) {
+    {...disabled ? {
+      onClick: e => {
         stopPropagation(e)
         check(value)
       }
-    }}
-    style={style}  {...props}
+    } : {}}
+    style={style} {...props}
   >
     {/* <Text size={6} type={isCheck || half ? 'primary' : void 0} color={isCheck || half ? void 0 : 3}>
       <DuxuiIcon name={isCheck ? 'xuanzhong' : half ? 'banxuanze' : 'xuanzekuang'} />
     </Text> */}
     <DuxuiIcon
-      className={classNames('text-s6',isCheck || half ? 'text-primary' : 'text-c3')}
+      className={classNames('text-s6', isCheck || half ? 'text-primary' : 'text-c3')}
       name={isCheck ? 'xuanzhong' : half ? 'banxuanze' : 'xuanzekuang'}
     />
     {!!label && <Text>{label}</Text>}

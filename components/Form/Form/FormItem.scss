@@ -1,0 +1,17 @@
+.FormItem {
+  padding-top: $duxuiFormItemPadding;
+  padding-bottom: $duxuiFormItemPadding;
+  gap: 16px;
+
+  &--no-padding {
+    padding: 0 0;
+  }
+
+  &__label {
+    width: $duxuiFormItemLabelWidth;
+
+    &__required {
+      color: #F00;
+    }
+  }
+}

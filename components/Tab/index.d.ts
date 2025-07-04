@@ -50,8 +50,13 @@ interface TabProps extends ViewProps {
 interface TabItemProps {
   /** 标签标题 */
   title?: string
-  /** 对应的标签页的 key */
+  /**
+   * @deprecated 已弃用，请使用 `value` 代替
+   * 对应的标签页的 key
+   */
   paneKey?: string | number
+  /** 对应的标签页的 key */
+  value?: string | number
   /** 显示红点组件的属性 */
   badgeProps?: BadgeProps
 }

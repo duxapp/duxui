@@ -87,6 +87,12 @@ interface ListProps extends ScrollViewProps {
    * https://nervjs.github.io/taro-docs/docs/virtual-waterfall
    */
   virtualWaterfallProps?: VirtualWaterfallProps
+  /**
+   * 要传递给项目的属性，不支持动态更新
+   */
+  itemProps?: {
+    [key: string]: any
+  }
 }
 
 export function createList(
