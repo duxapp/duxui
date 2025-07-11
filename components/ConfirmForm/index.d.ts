@@ -27,6 +27,11 @@ interface ConfirmFormProps {
    */
   verify?: (val: string | number | any) => boolean | Promise<boolean>
   /**
+   * 是否多字段表单
+   * 开启后可以传入Form的任意子表单
+   */
+  multiple?: boolean
+  /**
    * 是否显示取消按钮
    * @default true
    */

@@ -1,6 +1,5 @@
 import { deepCopy, noop, ObjectManage } from '@/duxapp/utils'
 import { createContext, useContext, useEffect, useMemo, useState, useCallback, useRef, forwardRef, useImperativeHandle } from 'react'
-import { Schema } from 'b-validate'
 
 export const Form = forwardRef(({
   labelProps,
@@ -16,7 +15,7 @@ export const Form = forwardRef(({
   cache
 }, ref) => {
 
-  // 让默认值和值默认是相同的
+  // 让值和值默认是相同的
   const _defaultValues = useMemo(() => ({}), [])
 
   const [defaultValues, setDefaultValues] = useState(_defaultValues)
@@ -24,7 +23,7 @@ export const Form = forwardRef(({
   const [values, updateValues] = useState(_defaultValues)
 
   // 将值保存起来
-  const refs = useRef({}).current
+  const refs = useRef({ schemas: {} }).current
   refs.values = values
   refs.onChange = onChange
   refs.onSubmit = onSubmit
@@ -77,55 +76,60 @@ export const Form = forwardRef(({
   }, [])
 
   /**
-   * 存储验证规则
-   */
-  const validateSchemas = useRef({})
-
-  const [validateErrors, setValidateErrors] = useState(null)
-
-  /**
    * 表单验证
    */
-  const validate = useCallback(async () => {
-    return new Promise((resolve, reject) => {
-      const schema = new Schema(validateSchemas.current)
-      schema.validate(refs.values, errors => {
-        if (!errors) {
-          resolve()
-        } else {
-          reject(errors)
+  const validate = useCallback(async (checkAll = true) => {
+    refs.error = 0
+    for (const key in refs.schemas) {
+      const callback = refs.schemas[key]
+      if (checkAll) {
+        try {
+          await callback()
+        } catch (error) {
+          refs.error++
         }
-        setValidateErrors(errors)
-      })
-    })
+      } else {
+        await callback()
+      }
+    }
+    if (checkAll && refs.error) {
+      throw `${refs.error}个表单未验证通过`
+    }
   }, [refs])
+
+  const itemId = useRef(0)
 
   /**
    * 收集表单验证
    */
-  const addItem = useCallback(({ field, rules }) => {
-    validateSchemas.current[field] = rules
+  const addRules = useCallback(callback => {
+    const id = itemId.current++
+    refs.schemas[id] = callback
 
     return {
       remove: () => {
-        delete validateSchemas.current[field]
+        delete refs.schemas[id]
       }
     }
-  }, [])
+  }, [refs])
 
   const submit = useCallback(async () => {
-    await validate()
-    let status = refs.onSubmit?.(deepCopy(refs.values))
-    // 表单提交完成，删除表单缓存
-    if (cache) {
-      if (status instanceof Promise) {
-        status = await status
+    try {
+      await validate()
+      let status = refs.onSubmit?.(deepCopy(refs.values))
+      // 表单提交完成，删除表单缓存
+      if (cache) {
+        if (status instanceof Promise) {
+          status = await status
+        }
+        if (status === true) {
+          FormCache.getInstance().merge({
+            [cache]: undefined
+          })
+        }
       }
-      if (status === true) {
-        FormCache.getInstance().merge({
-          [cache]: undefined
-        })
-      }
+    } catch (error) {
+      console.log(error)
     }
   }, [cache, refs, validate])
 
@@ -148,8 +152,8 @@ export const Form = forwardRef(({
 
   const result = {
     defaultValues, values,
-    setValue, setValues, submit, reset, validate, addItem, itemPadding,
-    labelProps, containerProps, direction, vertical, disabled, validateErrors
+    setValue, setValues, submit, reset, validate, addRules, itemPadding,
+    labelProps, containerProps, direction, vertical, disabled
   }
 
   return <formContext.Provider value={result}>

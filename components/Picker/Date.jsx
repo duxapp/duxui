@@ -90,10 +90,13 @@ export class DatePicker extends React.Component {
   defaultMaxDate
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if ('date' in nextProps) {
-      this.setState({
-        date: formatTimeStr(nextProps.value || nextProps.defaultValue, nextProps.mode)
-      })
+    if (nextProps.value) {
+      const date = formatTimeStr(nextProps.value, nextProps.mode)
+      if (date.getTime() !== this.state.date.getTime()) {
+        this.setState({
+          date
+        })
+      }
     }
   }
 

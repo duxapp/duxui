@@ -3,12 +3,14 @@ import { PullView, TopView } from '@/duxapp'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { Divider } from '../Divider'
+import { Form, FormSubmit } from '../Form/Form'
 import './index.scss'
 
 const ConfirmForm = ({
   defaultValue,
   title = '请输入',
-  form: Form,
+  form: FormIns,
+  multiple,
   verify,
   cancel = true,
   onSubmit,
@@ -24,9 +26,9 @@ const ConfirmForm = ({
 
   const pullView = useRef()
 
-  const submit = async () => {
+  const submit = async data => {
     if (verify) {
-      let status = verify(val)
+      let status = verify(multiple ? data : val)
       if (status instanceof Promise) {
         status = await status
       }
@@ -35,40 +37,60 @@ const ConfirmForm = ({
       }
     }
     await pullView.current.close()
-    onSubmit(val)
+    onSubmit(multiple ? data : val)
   }
 
-  return <PullView ref={pullView} side='center' mask>
-    <Column className='ConfirmForm__main'>
-      <Text size={6} bold align='center'>{title}</Text>
-      <Column className='ConfirmForm__input'>
-        {
-          isValidElement(Form) ?
-            cloneElement(Form, {
+  const content = (<Column className='ConfirmForm__main'>
+    <Text size={6} bold align='center'>{title}</Text>
+    <Column className='ConfirmForm__input'>
+      {
+        multiple ?
+          FormIns :
+          isValidElement(FormIns) ?
+            cloneElement(FormIns, {
               value: val,
               onChange: setVal
             })
-            : typeof Form === 'function' ?
-              <Form value={val} onChange={setVal} />
+            : typeof FormIns === 'function' ?
+              <FormIns value={val} onChange={setVal} />
               : console.error('confirmForm: 传入的form不是一个有效的元素')
-        }
-      </Column>
-      <Divider className='ConfirmForm__divider' />
-      <Row className='ConfirmForm__btns'>
-        {cancel && <Row grow items='center' justify='center'
-          onClick={async () => {
-            await pullView.current.close()
-            onCancel()
-          }}
-        >
-          <Text size={6}>取消</Text>
-        </Row>}
-        <Divider direction='vertical' />
-        <Row grow items='center' justify='center' onClick={submit}>
-          <Text type='primary' size={6}>确定</Text>
-        </Row>
-      </Row>
+      }
     </Column>
+    <Divider className='ConfirmForm__divider' />
+    <Row className='ConfirmForm__btns'>
+      {cancel && <Row grow items='center' justify='center'
+        onClick={async () => {
+          await pullView.current.close()
+          onCancel()
+        }}
+      >
+        <Text size={6}>取消</Text>
+      </Row>}
+      <Divider direction='vertical' />
+      {
+        multiple ?
+          <FormSubmit>
+            <Row grow items='center' justify='center'>
+              <Text type='primary' size={6}>确定</Text>
+            </Row>
+          </FormSubmit> :
+          <Row grow items='center' justify='center' onClick={submit}>
+            <Text type='primary' size={6}>确定</Text>
+          </Row>
+      }
+    </Row>
+  </Column>)
+
+  return <PullView ref={pullView} side='center' mask>
+    {
+      multiple ?
+        <Form
+          itemPadding={false}
+          defaultValues={defaultValue}
+          onSubmit={submit}
+        >{content}</Form>
+        : content
+    }
   </PullView>
 }
 

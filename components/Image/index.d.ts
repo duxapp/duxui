@@ -2,9 +2,15 @@ import { ImageProps as TaroImageProps } from '@tarojs/components'
 import { ReactNode } from 'react'
 
 interface ImageProps extends TaroImageProps {
-  /** 点击图片时是否预览 */
-  preview?: boolean
-  /** 单图预览时的多图片 */
+  /**
+   * 点击图片时是否预览
+   * 直接传入数组可以预览指定的列表
+   */
+  preview?: boolean | string[]
+  /**
+   * @deprecated 已弃用，请使用 `preview` 代替
+   * 单图预览时的多图片
+   */
   images?: string[]
   /** 圆角类型 */
   radiusType?: 'square' | 'round-min'

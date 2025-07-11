@@ -2,7 +2,7 @@ import { previewImage } from '@tarojs/taro'
 import { Image as TaroImage } from '@tarojs/components'
 import { createContext, useRef, useCallback, useContext, useMemo, useEffect, memo } from 'react'
 import classNames from 'classnames'
-import { noop, px } from '@/duxapp'
+import { noop, px, stopPropagation } from '@/duxapp'
 import { duxuiTheme } from '@/duxui/utils'
 import { View } from '../common/View'
 import './index.scss'
@@ -50,7 +50,7 @@ export const ImageGroup = ({ children }) => {
 export const Image = memo(({
   src,
   preview,
-  images,
+  images = Array.isArray(preview) ? preview : null,
   radiusType = duxuiTheme.image.radiusType,
   className,
   onClick,
@@ -75,6 +75,7 @@ export const Image = memo(({
     if (onClick) {
       onClick(e)
     } else {
+      stopPropagation(e);
       (preview || data.group) && data.preview(src, images)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -25,9 +25,6 @@ export const FormObject = ({
 
   const defaultData = useMemo(() => ({}), [])
 
-  // console.log(value || defaultData)
-
-
   return <formContext.Provider
     value={{
       ...form, values: value || defaultData,

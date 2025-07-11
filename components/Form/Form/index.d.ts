@@ -33,8 +33,11 @@ interface FormRef {
   submit: () => void
   /** 重置表单 */
   reset: () => void
-  /** 验证表单 */
-  validate: () => void
+  /**
+   * 验证表单
+   * @param checkAll 是否检查全部表单项目 默认 true，传入false可以在检查到验证未通过的时候终止检查
+   */
+  validate: (checkAll?: boolean) => void
 }
 
 interface FormChildProps extends FormRef {

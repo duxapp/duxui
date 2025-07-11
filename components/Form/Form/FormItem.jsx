@@ -1,5 +1,7 @@
-import { isValidElement, cloneElement, useEffect, useMemo, useCallback, useRef, Children } from 'react'
+import { isValidElement, cloneElement, useEffect, useMemo, useCallback, useRef, Children, useState } from 'react'
 import classNames from 'classnames'
+import { nextTick, useDeepObject } from '@/duxapp'
+import { Schema } from 'b-validate'
 import { Text } from '../../Text'
 import { Column } from '../../Flex'
 import { Space } from '../../Space'
@@ -34,33 +36,51 @@ export const FormItem = ({
 
   const form = useFormContext()
 
-  const fieldOld = useRef(null)
+  const currentRules = useDeepObject(rules)
 
-  const addTask = useMemo(() => {
-    return rules?.length && form.addItem({
-      field,
-      rules
+  const value = form.values[field]
+
+  const [checkError, setError] = useState()
+
+  const refs = useRef({}).current
+
+  refs.form = form
+  refs.value = value
+  refs.checkError = checkError
+
+  const check = useCallback(() => {
+    const schema = new Schema({
+      [field]: currentRules
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [field])
+    return new Promise((resolve, reject) => {
+      schema.validate({ [field]: fields ? refs.form.values : refs.value }, errors => {
+        if (!errors) {
+          resolve()
+        } else {
+          reject(errors[field])
+          setError(errors[field])
+        }
+      })
+    })
+  }, [currentRules, field, fields, refs])
 
   useEffect(() => {
-    return () => addTask?.remove?.()
-  }, [addTask])
+    if (currentRules?.length) {
+      const { remove } = refs.form.addRules(check)
+      return () => remove()
+    }
+  }, [check, currentRules, refs])
 
   useMemo(() => {
-    form.onGetField?.(field, fieldOld.current)
-    fieldOld.current = field
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [field])
+    refs.form.onGetField?.(field, refs.fieldOld)
+    refs.fieldOld = field
+  }, [field, refs])
 
   const horizontal = (direction || form.direction) === 'horizontal' && !vertical && (!form.vertical || vertical === false)
 
   const _labelProps = { ...form.labelProps, ...labelProps }
 
   const _containerProps = { ...form.containerProps, ...containerProps }
-
-  const value = form.values[field]
 
   let child = children
   if (typeof children === 'function') {
@@ -70,26 +90,34 @@ export const FormItem = ({
     })
   }
 
-  // 缓存子元素的值更改函数
-  const triggerEventRef = useRef()
-
-  const { setValues, setValue, itemPadding } = form
-
   const change = useCallback(val => {
-    triggerEventRef.current?.(val)
+    refs.triggerEvent?.(val)
+
+    // 用户输入检查错误是否在存在
+    if (refs.checkError) {
+      nextTick(() => {
+        check().then(() => {
+          setError(null)
+        }).catch(err => {
+          console.log(err)
+        })
+      })
+    }
+
     if (fields) {
-      setValues(val)
+      refs.form.setValues(val)
     } else {
       // 兼容Taro原生组件
       if (val && typeof val === 'object' && typeof val.detail?.value !== 'undefined') {
         val = val.detail.value
       }
-      setValue(field, val)
+      refs.form.setValue(field, val)
     }
-  }, [fields, setValues, setValue, field])
+  }, [refs, fields, check, field])
 
   const cloneForm = item => {
-    triggerEventRef.current = item.props[trigger]
+    // 缓存子元素的值更改函数
+    refs.triggerEvent = item.props[trigger]
     return cloneElement(item, {
       [trigger]: change,
       field: item.props.field || field,
@@ -126,7 +154,7 @@ export const FormItem = ({
   if (typeof field !== 'undefined' || fields) {
     if (findForm) {
       child = findFormItem(child).child
-    } else if (isValidElement(child)) {
+    } else if (isValidElement(child) && child.type !== FormItem) {
       child = cloneForm(child)
     }
   }
@@ -135,15 +163,13 @@ export const FormItem = ({
     return child
   }
 
-  const err = form.validateErrors?.[field]
-
   const footer = <>
     {!!desc && <Text size={2} color={2}>{desc}</Text>}
-    {err && <Text type='danger' size={1}>{err.message}</Text>}
+    {checkError && <Text type='danger' size={1}>{checkError.message}</Text>}
   </>
 
   if (!label) {
-    return <Column {...props} style={style} className={classNames('FormItem', !itemPadding && 'FormItem--no-padding', className)}>
+    return <Column {...props} style={style} className={classNames('FormItem', !form.itemPadding && 'FormItem--no-padding', className)}>
       {child}
       {footer}
     </Column>
@@ -158,7 +184,7 @@ export const FormItem = ({
     {!!subLabel && <Text size={1} color={3} bold={false}> {subLabel}</Text>}
   </Text>
 
-  return <Column {...props} style={style} className={classNames('FormItem', !itemPadding && 'FormItem--no-padding', className)}>
+  return <Column {...props} style={style} className={classNames('FormItem', !form.itemPadding && 'FormItem--no-padding', className)}>
     <Space row={horizontal} items={horizontal ? 'center' : 'stretch'} style={_containerProps.style} {..._containerProps} >
       {
         renderLabelRight ? <Space row justify='between'>
