@@ -1,4 +1,4 @@
-import { useEffect, useMemo, memo, useRef } from 'react'
+import { useEffect, useMemo, memo, useRef, forwardRef, useImperativeHandle } from 'react'
 import { View, Text, Image } from '@tarojs/components'
 import { useDidShow } from '@tarojs/taro'
 import { getWindowInfo, noop, ScrollView } from '@/duxapp'
@@ -10,7 +10,7 @@ import empty from './image/empty.png'
 import './index.scss'
 
 export const createList = usePageData => {
-  const List = ({
+  const List = forwardRef(function List_({
     renderItem: Item,
     renderLine,
     listCallback,
@@ -44,12 +44,12 @@ export const createList = usePageData => {
     // 传递列表项目的属性，不支持动态动态更新
     itemProps,
     ...props
-  }) => {
+  }, ref) {
 
     const [list, action] = usePageData({ url, data, ...requestOption }, { field: listField, listCallback, cache, ...option })
 
-    const ref = useRef({})
-    ref.current = { ...itemProps, list, action }
+    const refs = useRef({})
+    refs.current = { ...itemProps, list, action }
 
     useDidShow(() => {
       if (option?.ready === false) {
@@ -76,6 +76,10 @@ export const createList = usePageData => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [action])
 
+    useImperativeHandle(ref, () => {
+      return action
+    })
+
     const emptyStatus = !action.loading && !list.length
 
     const { type } = ListSelect.useContext()
@@ -83,7 +87,7 @@ export const createList = usePageData => {
     const RenderItem = useMemo(() => {
       const Item_ = ({ data: itemData, id, index, item = itemData?.[index], ...otherProps }) => {
         return <ListSelect.Item item={item} index={index} id={id}>
-          <Item item={item} id={type ? undefined : id} index={index} {...otherProps} {...ref.current} />
+          <Item item={item} id={type ? undefined : id} index={index} {...otherProps} {...refs.current} />
         </ListSelect.Item>
       }
       if (process.env.TARO_ENV === 'rn') {
@@ -163,7 +167,7 @@ export const createList = usePageData => {
       }
       <ListSelect.Submit />
     </ListSelect>
-  }
+  })
 
   List.itemSize = itemSize
 

@@ -1,477 +1,468 @@
-import React from 'react'
+/* eslint-disable no-shadow */
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { View } from '@tarojs/components'
 import dayjs from 'dayjs'
 import { PickerView, PickerViewColumn, PickerViewColumnItem } from './PickerView'
 import './common.scss'
 
-function getDaysInMonth(date) {
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
-}
+// 工具函数
+const getDaysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+const pad = (n) => n < 10 ? `0${n}` : `${n}`
+const cloneDate = (date) => new Date(+date)
 
-function pad(n) {
-  return n < 10 ? `0${n}` : n + ''
-}
-
-function cloneDate(date) {
-  return new Date(+date)
-}
-
-function setMonth(date, month) {
-  date.setDate(
-    Math.min(
-      date.getDate(),
-      getDaysInMonth(new Date(date.getFullYear(), month)),
-    ),
-  )
+const setMonth = (date, month) => {
+  date.setDate(Math.min(date.getDate(), getDaysInMonth(new Date(date.getFullYear(), month))))
   date.setMonth(month)
 }
 
-/**
- * 字符串格式化为时间
- * @param {*} str
- * @param {*} mode
- * @returns
- */
-function formatTimeStr(str, mode) {
-  let date = ''
-  let time = ''
-  if (mode === DATETIME) {
-    if (!str) {
-      str = dayjs().format('YYYY-MM-DD HH:mm')
-    }
-    const times = str.split(' ')
-    date = times[0]
-    time = times[1] || ''
-  } else if (mode === TIME) {
-    time = str || dayjs().format('HH:mm')
-  } else {
-    date = str || dayjs().format('YYYY-MM-DD')
-  }
-  let [year, month, day] = date.split('-')
-  let [hour, minute] = time.split(':')
-  year = ~~year || 2000
-  month = ~~month || 1
-  day = ~~day || 1
-  hour = ~~hour
-  minute = ~~minute
-  return new Date(year, month - 1, day, hour, minute)
-}
-
-const DATETIME = 'datetime'
-const DATE = 'date'
-const TIME = 'time'
-const MONTH = 'month'
-const YEAR = 'year'
-const ONE_DAY = 24 * 60 * 60 * 1000
-
-export class DatePicker extends React.Component {
-  static defaultProps = {
-    locale: {
+export const DatePicker = props => {
+  const {
+    locale = {
       year: '年',
       month: '月',
       day: '日',
       hour: '时',
       minute: '分',
+      second: '秒',
       am: '上午',
       pm: '下午',
     },
-    mode: DATE,
-    disabled: false,
-    minuteStep: 1,
-    onDateChange() { },
-    use12Hours: false,
+    mode,
+    format = modes[mode] || 'YYYY-MM-DD',
+    disabled = false,
+    minuteStep = 1,
+    secondStep = 1,
+    onChange = () => { },
+    use12Hours = false,
+    value: propValue,
+    defaultValue,
+    minDate,
+    maxDate,
+    style,
+    itemStyle,
+    className,
+    grow,
+  } = props
+
+  // 解析格式字符串获取需要的字段
+  const formatFields = useMemo(() => {
+    const fields = []
+    if (format.includes('YYYY')) fields.push('year')
+    if (format.includes('MM')) fields.push('month')
+    if (format.includes('DD')) fields.push('day')
+    if (format.includes('HH')) fields.push('hour')
+    if (format.includes('mm')) fields.push('minute')
+    if (format.includes('ss')) fields.push('second')
+    if (use12Hours) fields.push('ampm')
+    return fields
+  }, [format, use12Hours])
+
+  // 初始化日期
+  const initDate = useMemo(() => {
+    const now = dayjs()
+    let dateStr = propValue || defaultValue
+
+    // 如果没有值，使用当前时间并根据格式自动补全
+    if (!dateStr) {
+      const formatMap = {
+        YYYY: now.format('YYYY'),
+        MM: now.format('MM'),
+        DD: now.format('DD'),
+        HH: now.format('HH'),
+        mm: now.format('mm'),
+        ss: now.format('ss'),
+      }
+
+      // 根据格式构建默认值
+      dateStr = format.replace(/(YYYY|MM|DD|HH|mm|ss)/g, (match) => formatMap[match])
+    }
+
+    return parseDateString(dateStr, format)
+  }, [propValue, defaultValue, format])
+
+  const [date, setDate] = useState(initDate)
+
+  const refs = useRef({}).current
+
+  refs.date = date
+
+  // 默认最小/最大日期
+  const defaultMinDate = useMemo(() => new Date(2000, 0, 1, 0, 0, 0), [])
+  const defaultMaxDate = useMemo(() => new Date(2030, 0, 1, 23, 59, 59), [])
+
+
+  // 格式化日期为字符串
+  const formatDateToString = (date) => {
+    const y = date.getFullYear()
+    const M = date.getMonth() + 1
+    const d = date.getDate()
+    const H = date.getHours()
+    const m = date.getMinutes()
+    const s = date.getSeconds()
+
+    return format
+      .replace('YYYY', pad(y))
+      .replace('MM', pad(M))
+      .replace('DD', pad(d))
+      .replace('HH', pad(H))
+      .replace('mm', pad(m))
+      .replace('ss', pad(s))
   }
 
-  state = {
-    date: formatTimeStr(this.props.value || this.props.defaultValue, this.props.mode)
-  }
-
-  defaultMinDate
-  defaultMaxDate
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.value) {
-      const date = formatTimeStr(nextProps.value, nextProps.mode)
-      if (date.getTime() !== this.state.date.getTime()) {
-        this.setState({
-          date
-        })
+  // 当props.value变化时更新state
+  useEffect(() => {
+    if (propValue) {
+      const newDate = parseDateString(propValue, format)
+      if (newDate.getTime() !== refs.date.getTime()) {
+        setDate(newDate)
       }
     }
+  }, [propValue, format, refs])
+
+  // 触发onChange
+  const emitChange = (newDate) => {
+    onChange(formatDateToString(newDate))
   }
 
-  componentDidMount() {
-    // 设置一个默认值
-    if (!this.props.value) {
-      this.propsChangeValue(this.state.date)
+  // 初始化时触发一次onChange
+  useEffect(() => {
+    if (!propValue) {
+      emitChange(date)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // 获取最小/最大日期
+  const getDate = () => date
+  const getMinDate = () => minDate ? parseDateString(minDate, format) : defaultMinDate
+  const getMaxDate = () => maxDate ? parseDateString(maxDate, format) : defaultMaxDate
+
+  // 限制日期范围
+  const clipDate = (date) => {
+    const minDate = getMinDate()
+    const maxDate = getMaxDate()
+
+    if (date < minDate) return cloneDate(minDate)
+    if (date > maxDate) return cloneDate(maxDate)
+    return date
   }
 
-  propsChangeValue = newValue => {
-    const { onChange, mode } = this.props
-    if (onChange) {
-      const yyyy = newValue.getFullYear() + ''
-      const MM = ('0' + (newValue.getMonth() + 1)).slice(-2)
-      const dd = ('0' + newValue.getDate()).slice(-2)
-      const HH = ('0' + newValue.getHours()).slice(-2)
-      const mm = ('0' + newValue.getMinutes()).slice(-2)
-      if (mode === TIME) {
-        onChange(`${HH}:${mm}`)
-      } else {
-        let ret = yyyy
-        if (mode === DATETIME || mode === DATE || mode === MONTH) {
-          ret += `-${MM}`
-          if (mode === DATETIME || mode === DATE) {
-            ret += `-${dd}`
-            if (mode === DATETIME) {
-              ret += ` ${HH}:${mm}`
-            }
-          }
-        }
-        onChange(ret)
-      }
+  // 处理值变化
+  const onValueChange = (values, index) => {
+    const newDate = updateDate(values, index)
+    if (!('value' in props)) {
+      setDate(newDate)
     }
+    emitChange(newDate)
   }
 
-  getNewDate = (values, index) => {
+  // 更新日期对象
+  const updateDate = (values, index) => {
+    const newDate = cloneDate(date)
+    const field = formatFields[index]
     const value = parseInt(values[index], 10)
-    const props = this.props
-    const { mode } = props
-    const newValue = cloneDate(this.getDate())
-    if (mode === DATETIME || mode === DATE || mode === YEAR || mode === MONTH) {
-      switch (index) {
-        case 0:
-          newValue.setFullYear(value)
-          break
-        case 1:
-          // Note: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMonth
-          // e.g. from 2017-03-31 to 2017-02-28
-          setMonth(newValue, value)
-          break
-        case 2:
-          newValue.setDate(value)
-          break
-        case 3:
-          this.setHours(newValue, value)
-          break
-        case 4:
-          newValue.setMinutes(value)
-          break
-        case 5:
-          this.setAmPm(newValue, value)
-          break
-        default:
-          break
+
+    switch (field) {
+      case 'year':
+        newDate.setFullYear(value)
+        break
+      case 'month':
+        setMonth(newDate, value)
+        break
+      case 'day':
+        newDate.setDate(value)
+        break
+      case 'hour':
+        setHours(newDate, value)
+        break
+      case 'minute':
+        newDate.setMinutes(value)
+        break
+      case 'second':
+        newDate.setSeconds(value)
+        break
+      case 'ampm':
+        setAmPm(newDate, value)
+        break
+      default:
+        break
+    }
+
+    return clipDate(newDate)
+  }
+
+  // 设置小时（处理12小时制）
+  const setHours = (date, hour) => {
+    if (use12Hours) {
+      const currentHours = date.getHours()
+      let newHour = hour
+
+      if (currentHours >= 12) {
+        newHour = hour + 12
       }
-    } else if (mode === TIME) {
-      switch (index) {
-        case 0:
-          this.setHours(newValue, value)
-          break
-        case 1:
-          newValue.setMinutes(value)
-          break
-        case 2:
-          this.setAmPm(newValue, value)
-          break
-        default:
-          break
-      }
-    }
-    return this.clipDate(newValue)
-  }
 
-  onValueChange = (values, index) => {
-    const props = this.props
-    const newValue = this.getNewDate(values, index)
-    if (!('date' in props)) {
-      this.setState({
-        date: newValue,
-      })
-    }
-    this.propsChangeValue(newValue)
-  }
-
-  onScrollChange = (values, index) => {
-    const props = this.props
-    if (props.onScrollChange) {
-      const newValue = this.getNewDate(values, index)
-      props.onScrollChange(newValue, values, index)
-    }
-  }
-
-  setHours(date, hour) {
-    if (this.props.use12Hours) {
-      const dh = date.getHours()
-      let nhour = hour
-      nhour = dh >= 12 ? hour + 12 : hour
-      nhour = nhour >= 24 ? 0 : nhour // Make sure no more than one day
-      date.setHours(nhour)
+      newHour = newHour >= 24 ? 0 : newHour
+      date.setHours(newHour)
     } else {
       date.setHours(hour)
     }
   }
 
-  setAmPm(date, index) {
-    if (index === 0) {
-      date.setTime(+date - ONE_DAY / 2)
-    } else {
-      date.setTime(+date + ONE_DAY / 2)
+  // 设置上午/下午
+  const setAmPm = (date, value) => {
+    const hours = date.getHours()
+    if (value === 0 && hours >= 12) {
+      date.setHours(hours - 12)
+    } else if (value === 1 && hours < 12) {
+      date.setHours(hours + 12)
     }
   }
 
-  getDefaultMinDate() {
-    if (!this.defaultMinDate) {
-      this.defaultMinDate = new Date(2000, 0, 1, 0, 0, 0)
-    }
-    return this.defaultMinDate
+  // 获取显示用的小时（12小时制转换）
+  const getDisplayHour = (hour) => {
+    if (!use12Hours) return hour
+    if (hour === 0) return 12
+    if (hour > 12) return hour - 12
+    return hour
   }
 
-  getDefaultMaxDate() {
-    if (!this.defaultMaxDate) {
-      this.defaultMaxDate = new Date(2030, 0, 1, 23, 59, 59)
-    }
-    return this.defaultMaxDate
-  }
+  // 生成选择器列数据
+  const getPickerColumns = () => {
+    const columns = []
+    const currentDate = getDate()
+    const minDate = getMinDate()
+    const maxDate = getMaxDate()
 
-  getDate() {
-    return this.clipDate(
-      this.state.date || this.props.defaultDate || this.getDefaultMinDate(),
-    )
-  }
+    formatFields.forEach((field) => {
+      switch (field) {
+        case 'year': {
+          const minYear = minDate.getFullYear()
+          const maxYear = maxDate.getFullYear()
+          const years = []
 
-  // used by rmc-picker/lib/PopupMixin.js
-  getValue() {
-    return this.getDate()
-  }
+          for (let i = minYear; i <= maxYear; i++) {
+            years.push({
+              value: `${i}`,
+              label: `${i}${locale.year}`,
+            })
+          }
 
-  getMinYear() {
-    return this.getMinDate().getFullYear()
-  }
-
-  getMaxYear() {
-    return this.getMaxDate().getFullYear()
-  }
-
-  getMinMonth() {
-    return this.getMinDate().getMonth()
-  }
-
-  getMaxMonth() {
-    return this.getMaxDate().getMonth()
-  }
-
-  getMinDay() {
-    return this.getMinDate().getDate()
-  }
-
-  getMaxDay() {
-    return this.getMaxDate().getDate()
-  }
-
-  getMinHour() {
-    return this.getMinDate().getHours()
-  }
-
-  getMaxHour() {
-    return this.getMaxDate().getHours()
-  }
-
-  getMinMinute() {
-    return this.getMinDate().getMinutes()
-  }
-
-  getMaxMinute() {
-    return this.getMaxDate().getMinutes()
-  }
-
-  getMinDate() {
-    if (this.props.minDate) {
-      return formatTimeStr(this.props.minDate, this.props.mode)
-    }
-    return this.getDefaultMinDate()
-  }
-
-  getMaxDate() {
-    if (this.props.maxDate) {
-      return formatTimeStr(this.props.maxDate, this.props.mode)
-    }
-    return this.getDefaultMaxDate()
-  }
-
-  getDateData() {
-    const { locale, formatMonth, formatDay, mode } = this.props
-    const date = this.getDate()
-    const selYear = date.getFullYear()
-    const selMonth = date.getMonth()
-    const minDateYear = this.getMinYear()
-    const maxDateYear = this.getMaxYear()
-    const minDateMonth = this.getMinMonth()
-    const maxDateMonth = this.getMaxMonth()
-    const minDateDay = this.getMinDay()
-    const maxDateDay = this.getMaxDay()
-    const years = []
-    for (let i = minDateYear; i <= maxDateYear; i++) {
-      years.push({
-        value: i + '',
-        label: i + locale.year + '',
-      })
-    }
-    const yearCol = { key: 'year', props: { children: years } }
-    if (mode === YEAR) {
-      return [yearCol]
-    }
-
-    const months = []
-    let minMonth = 0
-    let maxMonth = 11
-    if (minDateYear === selYear) {
-      minMonth = minDateMonth
-    }
-    if (maxDateYear === selYear) {
-      maxMonth = maxDateMonth
-    }
-    for (let i = minMonth; i <= maxMonth; i++) {
-      const label = formatMonth
-        ? formatMonth(i, date)
-        : i + 1 + locale.month + ''
-      months.push({
-        value: i + '',
-        label,
-      })
-    }
-    const monthCol = { key: 'month', props: { children: months } }
-    if (mode === MONTH) {
-      return [yearCol, monthCol]
-    }
-
-    const days = []
-    let minDay = 1
-    let maxDay = getDaysInMonth(date)
-
-    if (minDateYear === selYear && minDateMonth === selMonth) {
-      minDay = minDateDay
-    }
-    if (maxDateYear === selYear && maxDateMonth === selMonth) {
-      maxDay = maxDateDay
-    }
-    for (let i = minDay; i <= maxDay; i++) {
-      const label = formatDay ? formatDay(i, date) : i + locale.day + ''
-      days.push({
-        value: i + '',
-        label,
-      })
-    }
-    return [yearCol, monthCol, { key: 'day', props: { children: days } }]
-  }
-
-  getDisplayHour(rawHour) {
-    // 12 hour am (midnight 00:00) -> 12 hour pm (noon 12:00) -> 12 hour am (midnight 00:00)
-    if (this.props.use12Hours) {
-      if (rawHour === 0) {
-        rawHour = 12
-      }
-      if (rawHour > 12) {
-        rawHour -= 12
-      }
-      return rawHour
-    }
-    return rawHour
-  }
-
-  getTimeData(date) {
-    let minHour = 0
-    let maxHour = 23
-    let minMinute = 0
-    let maxMinute = 59
-    const { mode, locale, minuteStep, use12Hours } = this.props
-    const minDateMinute = this.getMinMinute()
-    const maxDateMinute = this.getMaxMinute()
-    const minDateHour = this.getMinHour()
-    const maxDateHour = this.getMaxHour()
-    const hour = date.getHours()
-    if (mode === DATETIME) {
-      const year = date.getFullYear()
-      const month = date.getMonth()
-      const day = date.getDate()
-      const minDateYear = this.getMinYear()
-      const maxDateYear = this.getMaxYear()
-      const minDateMonth = this.getMinMonth()
-      const maxDateMonth = this.getMaxMonth()
-      const minDateDay = this.getMinDay()
-      const maxDateDay = this.getMaxDay()
-      if (
-        minDateYear === year &&
-        minDateMonth === month &&
-        minDateDay === day
-      ) {
-        minHour = minDateHour
-        if (minDateHour === hour) {
-          minMinute = minDateMinute
+          columns.push({
+            key: 'year',
+            props: { children: years },
+          })
+          break
         }
-      }
-      if (
-        maxDateYear === year &&
-        maxDateMonth === month &&
-        maxDateDay === day
-      ) {
-        maxHour = maxDateHour
-        if (maxDateHour === hour) {
-          maxMinute = maxDateMinute
+
+        case 'month': {
+          const minMonth = currentDate.getFullYear() === minDate.getFullYear()
+            ? minDate.getMonth()
+            : 0
+          const maxMonth = currentDate.getFullYear() === maxDate.getFullYear()
+            ? maxDate.getMonth()
+            : 11
+          const months = []
+
+          for (let i = minMonth; i <= maxMonth; i++) {
+            months.push({
+              value: `${i}`,
+              label: `${i + 1}${locale.month}`,
+            })
+          }
+
+          columns.push({
+            key: 'month',
+            props: { children: months },
+          })
+          break
         }
-      }
-    } else {
-      minHour = minDateHour
-      if (minDateHour === hour) {
-        minMinute = minDateMinute
-      }
-      maxHour = maxDateHour
-      if (maxDateHour === hour) {
-        maxMinute = maxDateMinute
-      }
-    }
 
-    const hours = []
-    if ((minHour === 0 && maxHour === 0) || (minHour !== 0 && maxHour !== 0)) {
-      minHour = this.getDisplayHour(minHour)
-    } else if (minHour === 0 && use12Hours) {
-      minHour = 1
-      hours.push({
-        value: '0',
-        label: locale.hour ? '12' + locale.hour : '12',
-      })
-    }
-    maxHour = this.getDisplayHour(maxHour)
-    for (let i = minHour; i <= maxHour; i++) {
-      hours.push({
-        value: i + '',
-        label: locale.hour ? i + locale.hour + '' : pad(i),
-      })
-    }
+        case 'day': {
+          const minDay = (
+            currentDate.getFullYear() === minDate.getFullYear() &&
+            currentDate.getMonth() === minDate.getMonth()
+          ) ? minDate.getDate() : 1
 
-    const minutes = []
-    const selMinute = date.getMinutes()
-    for (let i = minMinute; i <= maxMinute; i += minuteStep) {
-      minutes.push({
-        value: i + '',
-        label: locale.minute ? i + locale.minute + '' : pad(i),
-      })
-      if (selMinute > i && selMinute < i + minuteStep) {
-        minutes.push({
-          value: selMinute + '',
-          label: locale.minute
-            ? selMinute + locale.minute + ''
-            : pad(selMinute),
-        })
-      }
-    }
-    const cols = [
-      { key: 'hours', props: { children: hours } },
-      { key: 'minutes', props: { children: minutes } },
-    ].concat(
-      use12Hours
-        ? [
-          {
+          const maxDay = (
+            currentDate.getFullYear() === maxDate.getFullYear() &&
+            currentDate.getMonth() === maxDate.getMonth()
+          ) ? maxDate.getDate() : getDaysInMonth(currentDate)
+
+          const days = []
+
+          for (let i = minDay; i <= maxDay; i++) {
+            days.push({
+              value: `${i}`,
+              label: `${i}${locale.day}`,
+            })
+          }
+
+          columns.push({
+            key: 'day',
+            props: { children: days },
+          })
+          break
+        }
+
+        case 'hour': {
+          let minHour = 0
+          let maxHour = 23
+
+          if (formatFields.includes('year') &&
+            formatFields.includes('month') &&
+            formatFields.includes('day')) {
+            // 完整日期情况下，需要考虑当天的时分秒限制
+            if (
+              currentDate.getFullYear() === minDate.getFullYear() &&
+              currentDate.getMonth() === minDate.getMonth() &&
+              currentDate.getDate() === minDate.getDate()
+            ) {
+              minHour = minDate.getHours()
+            }
+
+            if (
+              currentDate.getFullYear() === maxDate.getFullYear() &&
+              currentDate.getMonth() === maxDate.getMonth() &&
+              currentDate.getDate() === maxDate.getDate()
+            ) {
+              maxHour = maxDate.getHours()
+            }
+          } else {
+            // 仅时间选择情况下
+            minHour = minDate.getHours()
+            maxHour = maxDate.getHours()
+          }
+
+          const hours = []
+
+          // 处理12小时制特殊情况
+          if (minHour === 0 && use12Hours) {
+            hours.push({
+              value: '0',
+              label: `12${locale.hour}`,
+            })
+            minHour = 1
+          }
+
+          for (let i = minHour; i <= maxHour; i++) {
+            hours.push({
+              value: `${i}`,
+              label: `${getDisplayHour(i)}${locale.hour}`,
+            })
+          }
+
+          columns.push({
+            key: 'hour',
+            props: { children: hours },
+          })
+          break
+        }
+
+        case 'minute': {
+          let minMinute = 0
+          let maxMinute = 59
+          const currentHour = currentDate.getHours()
+
+          if (formatFields.includes('hour')) {
+            if (
+              currentDate.getFullYear() === minDate.getFullYear() &&
+              currentDate.getMonth() === minDate.getMonth() &&
+              currentDate.getDate() === minDate.getDate() &&
+              currentHour === minDate.getHours()
+            ) {
+              minMinute = minDate.getMinutes()
+            }
+
+            if (
+              currentDate.getFullYear() === maxDate.getFullYear() &&
+              currentDate.getMonth() === maxDate.getMonth() &&
+              currentDate.getDate() === maxDate.getDate() &&
+              currentHour === maxDate.getHours()
+            ) {
+              maxMinute = maxDate.getMinutes()
+            }
+          }
+
+          const minutes = []
+          const currentMinute = currentDate.getMinutes()
+
+          for (let i = minMinute; i <= maxMinute; i += minuteStep) {
+            minutes.push({
+              value: `${i}`,
+              label: `${pad(i)}${locale.minute}`,
+            })
+
+            // 确保当前选中的分钟在选项中
+            if (currentMinute > i && currentMinute < i + minuteStep) {
+              minutes.push({
+                value: `${currentMinute}`,
+                label: `${pad(currentMinute)}${locale.minute}`,
+              })
+            }
+          }
+
+          columns.push({
+            key: 'minute',
+            props: { children: minutes },
+          })
+          break
+        }
+
+        case 'second': {
+          let minSecond = 0
+          let maxSecond = 59
+          const currentHour = currentDate.getHours()
+          const currentMinute = currentDate.getMinutes()
+
+          if (formatFields.includes('hour') && formatFields.includes('minute')) {
+            if (
+              currentDate.getFullYear() === minDate.getFullYear() &&
+              currentDate.getMonth() === minDate.getMonth() &&
+              currentDate.getDate() === minDate.getDate() &&
+              currentHour === minDate.getHours() &&
+              currentMinute === minDate.getMinutes()
+            ) {
+              minSecond = minDate.getSeconds()
+            }
+
+            if (
+              currentDate.getFullYear() === maxDate.getFullYear() &&
+              currentDate.getMonth() === maxDate.getMonth() &&
+              currentDate.getDate() === maxDate.getDate() &&
+              currentHour === maxDate.getHours() &&
+              currentMinute === maxDate.getMinutes()
+            ) {
+              maxSecond = maxDate.getSeconds()
+            }
+          }
+
+          const seconds = []
+          const currentSecond = currentDate.getSeconds()
+
+          for (let i = minSecond; i <= maxSecond; i += secondStep) {
+            seconds.push({
+              value: `${i}`,
+              label: `${pad(i)}${locale.second}`,
+            })
+
+            // 确保当前选中的秒在选项中
+            if (currentSecond > i && currentSecond < i + secondStep) {
+              seconds.push({
+                value: `${currentSecond}`,
+                label: `${pad(currentSecond)}${locale.second}`,
+              })
+            }
+          }
+
+          columns.push({
+            key: 'second',
+            props: { children: seconds },
+          })
+          break
+        }
+
+        case 'ampm': {
+          columns.push({
             key: 'ampm',
             props: {
               children: [
@@ -479,126 +470,140 @@ export class DatePicker extends React.Component {
                 { value: '1', label: locale.pm },
               ],
             },
-          },
-        ]
-        : [],
-    )
-    return { cols, selMinute }
+          })
+          break
+        }
+      }
+    })
+
+    return columns
   }
 
-  clipDate(date) {
-    const { mode } = this.props
-    const minDate = this.getMinDate()
-    const maxDate = this.getMaxDate()
-    if (mode === DATETIME) {
-      if (date < minDate) {
-        return cloneDate(minDate)
+  // 获取当前选中的值
+  const getSelectedValues = () => {
+    const currentDate = getDate()
+    return formatFields.map((field) => {
+      switch (field) {
+        case 'year':
+          return `${currentDate.getFullYear()}`
+        case 'month':
+          return `${currentDate.getMonth()}`
+        case 'day':
+          return `${currentDate.getDate()}`
+        case 'hour':
+          return `${getDisplayHour(currentDate.getHours())}`
+        case 'minute':
+          return `${currentDate.getMinutes()}`
+        case 'second':
+          return `${currentDate.getSeconds()}`
+        case 'ampm':
+          return currentDate.getHours() >= 12 ? '1' : '0'
+        default:
+          return '0'
       }
-      if (date > maxDate) {
-        return cloneDate(maxDate)
-      }
-    } else if (mode === DATE || mode === YEAR || mode === MONTH) {
-      // compare-two-dates: https://stackoverflow.com/a/14629978/2190503
-      if (+date + ONE_DAY <= minDate) {
-        return cloneDate(minDate)
-      }
-      if (date >= +maxDate + ONE_DAY) {
-        return cloneDate(maxDate)
-      }
-    } else if (mode === TIME) {
-      const maxHour = maxDate.getHours()
-      const maxMinutes = maxDate.getMinutes()
-      const minHour = minDate.getHours()
-      const minMinutes = minDate.getMinutes()
-      const hour = date.getHours()
-      const minutes = date.getMinutes()
-      if (hour < minHour || (hour === minHour && minutes < minMinutes)) {
-        return cloneDate(minDate)
-      }
-      if (hour > maxHour || (hour === maxHour && minutes > maxMinutes)) {
-        return cloneDate(maxDate)
-      }
-    }
-    return date
+    })
   }
 
-  getValueCols() {
-    const { mode, use12Hours } = this.props
-    const date = this.getDate()
-    let cols = []
-    let value = []
+  const columns = getPickerColumns()
+  const selectedValues = getSelectedValues()
 
-    if (mode === YEAR) {
-      return {
-        cols: this.getDateData(),
-        value: [date.getFullYear() + ''],
-      }
-    }
+  return (
+    <PickerView
+      style={style}
+      className={className}
+      value={selectedValues}
+      onChange={onValueChange}
+      grow={grow}
+    >
+      {columns.map((column) => (
+        <PickerViewColumn
+          style={{ flex: 1 }}
+          key={column.key}
+          disabled={disabled}
+          itemStyle={itemStyle}
+        >
+          {column.props.children.map((item) => (
+            <PickerViewColumnItem key={item.value} value={item.value}>
+              <View className='PickerView__item'>{item.label}</View>
+            </PickerViewColumnItem>
+          ))}
+        </PickerViewColumn>
+      ))}
+    </PickerView>
+  )
+}
 
-    if (mode === MONTH) {
-      return {
-        cols: this.getDateData(),
-        value: [date.getFullYear() + '', date.getMonth() + ''],
-      }
-    }
+// 解析日期字符串
+const parseDateString = (str, fmt) => {
+  if (!str) return new Date()
 
-    if (mode === DATETIME || mode === DATE) {
-      cols = this.getDateData()
-      value = [
-        date.getFullYear() + '',
-        date.getMonth() + '',
-        date.getDate() + '',
-      ]
-    }
+  // 使用dayjs解析
+  const parsed = dayjs(str, fmt)
+  if (parsed.isValid()) return parsed.toDate()
 
-    if (mode === DATETIME || mode === TIME) {
-      const time = this.getTimeData(date)
-      cols = cols.concat(time.cols)
-      const hour = date.getHours()
-      let dtValue = [hour + '', time.selMinute + '']
-      let nhour = hour
-      if (use12Hours) {
-        nhour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour
-        dtValue = [nhour + '', time.selMinute + '', (hour >= 12 ? 1 : 0) + '']
-      }
-      value = value.concat(dtValue)
-    }
-    return {
-      value,
-      cols,
-    }
+  // 备用解析逻辑
+  const values = {
+    year: 2000,
+    month: 0,
+    day: 1,
+    hour: 0,
+    minute: 0,
+    second: 0,
   }
 
-  render() {
-    const { value, cols } = this.getValueCols()
-    const { disabled, style, itemStyle, className, grow } = this.props
-    return (
-      <PickerView
-        style={style}
-        className={className}
-        value={value}
-        onChange={this.onValueChange}
-        grow={grow}
-      >
-        {cols.map((p) => (
-          <PickerViewColumn
-            style={{ flex: 1 }}
-            key={p.key}
-            disabled={disabled}
-            itemStyle={itemStyle}
-          >
-            {p.props.children.map((item) => {
-              return (
-                <PickerViewColumnItem key={item.value} value={item.value}>
-                  <View className='PickerView__item'>
-                    {item.label}
-                  </View>
-                </PickerViewColumnItem>
-              )
-            })}
-          </PickerViewColumn>
-        ))}
-      </PickerView>
-    )
+  // 提取各部分值
+  const yearMatch = fmt.match(/YYYY/)
+  if (yearMatch) {
+    const idx = yearMatch.index
+    values.year = parseInt(str.substr(idx, 4), 10) || 2000
   }
+
+  const monthMatch = fmt.match(/MM/)
+  if (monthMatch) {
+    const idx = monthMatch.index
+    values.month = (parseInt(str.substr(idx, 2), 10) || 1) - 1
+  }
+
+  const dayMatch = fmt.match(/DD/)
+  if (dayMatch) {
+    const idx = dayMatch.index
+    values.day = parseInt(str.substr(idx, 2), 10) || 1
+  }
+
+  const hourMatch = fmt.match(/HH/)
+  if (hourMatch) {
+    const idx = hourMatch.index
+    values.hour = parseInt(str.substr(idx, 2), 10) || 0
+  }
+
+  const minuteMatch = fmt.match(/mm/)
+  if (minuteMatch) {
+    const idx = minuteMatch.index
+    values.minute = parseInt(str.substr(idx, 2), 10) || 0
+  }
+
+  const secondMatch = fmt.match(/ss/)
+  if (secondMatch) {
+    const idx = secondMatch.index
+    values.second = parseInt(str.substr(idx, 2), 10) || 0
+  }
+
+  return new Date(
+    values.year,
+    values.month,
+    values.day,
+    values.hour,
+    values.minute,
+    values.second
+  )
+}
+
+
+// 兼容旧的写法
+const modes = {
+  datetime: 'YYYY-MM-DD HH:mm',
+  date: 'YYYY-MM-DD',
+  time: 'HH:mm',
+  month: 'YYYY-MM',
+  year: 'YYYY'
 }

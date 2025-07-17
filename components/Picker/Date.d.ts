@@ -20,8 +20,16 @@ interface DatePickerProps {
   defaultValue?: string
   // 当前日期
   value?: string
-  // 日期选择的模式
+  /**
+   * @deprecated 已弃用，请使用 `format` 代替
+   * 日期选择的模式
+   */
   mode?: Mode
+  /**
+   * 时间格式
+   * YYYY-MM-DD HH:mm:ss 从这个格式中组合
+   */
+  format?: string
   // 最小时间
   minDate?: string
   // 最大时间

@@ -1,8 +1,8 @@
 import { View, Image, Video } from '@tarojs/components'
-import { previewMedia } from '@tarojs/taro'
 import { useCallback, useState } from 'react'
-import { ActionSheet, Loading, requestPermissionMessage } from '@/duxapp/components'
+import { Loading, previewMedia, requestPermissionMessage } from '@/duxapp/components'
 import classNames from 'classnames'
+import { toast } from '@/duxapp'
 import { formConfig } from './config'
 import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
@@ -41,15 +41,7 @@ export const UploadImages = ({
       if (process.env.TARO_ENV === 'rn') {
         await requestPermissionMessage(requestPermissionMessage.types.image)
       }
-      let _type = type
-      if (type === 'all') {
-        const { index } = await ActionSheet.show({
-          title: '请选择',
-          list: ['图片', '视频']
-        })
-        _type = index ? 'video' : 'image'
-      }
-      const urls = await upload(_type, { count: max - (value?.length || 0), ...option, sizeType: ['compressed'] })
+      const urls = await upload(type, { count: max - (value?.length || 0), ...option, sizeType: ['compressed'] })
         .start(() => {
           setProgress(0)
         })
@@ -57,6 +49,10 @@ export const UploadImages = ({
       setProgress(-1)
       onChange([...value || [], ...urls])
     } catch (error) {
+      console.log(error)
+      if (error !== '取消选择') {
+        toast(error?.message || error)
+      }
       setProgress(-1)
     }
   }, [max, onChange, option, type, value])
@@ -81,6 +77,7 @@ export const UploadImages = ({
     }),
     (value?.length || 0) < max && !disabled &&
     <Column
+      key='add'
       grow={!isOne}
       justify='center'
       onClick={!~progress && add}
@@ -142,16 +139,25 @@ const ItemView = ({
     return <Image className='UIUplod__item__image w-full h-full'
       onClick={preview}
       src={src}
-      mode='aspectFit'
+      mode='aspectFill'
     />
   } else {
-    return <Video
-      className='UIUplod__item__image w-full h-full'
-      onClick={preview}
-      src={src}
-      controls={false}
-      showCenterPlayBtn={false}
-    />
+    return <Column className='UIUplod__item__image w-full h-full'>
+      <Video
+        className='w-full h-full'
+        src={src}
+        controls={false}
+        showCenterPlayBtn={false}
+        showPlayBtn={false}
+        showFullscreenBtn={false}
+        enableProgressGesture={false}
+        showBottomProgress={false}
+        objectFit='cover'
+      />
+      <Column className='inset-0 absolute'
+        onClick={preview}
+      />
+    </Column>
   }
 }
 

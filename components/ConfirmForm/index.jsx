@@ -1,5 +1,5 @@
 import { cloneElement, isValidElement, useEffect, useRef, useState } from 'react'
-import { PullView, TopView } from '@/duxapp'
+import { KeyboardDismiss, PullView, TopView } from '@/duxapp'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { Divider } from '../Divider'
@@ -82,15 +82,17 @@ const ConfirmForm = ({
   </Column>)
 
   return <PullView ref={pullView} side='center' mask>
-    {
-      multiple ?
-        <Form
-          itemPadding={false}
-          defaultValues={defaultValue}
-          onSubmit={submit}
-        >{content}</Form>
-        : content
-    }
+    <KeyboardDismiss>
+      {
+        multiple ?
+          <Form
+            itemPadding={false}
+            defaultValues={defaultValue}
+            onSubmit={submit}
+          >{content}</Form>
+          : content
+      }
+    </KeyboardDismiss>
   </PullView>
 }
 

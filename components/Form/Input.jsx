@@ -20,6 +20,15 @@ export const Input = ({
 
   const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
 
+  // 临时解决RN端输入框文本不居中的问题
+  const _style = process.env.TARO_ENV === 'rn' ? {
+    ...style,
+    paddingVertical: 0,
+    fontSize: style?.fontSize || 16,
+    height: (style?.fontSize || 16) * 2,
+    textAlignVertical: 'center'
+  } : style
+
   return <TaroInput
     onInput={setVal}
     className={classNames(
@@ -30,7 +39,7 @@ export const Input = ({
       align && 'text-' + align,
       className
     )}
-    style={style}
+    style={_style}
     placeholderTextColor={duxappTheme.textColor3}
     placeholderStyle={`color: ${duxappTheme.textColor3}`}
     {...props}

@@ -2,17 +2,17 @@ import { isValidElement, cloneElement } from 'react'
 import { Button } from '../../Button'
 import { useFormContext } from './Form'
 
-export const FormSubmit = ({ children, ...props }) => {
+export const FormSubmit = ({ data, children, ...props }) => {
   const form = useFormContext()
   if (isValidElement(children)) {
     return cloneElement(children, {
       onClick: e => {
         children.props.onClick?.(e)
-        form.submit()
+        form.submit(data)
       }
     })
   }
-  return <Button {...props} onClick={form.submit}>
+  return <Button {...props} onClick={() => form.submit(data)}>
     {children}
   </Button>
 }

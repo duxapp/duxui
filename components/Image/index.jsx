@@ -50,7 +50,7 @@ export const ImageGroup = ({ children }) => {
 export const Image = memo(({
   src,
   preview,
-  images = Array.isArray(preview) ? preview : null,
+  images = Array.isArray(preview) ? preview : undefined,
   radiusType = duxuiTheme.image.radiusType,
   className,
   onClick,

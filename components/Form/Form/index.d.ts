@@ -66,7 +66,7 @@ interface FormProps {
    * 开启后，会将当前填写的数据进行缓存，如果未提交保存，下次打开使用这个缓存加载
    * 在 onSubmit 事件返回true的时候将会把这个缓存清除
    * 如果 onSubmit 提交事件之后，表单继续被编辑，表单还会被保存，请处理这个逻辑
-   * 如果读取到 cache，优先级高于 defaultValues
+   * 如果读取到 cache，优先级高于 非函数返回的 defaultValues
    */
   cache?: string
   /** 是否禁用表单 */
@@ -157,6 +157,10 @@ interface FormItemProps extends ColumnProps {
 }
 
 interface FormSubmitProps extends ButtonProps {
+  /** 提交的值，会将值和表单进行合并提交 适用于区分多个不同的提交按钮 */
+  data?: {
+    [key: string]: any
+  }
   /** 当子元素为ReactElement时，将不会使用按钮创建 当子元素为字符串时，将会创建一个按钮 */
   children: string | ReactElement
 }

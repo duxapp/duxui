@@ -16,7 +16,15 @@ export const Form = forwardRef(({
 }, ref) => {
 
   // 让值和值默认是相同的
-  const _defaultValues = useMemo(() => ({}), [])
+  const _defaultValues = useMemo(() => {
+    if (propsDefaultValues && typeof propsDefaultValues === 'object'
+      && Object.getPrototypeOf(propsDefaultValues).constructor === Object
+    ) {
+      return propsDefaultValues
+    }
+    return {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [defaultValues, setDefaultValues] = useState(_defaultValues)
 
@@ -30,18 +38,25 @@ export const Form = forwardRef(({
 
   useEffect(() => {
     // 获取缓存或者指定的默认值
-    getDefaultValue(propsDefaultValues, cache).then(res => {
-      if (res) {
-        setDefaultValues(res)
-        updateValues(res)
+    getDefaultValue(propsDefaultValues, cache).then(({ data, type }) => {
+      if (data && data !== _defaultValues) {
+        setDefaultValues(data)
+        updateValues(old => ({ ...old, ...data }))
       }
+      // 从函数的默认值来的则不进行缓存
+      if (type !== 'default-func') {
+        refs.cache = true
+      }
+    }).catch(error => {
+      console.log('默认值获取失败：', error)
+      refs.cache = true
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     // 实时保存values值到缓存
-    if (!cache) {
+    if (!cache || !refs.cache) {
       return
     }
     const instance = FormCache.getInstance()
@@ -57,7 +72,9 @@ export const Form = forwardRef(({
     if (defaultValues === values) {
       return
     }
-    refs.onChange?.(deepCopy(values))
+    if (refs.onChange) {
+      refs.onChange(deepCopy(values))
+    }
   }, [values, defaultValues, refs])
 
   const setValue = useCallback((key, value) => {
@@ -113,19 +130,21 @@ export const Form = forwardRef(({
     }
   }, [refs])
 
-  const submit = useCallback(async () => {
+  const submit = useCallback(async data => {
     try {
       await validate()
-      let status = refs.onSubmit?.(deepCopy(refs.values))
-      // 表单提交完成，删除表单缓存
-      if (cache) {
-        if (status instanceof Promise) {
-          status = await status
-        }
-        if (status === true) {
-          FormCache.getInstance().merge({
-            [cache]: undefined
-          })
+      if (refs.onSubmit) {
+        let status = refs.onSubmit(deepCopy({ ...refs.values, ...data }))
+        // 表单提交完成，删除表单缓存
+        if (cache) {
+          if (status instanceof Promise) {
+            status = await status
+          }
+          if (status === true) {
+            FormCache.getInstance().merge({
+              [cache]: undefined
+            })
+          }
         }
       }
     } catch (error) {
@@ -148,7 +167,7 @@ export const Form = forwardRef(({
       reset,
       validate,
     }
-  }, [defaultValues, values, reset, setValue, setValues, submit, validate])
+  })
 
   const result = {
     defaultValues, values,
@@ -177,15 +196,11 @@ export const formContext = /*@__PURE__*/ createContext({
   vertical: false,
   disabled: false,
   itemPadding: true,
-  addItem: noop,
+  addRules: noop,
   /**
    * FormItem会触发此事件 用来收集子元素中的字段
    */
-  onGetField: noop,
-  /**
-   * 验证结果
-   */
-  validateErrors: null
+  onGetField: noop
 })
 
 export const useFormContext = () => useContext(formContext)
@@ -200,18 +215,24 @@ class FormCache extends ObjectManage {
 }
 
 const getDefaultValue = async (val, cache) => {
-  if (cache && typeof cache === 'string') {
-    const data = await FormCache.getInstance().getDataAsync()
-    if (data[cache] && typeof data[cache] === 'object') {
-      return data[cache]
-    }
-  }
 
   if (typeof val === 'function') {
     val = val()
+    if (val instanceof Promise) {
+      val = await val
+    }
+    return { data: val, type: 'default-func' }
   }
-  if (val instanceof Promise) {
-    val = await val
+
+  if (cache && typeof cache === 'string') {
+    const data = await FormCache.getInstance().getDataAsync()
+    if (data[cache] && typeof data[cache] === 'object') {
+      return {
+        data: data[cache],
+        type: 'cache'
+      }
+    }
   }
-  return val
+
+  return { data: val, type: 'default' }
 }

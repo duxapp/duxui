@@ -30,7 +30,7 @@
     justify-content: center;
 
     &__content {
-      background: $duxappPageColor;
+      background-color: $duxappPageColor;
       border-radius: 16px;
       padding: 8px 0;
       align-items: center;
@@ -45,7 +45,7 @@
 
   &__search {
     height: 72px;
-    background: $duxappPageColor;
+    background-color: $duxappPageColor;
     border-radius: 36px;
     padding: 0 20px;
     align-items: center;
