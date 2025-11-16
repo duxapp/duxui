@@ -64,14 +64,20 @@ const TabbarButton = ({
   icon: Icon
 }) => {
 
-  return <View className='TabBar-menu__item' onClick={() => onClick({ index })}>
+  return <View className={classNames('TabBar-menu__item', Icon ? 'pv-2' : 'pv-3')} onClick={() => onClick({ index })}>
     <Badge count={number > 0 ? number : 0} dot={number < 0}>
       {
-        React.isValidElement(Icon)
+        !Icon ? null : React.isValidElement(Icon)
           ? Icon
           : <Icon hover={hover} index={index} select={select} />
       }
-      {!!name && <Text className={`TabBar-menu__item__name${hover ? ' TabBar-menu__item__name--hover' : ''}`}>{name}</Text>}
+      {!!name && <Text
+        className={classNames(
+          `TabBar-menu__item__name`,
+          hover && ' TabBar-menu__item__name--hover',
+          !Icon ? 'bold text-s7' : 'text-s1 mt-1'
+        )}
+      >{name}</Text>}
     </Badge>
   </View>
 }

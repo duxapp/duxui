@@ -25,6 +25,8 @@ interface TextProps extends TaroTextProps {
   numberOfLines?: number
   /** 文本对齐方式 */
   align?: 'left' | 'center' | 'right' | 'justify'
+  /** 是否禁止文本换行 */
+  nowrap?: boolean
   /** 容器在主轴方向上的伸缩能力 */
   grow?: boolean
   /** 容器在主轴方向上的收缩能力 */

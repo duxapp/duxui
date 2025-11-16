@@ -51,8 +51,6 @@ interface ListProps extends ScrollViewProps {
   renderEmpty?: ReactElement
   /** 未指定renderEmpty时 的空标题 */
   emptyTitle?: string
-  /** 未指定renderEmpty时 空内容的点击事件 */
-  onEmptyClick?: () => void
   /**
    * usePageData 的action回调
    * 获取这个回调之后你可以用来手动刷新数据

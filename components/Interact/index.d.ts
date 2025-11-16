@@ -31,6 +31,17 @@ export const confirm: (option: {
    * 要显示在弹框下方的内容
    */
   renderBottom?: ReactElement
+  /**
+   * 扩展菜单，通过配置可以显示3个按钮
+   */
+  extraMenu?: {
+    // 按钮名称
+    name: string
+    // 点击按钮时执行的回调函数
+    callback: () => void
+    // 按钮样式
+    type?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'custom1' | 'custom2' | 'custom3'
+  }
 }) => Promise<boolean> & {
   /**
    * 主动触发点击确定事件

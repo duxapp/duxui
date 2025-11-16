@@ -73,15 +73,20 @@ export const Form = forwardRef(({
       return
     }
     if (refs.onChange) {
-      refs.onChange(deepCopy(values))
+      refs.onChange(deepCopy(values), refs.setValueKey)
     }
-  }, [values, defaultValues, refs])
+    refs.setValueKey = null
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values, defaultValues])
 
   const setValue = useCallback((key, value) => {
+    // 记录是哪个key更新了，传递给onChange事件
+    refs.setValueKey = key
     updateValues(old => {
       old[key] = value
       return { ...old }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const setValues = useCallback((data, merge = true) => {

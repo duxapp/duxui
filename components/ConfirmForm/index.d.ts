@@ -36,6 +36,14 @@ interface ConfirmFormProps {
    * @default true
    */
   cancel?: boolean
+  /**
+   * 确定文本
+   */
+  submitText?: string
+  /**
+   * 取消文本
+   */
+  cancelText?: string
 }
 
 /**

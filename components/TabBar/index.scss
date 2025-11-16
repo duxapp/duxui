@@ -19,11 +19,8 @@
     flex: 1;
     align-items: center;
     justify-content: center;
-    padding: 12px 0;
 
     &__name {
-      margin-top: 10px;
-      font-size: 24px;
       color: $duxuiTabBarNameColor;
 
       &--hover {

@@ -7,13 +7,14 @@ import { Text } from '../Text'
 import './ShowConfirm.scss'
 
 const ShowConfirm = ({
-  title,
+  title = '提示',
   content,
   cancel = true,
   cancelText = '取消',
   confirmText = '确定',
   renderTop,
   renderBottom,
+  extraMenu,
   onConfirm,
   onCancel,
   onClose
@@ -44,6 +45,20 @@ const ShowConfirm = ({
             </Column>
             <Divider vertical />
           </>}
+          {
+            extraMenu && <>
+              <Column grow justify='center'
+                onClick={async () => {
+                  await pullView.current.close()
+                  onClose()
+                  extraMenu.callback?.()
+                }}
+              >
+                <Text size={6} align='center' type={extraMenu.type}>{extraMenu.name}</Text>
+              </Column>
+              <Divider vertical />
+            </>
+          }
           <Column grow justify='center'
             onClick={async () => {
               await pullView.current.close()
@@ -64,15 +79,7 @@ const ShowConfirm = ({
  * 在页面上显示一个提示框
  * @returns
  */
-export const confirm = ({
-  title = '提示',
-  content,
-  cancel,
-  cancelText,
-  confirmText,
-  renderTop,
-  renderBottom
-} = {}) => {
+export const confirm = option => {
   let action
   let callback = []
   const promise = new Promise((resolve, reject) => {
@@ -80,13 +87,7 @@ export const confirm = ({
     action = TopView.add([
       ShowConfirm,
       {
-        title,
-        content,
-        cancel,
-        cancelText,
-        confirmText,
-        renderTop,
-        renderBottom,
+        ...option,
         onCancel: () => {
           setTimeout(() => {
             resolve(false)

@@ -15,7 +15,6 @@ export const WeappList = ({
   loadMore,
   Empty,
   RenderItem,
-  onEmptyClick,
   emptyTitle,
   page,
   action,
@@ -67,13 +66,12 @@ export const WeappList = ({
       // 自定义渲染
       renderTop={<>
         {renderHeader}
-        {emptyStatus && (renderEmpty || <Empty onEmptyClick={onEmptyClick} emptyTitle={emptyTitle} />)}
+        {emptyStatus && (renderEmpty || <Empty title={emptyTitle} />)}
       </>}
       renderBottom={<>
         {renderFooter}
         {loadMore}
       </>}
-
       {...(isWaterfall ? virtualWaterfallProps : virtualListProps)}
     /> :
     <Layout

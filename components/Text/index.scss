@@ -78,6 +78,10 @@
     font-size: $duxappTextSize7;
   }
 
+  &-nowrap {
+    white-space: nowrap;
+  }
+
   &-bold {
     font-weight: bold;
   }

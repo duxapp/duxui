@@ -9,7 +9,7 @@ import { Row } from '../Flex'
 
 const context = /*@__PURE__*/ createContext({ check: noop })
 
-export const Radio = ({ value, label, disabled, checked, onClick, children: Child, style, ...props }) => {
+export const Radio = ({ value, label, disabled, checked, onClick, children: Child, style, className, ...props }) => {
   const { check, currentValue } = useContext(context)
 
   const _checked = typeof checked === 'boolean' ? checked : currentValue === value
@@ -24,8 +24,8 @@ export const Radio = ({ value, label, disabled, checked, onClick, children: Chil
     />
   }
 
-  return <Row items='center'
-    className='gap-1'
+  return <Row
+    className={classNames('gap-1 items-center', className)}
     onClick={e => {
       if (disabled) {
         return
@@ -53,6 +53,7 @@ export const RadioGroup = ({
   disabled,
   direction = 'horizontal',
   vertical,
+  cancel,
   style,
   virtual,
   className,
@@ -64,12 +65,15 @@ export const RadioGroup = ({
   const horizontal = direction === 'horizontal' && !vertical
 
   const check = useCallback(_val => {
-    if (val === _val || disabled) {
+    if (disabled) {
       return
     }
-    setVal(_val)
-  }, [setVal, val, disabled])
-
+    if (val === _val && cancel) {
+      setVal()
+    } else if (val !== _val) {
+      setVal(_val)
+    }
+  }, [val, cancel, disabled, setVal])
 
   return <context.Provider value={{ check, currentValue: val }}>
     {

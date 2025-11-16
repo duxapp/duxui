@@ -1,5 +1,5 @@
 import { ViewProps, SwiperProps } from '@tarojs/components'
-import { ReactNode, CSSProperties } from 'react'
+import { ReactNode, CSSProperties, ReactElement } from 'react'
 import { BadgeProps } from '../Badge'
 
 interface TabProps extends ViewProps {
@@ -45,6 +45,7 @@ interface TabProps extends ViewProps {
     text?: CSSProperties
     container?: CSSProperties
   }
+  renderEnd?: ReactElement
 }
 
 interface TabItemProps {

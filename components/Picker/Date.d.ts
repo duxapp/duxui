@@ -30,6 +30,8 @@ interface DatePickerProps {
    * YYYY-MM-DD HH:mm:ss 从这个格式中组合
    */
   format?: string
+  // 值是否已时间戳的形式存储
+  timestamp?: boolean
   // 最小时间
   minDate?: string
   // 最大时间

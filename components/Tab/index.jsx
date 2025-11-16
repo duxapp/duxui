@@ -30,6 +30,7 @@ export const Tab = ({
   children,
   oneHidden,
   getItemStyle,
+  renderEnd,
   ...props
 }) => {
 
@@ -100,6 +101,7 @@ export const Tab = ({
         getItemStyle={getItemStyle}
       />)
     }
+    {renderEnd}
   </Scroll>
 
   return (

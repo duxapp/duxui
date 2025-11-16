@@ -4,18 +4,19 @@
 
   &__left {
     width: 180px;
-    border-right: 1px solid rgba(180, 180, 180, 0.3);
+    border-right-width: 1px;
+    border-right-color: $duxappLineColor;
 
     &__label {
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 24px 0;
-      border-bottom: 1px solid rgba(180, 180, 180, 0.3);
+      // border-bottom: 1px solid rgba(180, 180, 180, 0.3);
 
       &__title {
+        text-align: center;
         font-size: 30px;
-        font-weight: 600;
       }
     }
   }
@@ -23,7 +24,7 @@
   &__right {
     flex: 1;
     flex-direction: column;
-    padding: 24px;
+    padding: 0 24px;
 
     &__item {
       padding: 24px 0;
@@ -36,7 +37,7 @@
       }
 
       &__icon {
-        font-size: 32px;
+        font-size: 36px;
       }
     }
   }

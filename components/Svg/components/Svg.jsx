@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useImperativeHandle, forwardRef, useCallback } from 'react'
 import { Canvas } from '@tarojs/components'
 import { createSelectorQuery, canvasToTempFilePath } from '@tarojs/taro'
+import { getWindowInfo } from '@/duxapp'
 import { draw, pure, useForwardEvent } from './Common'
 import { SvgComponent } from './SvgComponent'
-import { getWindowInfo } from '@/duxapp'
 
 export const Svg = /*@__PURE__*/ pure(() => {
-  const Svg_ = forwardRef(({ children, width, height, viewBox, preserveAspectRatio, ...props }, ref) => {
+  const Svg_ = forwardRef(({ children, width, height, viewBox, preserveAspectRatio, disabledScroll, ...props }, ref) => {
 
     const context = useMemo(() => {
       const data = {
@@ -133,6 +133,7 @@ export const Svg = /*@__PURE__*/ pure(() => {
         id={canvasId}
         type='2d'
         style={{ width, height }}
+        disableScroll={disabledScroll}
         {...event.handlers}
       />
       <SvgComponent value={{ update }}>

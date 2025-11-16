@@ -1,23 +1,10 @@
 .file-upload {
-  height: 1000px;
-  background-color: $duxappPageColor;
-  border-radius: 10px 10px 0 0;
   overflow: hidden;
   &__header {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     padding: 24px 32px;
-    background-color: $duxappWhiteColor;
-    &__search {
-      background-color: $duxappPageColor;
-      border-radius: 50px;
-      padding: 0 32px;
-    }
-    &__upload {
-      font-size: 28px;
-      color: $duxappTextColor1;
-    }
     &__submit {
       font-size: 28px;
       color: $duxappPrimaryColor;
@@ -25,9 +12,11 @@
   }
   &__item {
     flex-direction: row;
-    padding: 0 32px;
+    padding: 16px 24px;
+    margin: 8px 24px;
     align-items: center;
-    height: 160px;
+    border-radius: 16px;
+    background-color: $duxappWhiteColor;
     &__select {
       margin-right: 10px;
       width: 40px;
@@ -42,7 +31,7 @@
         width: 20px;
         height: 20px;
         border-radius: 10px;
-        background-color: $duxappTextColor1;
+        background-color: $duxappPrimaryColor;
       }
     }
     &__img {
@@ -52,15 +41,17 @@
       flex-shrink: 0;
     }
     &__info {
-      margin-left: 30px;
+      flex: 1;
+      gap: 8px;
+      margin-left: 24px;
     }
     &__name {
-      font-size: 32px;
+      font-size: 28px;
       color: $duxappTextColor1;
       word-break: break-all;
     }
     &__desc {
-      font-size: 26px;
+      font-size: 24px;
       color: $duxappTextColor2;
     }
     &__uploading {

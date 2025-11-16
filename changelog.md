@@ -510,6 +510,7 @@ const getItemStyle = useCallback(({ select }) => {
 
 ## Button
 - [修复] plan模式下type为custom不生效的问题
+- [新增] 新增`soft`属性：无边框，背景为当前文本颜色减淡约0.9的浅色，类似`plain`但带浅色背景；可与`plain`同时使用（此时显示描边）
 
 ## Badeg
 - [优化] 优化为点状时的默认颜色

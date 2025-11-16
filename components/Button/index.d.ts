@@ -60,10 +60,17 @@ interface ButtonProps extends ViewProps {
   size?: keyof size
   /** 镂空效果 当为渐变是此属性不会生效 */
   plain?: boolean
+  /**
+   * 柔和填充效果：无边框，背景为当前文本颜色减淡后的颜色（约0.9）
+   * 类似 plain，但带有浅色背景；可与 plain 同时使用（此时会显示边框）
+   */
+  soft?: boolean
   /** 是否禁用 */
   disabled?: boolean
   /** 显示loading */
   loading?: boolean
+  /** 是否加粗文字 */
+  bold?: boolean
   /** 按钮文字样式 */
   textStyle?: CSSProperties
   /** 自定义渲染按钮内容 当你的内容是图片或者图标以外的内容时，使用此属性替换 */

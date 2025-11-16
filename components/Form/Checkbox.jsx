@@ -5,6 +5,7 @@ import { Space } from '../Space'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
 import { useFormItemProxy } from './Form'
+import { Row } from '../Flex'
 
 const context = /*@__PURE__*/ createContext({ check: noop })
 
@@ -21,9 +22,19 @@ const context = /*@__PURE__*/ createContext({ check: noop })
 export const Checkbox = ({
   value, label, checked, half,
   disabled, children: Child,
+  className,
+  onCheck,
   style, ...props
 }) => {
   const { check, currentValue } = useContext(context)
+
+  const click = val => {
+    if (onCheck) {
+      onCheck(!checked)
+    } else {
+      check(val)
+    }
+  }
 
   const isCheck = checked || currentValue?.includes(value)
 
@@ -33,18 +44,18 @@ export const Checkbox = ({
       value={value}
       label={label}
       checked={isCheck}
-      onCheck={() => !disabled && check(value)}
+      onCheck={() => !disabled && click(value)}
     />
   }
 
-  return <Space
-    row items='center' size={8}
-    {...disabled ? {
+  return <Row
+    className={classNames('gap-1 items-center', className)}
+    {...disabled ? {} : {
       onClick: e => {
         stopPropagation(e)
-        check(value)
+        click(value)
       }
-    } : {}}
+    }}
     style={style} {...props}
   >
     {/* <Text size={6} type={isCheck || half ? 'primary' : void 0} color={isCheck || half ? void 0 : 3}>
@@ -55,7 +66,7 @@ export const Checkbox = ({
       name={isCheck ? 'xuanzhong' : half ? 'banxuanze' : 'xuanzekuang'}
     />
     {!!label && <Text>{label}</Text>}
-  </Space>
+  </Row>
 }
 
 export const CheckboxGroup = ({
@@ -69,6 +80,7 @@ export const CheckboxGroup = ({
   style,
   className,
   virtual,
+  max,
   ...props
 }) => {
 
@@ -91,11 +103,14 @@ export const CheckboxGroup = ({
       if (~index) {
         select.splice(index, 1)
       } else {
+        if (max && select.length >= max) {
+          return old
+        }
         select.push(_val)
       }
       return select
     })
-  }, [setVal, disabled])
+  }, [disabled, setVal, max])
 
   return <context.Provider value={{ check, currentValue: val }}>
     {

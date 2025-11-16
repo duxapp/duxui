@@ -1,5 +1,5 @@
 import { deepCopy, noop, PullView } from '@/duxapp'
-import { cloneElement, useMemo, isValidElement, useCallback, createContext, useContext, useState, useRef } from 'react'
+import { cloneElement, useMemo, isValidElement, useCallback, createContext, useContext, useState, useRef, useEffect } from 'react'
 import classNames from 'classnames'
 import { Button } from '../Button'
 import { Row, Column } from '../Flex'
@@ -23,7 +23,7 @@ export const ModalForm = ({
   disabled,
   side,
   children,
-  renderForm,
+  renderForm: RenderForm,
   renderHeader,
   renderFooter,
   title,
@@ -32,15 +32,17 @@ export const ModalForm = ({
   onSubmitBefore,
   autoSubmit,
   resetMode,
-  childPropsValueKey,
+  childPropsValueKey = 'value',
   field,
   ...props
 }) => {
 
   const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
 
+  const pull = useRef()
+
   const refs = useRef({})
-  refs.current = { onSubmitBefore, onChange: setVal }
+  refs.current = { onSubmitBefore, onChange: setVal, getValue }
 
   const { defaultValues } = useFormContext()
 
@@ -49,6 +51,8 @@ export const ModalForm = ({
   const [show, setShow] = useState()
 
   const [formKey, setFormKey] = useState(0)
+
+  const [getVal, setGetVal] = useState()
 
   const reset = useCallback(mode => {
     if (mode === 'prev') {
@@ -68,70 +72,73 @@ export const ModalForm = ({
       if (task instanceof Promise) {
         await task
       }
+      await pull.current.close()
       refs.current.onChange?.(_val ?? selfValue)
-      setShow(false)
     } catch (error) {
       console.log('ModalForm:提交被阻止', error)
     }
   }, [selfValue])
 
   const showValue = useMemo(() => {
-    if (getValue) {
-      return getValue(val)
+    if (refs.current.getValue) {
+      return refs.current.getValue(val)
     }
-    if (isValidElement(renderForm) && renderForm.type?.getShowText) {
-      const res = renderForm.type.getShowText(val, renderForm?.props)
+    if (isValidElement(RenderForm) && RenderForm.type?.getShowText) {
+      const res = RenderForm.type.getShowText(val, RenderForm?.props)
       if (res instanceof Array) {
         return res.join(' ')
       }
       return res
     }
     return val
-  }, [getValue, val, renderForm])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [val])
 
-  const child = useMemo(() => {
-    if (isValidElement(children)) {
-      return cloneElement(children, {
-        ...props,
-        [childPropsValueKey]: showValue,
-        onClick: () => !disabled && setShow(old => !old)
-      })
+  useEffect(() => {
+    if (showValue instanceof Promise) {
+      showValue.then(setGetVal)
     }
-    return <Row onClick={() => !disabled && setShow(old => !old)} items='center' justify='end' {...props}>
+  }, [showValue])
+
+  if (!RenderForm) {
+    console.error('renderForm为必传属性')
+    return
+  }
+
+  const renderText = showValue instanceof Promise ? getVal : showValue
+
+  const child = isValidElement(children) ?
+    cloneElement(children, {
+      ...props,
+      [childPropsValueKey]: renderText,
+      onClick: () => !disabled && setShow(old => !old)
+    }) :
+    <Row onClick={() => !disabled && setShow(old => !old)} items='center' justify='end' {...props}>
       {
         typeof val !== 'undefined' ?
-          <Text>{showValue}</Text> :
+          <Text>{renderText}</Text> :
           <Text color={3}>{placeholder}</Text>
       }
       <Text color={3} size={5}><DuxuiIcon name='direction_right' /></Text>
     </Row>
-  }, [childPropsValueKey, children, disabled, placeholder, props, showValue, val])
 
-  const form = useMemo(() => {
-    if (!renderForm) {
-      console.error('renderForm为必传属性')
-      return
-    }
-    if (isValidElement(renderForm)) {
-      return cloneElement(renderForm, {
-        key: formKey,
-        value: selfValue,
-        onChange: _val => {
-          if (autoSubmit) {
-            refs.current.onChange?.(_val)
-            setShow(false)
-          }
-          setSelfValue(_val)
+  const form = isValidElement(RenderForm) ?
+    cloneElement(RenderForm, {
+      key: formKey,
+      value: selfValue,
+      onChange: async _val => {
+        if (autoSubmit) {
+          await pull.current.close()
+          refs.current.onChange?.(_val)
         }
-      })
-    }
-    const RenderForm = renderForm
-    return <RenderForm key={formKey} value={selfValue} onChange={setSelfValue} />
-  }, [renderForm, selfValue, formKey, autoSubmit])
+        setSelfValue(_val)
+      }
+    }) :
+    <RenderForm key={formKey} value={selfValue} onChange={setSelfValue} />
 
   return <>
     {child}
-    {show && <PullView onClose={() => setShow(false)} side={side}>
+    {show && <PullView ref={pull} onClose={() => setShow(false)} side={side}>
       <context.Provider value={{ reset, submit }}>
         <Column
           className={classNames(
@@ -142,7 +149,7 @@ export const ModalForm = ({
           {!!title && <Row items='center' justify='between' className='ModalForm__head'>
             <DuxuiIcon name='close' className='text-white' />
             <Text bold>{title}</Text>
-            <DuxuiIcon name='close' className='text-c1' onClick={() => setShow(false)} />
+            <DuxuiIcon name='close' className='text-c1' onClick={() => pull.current.close()} />
           </Row>}
           {renderHeader}
           {form}
@@ -210,6 +217,8 @@ export const ModalForms = ({
   const { values, defaultValues, setValues, ...contextData } = useFormContext()
 
   const [selfValue, setSelfValue] = useState({})
+
+  const pull = useRef()
 
   const [show, setShow] = useState()
   const refs = useRef({})
@@ -279,8 +288,8 @@ export const ModalForms = ({
       if (task instanceof Promise) {
         await task
       }
+      await pull.current.close()
       refs.current.setValues?.(selfValue)
-      setShow(false)
     } catch (error) {
       console.log('ModalForms:提交被阻止', error)
     }
@@ -309,7 +318,7 @@ export const ModalForms = ({
             {!!title && <Row items='center' justify='between' className='ModalForm__head'>
               <DuxuiIcon name='close' className='text-white' />
               <Text bold>{title}</Text>
-              <DuxuiIcon name='close' className='text-c1' onClick={() => setShow(false)} />
+              <DuxuiIcon name='close' className='text-c1' onClick={() => pull.current.close()} />
             </Row>}
             {renderForm}
             {

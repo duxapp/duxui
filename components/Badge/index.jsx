@@ -13,10 +13,12 @@ const BadgeNumber = ({
   child,
   outside,
   layout,
+  className,
+  style,
   ...props
 }) => {
 
-  const style = useMemo(() => {
+  const sty = useMemo(() => {
     if (!color || color === '#e87369') {
       return {}
     }
@@ -32,12 +34,13 @@ const BadgeNumber = ({
           !dot ?
             <>
               {(outside && !!layout.width || !outside) && <View
-                className={classNames('Badge__count', !outside && child && 'Badge__count--child', outside && 'Badge__count--outside')}
+                className={classNames('Badge__count', !outside && child && 'Badge__count--child', outside && 'Badge__count--outside', className)}
                 style={{
-                  ...style,
+                  ...sty,
                   ...outside ? {
                     left: layout.width - 4,
-                  } : {}
+                  } : {},
+                  ...style
                 }}
                 {...props}
               >
@@ -45,8 +48,11 @@ const BadgeNumber = ({
               </View>}
             </> :
             <View
-              className={classNames('Badge__dot', child && 'Badge__dot--child')}
-              style={style}
+              className={classNames('Badge__dot', child && 'Badge__dot--child', className)}
+              style={{
+                ...sty,
+                ...style
+              }}
               {...props}
             />
         }
@@ -82,6 +88,12 @@ export const Badge = ({
       <BadgeNumber count={count} dot={dot} color={color} text={text} maxCount={maxCount} child />
     </View>
   } else {
-    return <BadgeNumber count={count} dot={dot} color={color} text={text} maxCount={maxCount} {...props} />
+    return <BadgeNumber
+      count={count} dot={dot} color={color} text={text}
+      maxCount={maxCount}
+      className={className}
+      style={style}
+      {...props}
+    />
   }
 }

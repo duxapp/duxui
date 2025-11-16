@@ -92,7 +92,7 @@ export default (() => {
     // 图片访问域名
     host: '',
     // 异步获取配置
-    syncCallback: null,
+    asyncCallback: null,
   }
 
   const setConfig = ({ token, host, endpoint }) => {
@@ -107,24 +107,29 @@ export default (() => {
     }
   }
 
+  let getConfigDate = 0
+
   const initToken = async () => {
-    if (config.token) {
+    // 30分钟后重新获取
+    if (config.token && Date.now() < getConfigDate + 30 * 60 * 1000) {
       return
     }
-    if (!config.syncCallback) {
+    if (!config.asyncCallback) {
       throw '请注册获取配置的异步函数'
     }
-    const _config = await config.syncCallback()
+
+    const _config = await config.asyncCallback()
     setConfig(_config)
+    getConfigDate = Date.now()
   }
 
-  const isReady = () => (!!config.token && !!config.endpoint && !!config.host) || !!config.syncCallback
+  const isReady = () => (!!config.token && !!config.endpoint && !!config.host) || !!config.asyncCallback
 
   return () => {
     return {
       isReady,
-      configSync: callback => {
-        config.syncCallback = callback
+      configAsync: callback => {
+        config.asyncCallback = callback
       },
       config: setConfig,
       upload: async ({

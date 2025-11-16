@@ -57,7 +57,7 @@ interface FormProps {
   /** 表单默认值，也可以是一个异步函数，其返回值作为默认值，用在一些需要远程加载数据的场景 */
   defaultValues?: Values | (() => Promise<Values>)
   /** 表单改变事件 */
-  onChange?: (values: Values) => void
+  onChange?: (values: Values, key?: string) => void
   /** 表单提交事件 */
   onSubmit?: (values: Values) => void | boolean | Promise<boolean>
   /**
@@ -154,6 +154,14 @@ interface FormItemProps extends ColumnProps {
    * https://github.com/PengJiyuan/b-validate?tab=readme-ov-file#schema
    */
   rules?: SchemaRuleType[]
+  /**
+   * 控制表单是否隐藏
+   */
+  hidden?: boolean | ((values: Values) => boolean)
+  /**
+   * 将输入转换为数字
+   */
+  number?: boolean
 }
 
 interface FormSubmitProps extends ButtonProps {

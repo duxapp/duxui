@@ -1,7 +1,8 @@
 import { ReactNode, FC } from 'react'
+import { RowProps } from '../Flex'
 import { SpaceProps } from '../Space'
 
-interface CheckboxGroupProps extends SpaceProps {
+interface CheckboxGroupProps extends RowProps {
   /**
    * 当前选中的值
    */
@@ -23,6 +24,10 @@ interface CheckboxGroupProps extends SpaceProps {
    */
   virtual?: boolean
   /**
+   * 最多允许选中的选项数量
+   */
+  max?: number
+  /**
    * 禁用选择
    */
   disabled?: boolean
@@ -41,6 +46,10 @@ interface CheckboxProps extends SpaceProps {
    * 复选框是否被选中
    */
   checked?: boolean
+  /**
+   * 作为单个组件使用
+   */
+  onCheck?: (checked: boolean) => void
   /**
    * 半选中状态
    * checked为假的时候生效

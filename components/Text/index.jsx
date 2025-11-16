@@ -19,6 +19,7 @@ export const Text = memo(({
   break: breakWord,
   numberOfLines,
   align,
+  nowrap,
   grow,
   shrink,
   self,
@@ -70,6 +71,7 @@ export const Text = memo(({
     underline && 'Text-underline',
     grow && 'w-0 flex-grow',
     shrink && 'flex-shrink',
+    nowrap && 'Text-nowrap',
     self && 'self-' + self,
     align && 'text-' + align,
     // 省略行数量

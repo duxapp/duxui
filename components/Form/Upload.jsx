@@ -41,7 +41,7 @@ export const UploadImages = ({
       if (process.env.TARO_ENV === 'rn') {
         await requestPermissionMessage(requestPermissionMessage.types.image)
       }
-      const urls = await upload(type, { count: max - (value?.length || 0), ...option, sizeType: ['compressed'] })
+      const urls = await upload(type, { count: max - (value?.length || 0), sizeType: ['compressed'], ...option })
         .start(() => {
           setProgress(0)
         })
@@ -163,7 +163,7 @@ const ItemView = ({
 
 const mediaImage = ['.jpg', '.png', '.gif', '.jpeg', '.webp']
 
-const isImage = url => mediaImage.some(v => url.split('?')[0].toLowerCase().endsWith(v))
+const isImage = url => mediaImage.some(v => url?.split?.('?')[0].toLowerCase().endsWith(v))
 
 export const UploadImage = ({ onChange, value, ...props }) => {
 

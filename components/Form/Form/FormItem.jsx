@@ -1,6 +1,6 @@
 import { isValidElement, cloneElement, useEffect, useMemo, useCallback, useRef, Children, useState } from 'react'
 import classNames from 'classnames'
-import { nextTick, useDeepObject } from '@/duxapp'
+import { nextTick } from '@/duxapp'
 import { Schema } from 'b-validate'
 import { Text } from '../../Text'
 import { Column } from '../../Flex'
@@ -31,12 +31,12 @@ export const FormItem = ({
   wholeForm,
   fields = wholeForm,
   form: findForm,
+  hidden,
+  number,
   ...props
 }) => {
 
   const form = useFormContext()
-
-  const currentRules = useDeepObject(rules)
 
   const value = form.values[field]
 
@@ -48,9 +48,16 @@ export const FormItem = ({
   refs.value = value
   refs.checkError = checkError
 
+  let show = !hidden
+  if (hidden) {
+    if (typeof hidden === 'function') {
+      show = !hidden(form.values)
+    }
+  }
+
   const check = useCallback(() => {
     const schema = new Schema({
-      [field]: currentRules
+      [field]: rules
     })
     return new Promise((resolve, reject) => {
       schema.validate({ [field]: fields ? refs.form.values : refs.value }, errors => {
@@ -62,19 +69,24 @@ export const FormItem = ({
         }
       })
     })
-  }, [currentRules, field, fields, refs])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field, fields])
 
   useEffect(() => {
-    if (currentRules?.length) {
+    if (rules?.length && show) {
       const { remove } = refs.form.addRules(check)
       return () => remove()
     }
-  }, [check, currentRules, refs])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [check])
 
   useMemo(() => {
+    if (!show) {
+      return
+    }
     refs.form.onGetField?.(field, refs.fieldOld)
     refs.fieldOld = field
-  }, [field, refs])
+  }, [field, refs, show])
 
   const horizontal = (direction || form.direction) === 'horizontal' && !vertical && (!form.vertical || vertical === false)
 
@@ -111,9 +123,13 @@ export const FormItem = ({
       if (val && typeof val === 'object' && typeof val.detail?.value !== 'undefined') {
         val = val.detail.value
       }
-      refs.form.setValue(field, val)
+      refs.form.setValue(field, number ? +val : val)
     }
-  }, [refs, fields, check, field])
+  }, [refs, fields, check, field, number])
+
+  if (!show) {
+    return
+  }
 
   const cloneForm = item => {
     // 缓存子元素的值更改函数
@@ -122,7 +138,7 @@ export const FormItem = ({
       [trigger]: change,
       field: item.props.field || field,
       [triggerPropName]: item[triggerPropName] ?? (fields ? form.values : value),
-      disabled: disabled ?? form.disabled
+      disabled: item.props.disabled ?? disabled ?? form.disabled
     })
   }
 
@@ -189,7 +205,14 @@ export const FormItem = ({
       {
         renderLabelRight ? <Space row justify='between'>
           {_label}
-          {renderLabelRight}
+          {isValidElement(renderLabelRight) ?
+            cloneElement(renderLabelRight, {
+              value: renderLabelRight.props.value ?? (fields ? form.values : value),
+              onChange: renderLabelRight.props.onChange ?? change,
+              disabled: renderLabelRight.props.disabled ?? disabled ?? form.disabled
+            }) :
+            renderLabelRight
+          }
         </Space>
           : _label
       }

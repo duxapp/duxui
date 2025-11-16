@@ -1,20 +1,36 @@
-import { useState, useRef } from 'react'
-import { px } from '@/duxapp'
+import { useState, useRef, useMemo } from 'react'
+import { px, colorToRgb } from '@/duxapp'
 import classNames from 'classnames'
 import { Svg, Defs, LinearGradient, Stop, Rect, Circle, PanResponder } from '../Svg'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 
-export const ColorPicker = ({ onChange, size = 200, preview, style, className, ...props }) => {
+export const ColorPicker = ({ value: propsValue, onChange, size = 200, preview, style, className, ...props }) => {
+
+  const defaultData = useMemo(() => {
+    if (!propsValue) {
+      return {
+        hue: 0, saturation: 1, value: 1, alpha: 1
+      }
+    }
+    return rgbToHsv(...colorToRgb(propsValue))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // 颜色状态 (HSV 模型)
-  const [hue, setHue] = useState(0)        // 0-360
-  const [saturation, setSaturation] = useState(1)  // 0-1
-  const [value, setValue] = useState(1)    // 0-1
-  const [alpha, setAlpha] = useState(1)    // 0-1
+  const [hue, setHue] = useState(defaultData.hue)        // 0-360
+  const [saturation, setSaturation] = useState(defaultData.saturation)  // 0-1
+  const [value, setValue] = useState(defaultData.value)    // 0-1
+  const [alpha, setAlpha] = useState(defaultData.alpha)    // 0-1
+
+  const refs = useRef({}).current
+  refs.hue = hue
+  refs.saturation = saturation
+  refs.value = value
 
   // 获取当前RGB颜色
   const getCurrentColor = () => {
-    return hsvToRgb(hue, saturation, value)
+    return hsvToRgb(refs.hue, refs.saturation, refs.value)
   }
 
   // HSV转RGB
@@ -115,7 +131,7 @@ export const ColorPicker = ({ onChange, size = 200, preview, style, className, .
   const rgbaColor = `rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${alpha})`
 
   return <Column className={classNames('gap-2', className)} style={style} {...props}>
-    <Svg width={size} height={size}>
+    <Svg disabledScroll width={size} height={size}>
       <Defs>
         <LinearGradient id='saturation' x1='0%' y1='0%' x2='100%' y2='0%'>
           <Stop offset='0%' stopColor='#FFF' stopOpacity='1' />
@@ -157,7 +173,7 @@ export const ColorPicker = ({ onChange, size = 200, preview, style, className, .
         {...colorAreaPanResponder.panHandlers}
       />
     </Svg>
-    <Svg width={size} height={20}>
+    <Svg width={size} height={20} disableScroll>
       <Defs>
         <LinearGradient id='hue' x1='0%' y1='0%' x2='100%' y2='0%'>
           <Stop offset='100%' stopColor='#FF0000' />
@@ -247,4 +263,40 @@ export const ColorPicker = ({ onChange, size = 200, preview, style, className, .
       }
     </Row>}
   </Column>
+}
+
+function rgbToHsv(r, g, b) {
+  // 归一化到 0-1
+  const rNorm = r / 255;
+  const gNorm = g / 255;
+  const bNorm = b / 255;
+
+  // 计算 max, min, delta
+  const max = Math.max(rNorm, gNorm, bNorm);
+  const min = Math.min(rNorm, gNorm, bNorm);
+  const delta = max - min;
+
+  // 计算 Hue
+  let hue = 0;
+  if (delta !== 0) {
+    if (max === rNorm) {
+      hue = 60 * (((gNorm - bNorm) / delta) % 6);
+    } else if (max === gNorm) {
+      hue = 60 * (((bNorm - rNorm) / delta) + 2);
+    } else if (max === bNorm) {
+      hue = 60 * (((rNorm - gNorm) / delta) + 4);
+    }
+    if (hue < 0) hue += 360; // 确保在 0-360 范围内
+  }
+
+  // 计算 Saturation
+  const saturation = max === 0 ? 0 : delta / max;
+
+  // Value 就是 max
+  const value = max;
+
+  // Alpha 默认 1
+  const alpha = 1;
+
+  return { hue, saturation, value, alpha };
 }

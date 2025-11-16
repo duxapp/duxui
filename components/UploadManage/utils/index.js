@@ -1,9 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useMemo, useState, } from 'react'
 import { ObjectManage, QuickEvent, toast } from '@/duxapp'
 import { uploadManageDrive } from '../drive'
 import { getExtIcon } from '../icons'
-
-export * from './util'
 
 class Queue {
   constructor(concurrency) {
@@ -31,14 +30,17 @@ class Queue {
 
 const uploadQueue = new Queue(1)
 
-class UploadManage extends ObjectManage {
+export class UploadManage extends ObjectManage {
 
-  constructor(props) {
-    super(props)
+  constructor() {
+    super({
+      cache: true,
+      cacheKey: 'duxui-file-manage'
+    })
   }
 
   config = {
-    maxHistory: 60
+    maxHistory: 200
   }
 
   data = {
@@ -53,7 +55,7 @@ class UploadManage extends ObjectManage {
    */
   uploadList = []
   uploadListEvent = new QuickEvent()
-  setUploadList = _data => {
+  setUploadList(_data) {
     this.uploadList = _data
     this.uploadListEvent.trigger(_data)
   }
@@ -62,24 +64,26 @@ class UploadManage extends ObjectManage {
    * 设置上传配置
    * @param {*} param0
    */
-  setConfig = ({
-    maxHistory = 60
-  }) => {
+  setConfig({
+    maxHistory = 200
+  }) {
     this.config = {
       maxHistory
     }
   }
 
-  static imageExt = ['jpg', 'jpeg', 'png', 'gif', 'bmp']
-  static videoExt = ['mp4', 'avi', 'wmv', '3gp', 'mov', 'm4v', 'asf', 'asx', 'rm', 'rmvb', 'mkv', 'flv', 'vob', 'dat']
-  static audioExt = ['mp3', 'aac', 'wma', 'amr', 'flac', 'ape', 'ogg', 'midi', 'vqf']
+  static exts = {
+    image: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
+    video: ['mp4', 'avi', 'wmv', '3gp', 'mov', 'm4v', 'asf', 'asx', 'rm', 'rmvb', 'mkv', 'flv', 'vob', 'dat'],
+    audio: ['mp3', 'aac', 'wma', 'amr', 'flac', 'ape', 'ogg', 'midi', 'vqf']
+  }
 
   /**
    * 将传入的type转换为可识别的类型
    * @param {*} type image/*,.png,.jpg,.gif,.pdf
    * @returns
    */
-  getTypes = type => {
+  static getTypes(type) {
     return type.split(',').map(item => {
       if (item.startsWith('.')) {
         return {
@@ -104,7 +108,7 @@ class UploadManage extends ObjectManage {
    * @param {*} size
    * @returns
    */
-  getSize = size => {
+  static getSize(size) {
     const sizes = ['KB', 'MB', 'GB', 'TB']
     size = size / 1024
     while (sizes.length) {
@@ -122,19 +126,19 @@ class UploadManage extends ObjectManage {
    * @param {*} ext
    * @returns
    */
-  isImage = ext => UploadManage.imageExt.includes(ext)
+  static isImage = ext => UploadManage.exts.image.includes(ext)
   /**
    * 判断是不是视频
    * @param {*} ext
    * @returns
    */
-  isVideo = ext => UploadManage.videoExt.includes(ext)
+  static isVideo = ext => UploadManage.exts.video.includes(ext)
   /**
    * 判断是不是音频
    * @param {*} ext
    * @returns
    */
-  isAudio = ext => UploadManage.audioExt.includes(ext)
+  static isAudio = ext => UploadManage.exts.audio.includes(ext)
 
   /**
    * 获取列表
@@ -142,8 +146,8 @@ class UploadManage extends ObjectManage {
    * @param {*} keyword
    * @returns
    */
-  getList = (type = '', keyword = '') => {
-    const types = this.getTypes(type)
+  getList(type = '', keyword = '') {
+    const types = UploadManage.getTypes(type)
     return this.data.list.filter(item => {
       const result = {
         type: true,
@@ -169,10 +173,12 @@ class UploadManage extends ObjectManage {
    * 获取当前驱动
    * @returns
    */
-  getDrive = () => uploadManageDrive.getDreve()
+  getDrive() {
+    return uploadManageDrive.getDreve()
+  }
 
   // 上传选择之后的结果
-  upload = async files => {
+  async upload(files) {
     const dreve = uploadManageDrive.getDreve()
     if (!dreve?.isReady()) {
       console.error('上传驱动未准备就绪 请检查设置')
@@ -184,9 +190,9 @@ class UploadManage extends ObjectManage {
         path: item.path,
         size: item.size,
         name: item.name || item.path.split('/').reverse()[0],
-        icon: this.isImage(ext) ? item.path : getExtIcon(ext),
-        desc: this.getSize(item.size),
-        media: this.isImage(ext) ? `image/${ext}` : this.isVideo(ext) ? `video/${ext}` : this.isAudio(ext) ? 'audio/${ext}' : `unknown/${ext}`
+        icon: UploadManage.isImage(ext) ? item.path : getExtIcon(ext),
+        desc: UploadManage.getSize(item.size),
+        media: UploadManage.isImage(ext) ? `image/${ext}` : UploadManage.isVideo(ext) ? `video/${ext}` : UploadManage.isAudio(ext) ? 'audio/${ext}' : `unknown/${ext}`
       }
       uploadQueue.enqueue(done => {
         setTimeout(() => {
@@ -201,14 +207,14 @@ class UploadManage extends ObjectManage {
               this.uploadList.splice(this.uploadList.indexOf(uploadItem), 1)
               this.data.list.unshift({
                 ...uploadItem,
-                icon: this.isImage(ext) ? res.url : uploadItem.icon,
+                icon: UploadManage.isImage(ext) ? res.url : uploadItem.icon,
                 url: res.url
               })
               this.setUploadList([...this.uploadList])
               if (this.data.list.length > this.config.maxHistory) {
                 this.data.list.splice(this.config.maxHistory)
               }
-              this.set({
+              this.merge({
                 list: [...this.data.list]
               })
               done()
@@ -264,8 +270,3 @@ class UploadManage extends ObjectManage {
     return uploadList
   }
 }
-
-export const uploadManage = new UploadManage({
-  cache: true,
-  cacheKey: 'file-manage'
-})

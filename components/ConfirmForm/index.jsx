@@ -13,6 +13,8 @@ const ConfirmForm = ({
   multiple,
   verify,
   cancel = true,
+  submitText = '确定',
+  cancelText = '取消',
   onSubmit,
   onCancel
 }) => {
@@ -64,18 +66,18 @@ const ConfirmForm = ({
           onCancel()
         }}
       >
-        <Text size={6}>取消</Text>
+        <Text size={6}>{cancelText}</Text>
       </Row>}
       <Divider direction='vertical' />
       {
         multiple ?
           <FormSubmit>
             <Row grow items='center' justify='center'>
-              <Text type='primary' size={6}>确定</Text>
+              <Text type='primary' size={6}>{submitText}</Text>
             </Row>
           </FormSubmit> :
           <Row grow items='center' justify='center' onClick={submit}>
-            <Text type='primary' size={6}>确定</Text>
+            <Text type='primary' size={6}>{submitText}</Text>
           </Row>
       }
     </Row>

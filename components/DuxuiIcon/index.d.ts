@@ -1,6 +1,7 @@
-import { Component, CSSProperties } from 'react'
+import { ComponentType, CSSProperties } from 'react'
 
 interface names {
+  'shangchuan'
   'bianji'
   'wenben'
   'yidong'
@@ -63,6 +64,4 @@ interface DuxuiIconProps {
 /**
  * DuxuiIcon 图标库
  */
-export class DuxuiIcon extends Component<DuxuiIconProps> {
-
-}
+export const DuxuiIcon: ComponentType<DuxuiIconProps>

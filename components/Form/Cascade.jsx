@@ -332,8 +332,14 @@ const DefaultRender = ({
           {
             group.map((item, index) => {
               const isSelect = select[groupIndex] === index
-              return <View key={index} className='Cascade__left__label gap-2' onClick={() => labelClick(groupIndex, index, item)}>
-                <Text style={{ color: isSelect ? duxappTheme.primaryColor : duxappTheme.textColor1 }} className='Cascade__left__label__title'>{item[nameKey]}</Text>
+              return <View key={index}
+                className='Cascade__left__label gap-2'
+                onClick={() => labelClick(groupIndex, index, item)}
+              >
+                <Text
+                  {...isSelect ? { type: 'primary' } : {}}
+                  className='Cascade__left__label__title'
+                >{item[nameKey]}</Text>
                 {!isRadio && groupIndex === 0 && checkNumbers[index] > 0 && !anyLevel &&
                   <Text className='text-s1 text-primary'>已选 {checkNumbers[index]}</Text>
                 }
@@ -351,18 +357,20 @@ const DefaultRender = ({
             return <Fragment key={'item' + index}>
               {!!index && <Divider />}
               <View className='Cascade__right__item' onClick={() => rightClick(item)}>
-                <Text style={{ color: isSelect ? duxappTheme.primaryColor : duxappTheme.textColor1 }} className='Cascade__right__item__label'>{item[nameKey]}</Text>
-                <DuxuiIcon
-                  className='Cascade__right__item__icon'
-                  color={isSelect ? duxappTheme.primaryColor : duxappTheme.textColor1}
+                <Text
+                  {...isSelect ? { type: 'primary' } : {}}
+                  className='Cascade__right__item__label'
+                >{item[nameKey]}</Text>
+                {(isSelect || !isRadio) && <DuxuiIcon
+                  className={classNames('Cascade__right__item__icon', isSelect ? 'text-primary' : 'text-c1')}
                   name={
                     !isRadio ? (
                       isSelect ? 'xuanzhong' : 'xuanzekuang'
                     ) : (
-                      isSelect ? 'add_check1' : 'option'
+                      isSelect ? 'select' : ''
                     )
                   }
-                />
+                />}
               </View>
             </Fragment>
           })

@@ -41,9 +41,19 @@ const TabBar: React.FC<TabBarProps> & {
    */
   setNumber: (index: number, number: number) => void
   /** 监听切换，返回一个Promise，如果排除错误，将会停止跳转 */
-  onSwitchBefore: (callback: ({ index: number }) => Promise<{}>) => void
+  onSwitchBefore: (callback: ({ index: number }) => Promise<{}>) => {
+    /**
+     * 移除监听
+     */
+    remove: () => void
+  }
   /** 监听切换成功 */
-  onSwitchAfter: (callback: ({ index: number }) => Promise<{}>) => void
+  onSwitchAfter: (callback: ({ index: number }) => Promise<{}>) => {
+    /**
+     * 移除监听
+     */
+    remove: () => void
+  }
   /**
    * 展示出来的hook，这个hook需要在每个项目组件中使用，用来判断当前组件是是否展示出来
    * 切换到该页面或者从下一个页面返回时，当前页面是激活状态就会触发

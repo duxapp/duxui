@@ -1,13 +1,13 @@
 import { useEffect, useMemo, memo, useRef, forwardRef, useImperativeHandle } from 'react'
-import { View, Text, Image } from '@tarojs/components'
 import { useDidShow } from '@tarojs/taro'
-import { getWindowInfo, noop, ScrollView } from '@/duxapp'
+import { getWindowInfo, noop } from '@/duxapp'
 import { ListLoading } from './Loading'
 import { ListSelect } from './Select'
 import { FlatList } from './FlatList'
 import { WeappList } from './WeappList'
-import empty from './image/empty.png'
 import './index.scss'
+import { Empty } from '../Empty'
+import { BaseScrollView } from './ScrollView'
 
 export const createList = usePageData => {
   const List = forwardRef(function List_({
@@ -30,8 +30,6 @@ export const createList = usePageData => {
     emptyTitle = '暂无数据',
     // 自定义为空时候的提示渲染
     renderEmpty,
-    // 为空部分点击事件
-    onEmptyClick,
     // 数据操作的回调
     onAction,
     // 是否启用缓存
@@ -110,19 +108,23 @@ export const createList = usePageData => {
             nestedScrollEnabled
             numColumns={columns}
             refresh={refresh}
-            {...props}
             onScrollToLower={page && action.next || noop}
             onRefresh={action.reload}
-            keyExtractor={(item, index) => item[keyField] || index}
+            keyExtractor={(item, index) => item[keyField] ?? index}
             data={list}
             renderItem={RenderItem}
             ItemSeparatorComponent={renderLine}
             ListHeaderComponent={renderHeader}
-            ListEmptyComponent={!action.loading && (renderEmpty || <Empty onEmptyClick={onEmptyClick} emptyTitle={emptyTitle} />)}
+            ListEmptyComponent={!action.loading && (renderEmpty || <Empty title={emptyTitle} />)}
             ListFooterComponent={<>
               {renderFooter}
               {loadMore}
             </>}
+            {...props}
+            maintainVisibleContentPosition={{
+              disabled: true,
+              ...props.maintainVisibleContentPosition
+            }}
           /> : useVirtualList && process.env.TARO_ENV !== 'harmony_cpp' ?
             <WeappList
               list={list}
@@ -135,7 +137,6 @@ export const createList = usePageData => {
               renderEmpty={renderEmpty}
               loadMore={loadMore}
               Empty={Empty}
-              onEmptyClick={onEmptyClick}
               emptyTitle={emptyTitle}
               action={action}
               refresh={refresh}
@@ -143,27 +144,25 @@ export const createList = usePageData => {
               virtualWaterfallProps={virtualWaterfallProps}
               props={props}
             /> :
-            <ScrollView
+            <BaseScrollView
+              list={list}
+              RenderItem={RenderItem}
+              page={page}
+              renderHeader={renderHeader}
+              renderFooter={renderFooter}
+              emptyStatus={emptyStatus}
+              renderEmpty={renderEmpty}
+              loadMore={loadMore}
+              Empty={Empty}
+              emptyTitle={emptyTitle}
+              action={action}
               refresh={refresh}
-              lowerThreshold={200}
-              {...props}
-              onScrollToLower={page && action.next || noop}
-              onRefresh={action.reload}
-            >
-              {renderHeader}
-              <View style={listStyle} className={listClassName}>
-                {
-                  emptyStatus ?
-                    (renderEmpty || <Empty onEmptyClick={onEmptyClick} emptyTitle={emptyTitle} />) :
-                    list.map((item, index) => <>
-                      {!!index && renderLine}
-                      <RenderItem key={item[keyField] || index} item={item} index={index} />
-                    </>)
-                }
-              </View>
-              {renderFooter}
-              {loadMore}
-            </ScrollView>
+              props={props}
+              listStyle={listStyle}
+              listClassName={listClassName}
+              renderLine={renderLine}
+              keyField={keyField}
+            />
       }
       <ListSelect.Submit />
     </ListSelect>
@@ -179,16 +178,3 @@ export {
 }
 
 const itemSize = px => px * getWindowInfo().screenWidth / 750
-
-const Empty = ({
-  onEmptyClick,
-  emptyTitle
-}) => {
-  return <View
-    className='list-empty'
-    onClick={onEmptyClick}
-  >
-    <Image src={empty} className='list-empty__icon' />
-    <Text className='list-empty__title'>{emptyTitle}</Text>
-  </View>
-}
