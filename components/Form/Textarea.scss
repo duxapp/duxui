@@ -4,6 +4,9 @@
   padding: 24px;
   min-width: 300px;
 
+  &--white {
+    background-color: $duxappWhiteColor;
+  }
   &__input {
     textalignvertical: top;
     width: 100%;

@@ -7,10 +7,12 @@ import { DuxuiIcon } from '../DuxuiIcon'
 import { useFormItemProxy } from './Form'
 import { Row } from '../Flex'
 
-const context = /*@__PURE__*/ createContext({ check: noop })
+const context = /*@__PURE__*/ createContext({ check: noop, type: 'primary' })
 
-export const Radio = ({ value, label, disabled, checked, onClick, children: Child, style, className, ...props }) => {
-  const { check, currentValue } = useContext(context)
+export const Radio = ({ value, label, disabled, checked, onClick, children: Child, style, className, type: radioType, ...props }) => {
+  const { check, currentValue, type: groupType } = useContext(context)
+
+  const themeType = radioType || groupType || 'primary'
 
   const _checked = typeof checked === 'boolean' ? checked : currentValue === value
 
@@ -20,6 +22,7 @@ export const Radio = ({ value, label, disabled, checked, onClick, children: Chil
       value={value}
       label={label}
       checked={_checked}
+      type={themeType}
       onCheck={() => !disabled && check(value)}
     />
   }
@@ -37,7 +40,7 @@ export const Radio = ({ value, label, disabled, checked, onClick, children: Chil
     {...props}
   >
     <DuxuiIcon
-      className={_checked ? 'text-primary' : 'text-c3'}
+      className={_checked ? `text-${themeType}` : 'text-c3'}
       size={42}
       name={_checked ? 'roundcheckfill' : 'roundcheck'}
     />
@@ -57,6 +60,7 @@ export const RadioGroup = ({
   style,
   virtual,
   className,
+  type = 'primary',
   ...props
 }) => {
 
@@ -75,7 +79,7 @@ export const RadioGroup = ({
     }
   }, [val, cancel, disabled, setVal])
 
-  return <context.Provider value={{ check, currentValue: val }}>
+  return <context.Provider value={{ check, currentValue: val, type }}>
     {
       virtual ?
         children :

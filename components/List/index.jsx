@@ -1,4 +1,4 @@
-import { useEffect, useMemo, memo, useRef, forwardRef, useImperativeHandle } from 'react'
+import { useEffect, useMemo, memo, useRef, forwardRef, useImperativeHandle, useState, useCallback } from 'react'
 import { useDidShow } from '@tarojs/taro'
 import { getWindowInfo, noop } from '@/duxapp'
 import { ListLoading } from './Loading'
@@ -49,6 +49,8 @@ export const createList = usePageData => {
     const refs = useRef({})
     refs.current = { ...itemProps, list, action }
 
+    const { onRefresh: propsOnRefresh, ...restProps } = props
+
     useDidShow(() => {
       if (option?.ready === false) {
         return
@@ -94,7 +96,26 @@ export const createList = usePageData => {
       return memo(Item_)
     }, [type])
 
-    const refresh = action.loading && action.refresh
+    const [pullRefreshing, setPullRefreshing] = useState(false)
+
+    const actionLoading = action.loading
+    const actionReload = action.reload
+
+    useEffect(() => {
+      if (!actionLoading && pullRefreshing) {
+        setPullRefreshing(false)
+      }
+    }, [actionLoading, pullRefreshing])
+
+    const handleUserRefresh = useCallback((...args) => {
+      setPullRefreshing(true)
+      if (!actionLoading) {
+        actionReload()
+      }
+      propsOnRefresh?.(...args)
+    }, [actionLoading, actionReload, propsOnRefresh])
+
+    const refresh = pullRefreshing
 
     const loadMore = (page && !action.refresh && list.length > 5 || (action.loadEnd && !emptyStatus)) && <ListLoading
       loading={action.loading}
@@ -109,7 +130,7 @@ export const createList = usePageData => {
             numColumns={columns}
             refresh={refresh}
             onScrollToLower={page && action.next || noop}
-            onRefresh={action.reload}
+            onRefresh={handleUserRefresh}
             keyExtractor={(item, index) => item[keyField] ?? index}
             data={list}
             renderItem={RenderItem}
@@ -120,10 +141,10 @@ export const createList = usePageData => {
               {renderFooter}
               {loadMore}
             </>}
-            {...props}
+            {...restProps}
             maintainVisibleContentPosition={{
               disabled: true,
-              ...props.maintainVisibleContentPosition
+              ...restProps.maintainVisibleContentPosition
             }}
           /> : useVirtualList && process.env.TARO_ENV !== 'harmony_cpp' ?
             <WeappList
@@ -140,9 +161,10 @@ export const createList = usePageData => {
               emptyTitle={emptyTitle}
               action={action}
               refresh={refresh}
+              onRefresh={handleUserRefresh}
               virtualListProps={virtualListProps}
               virtualWaterfallProps={virtualWaterfallProps}
-              props={props}
+              props={restProps}
             /> :
             <BaseScrollView
               list={list}
@@ -157,7 +179,8 @@ export const createList = usePageData => {
               emptyTitle={emptyTitle}
               action={action}
               refresh={refresh}
-              props={props}
+              onRefresh={handleUserRefresh}
+              props={restProps}
               listStyle={listStyle}
               listClassName={listClassName}
               renderLine={renderLine}

@@ -7,7 +7,7 @@ import { DuxuiIcon } from '../DuxuiIcon'
 import { useFormItemProxy } from './Form'
 import { Row } from '../Flex'
 
-const context = /*@__PURE__*/ createContext({ check: noop })
+const context = /*@__PURE__*/ createContext({ check: noop, type: 'primary' })
 
 /**
  * 用于计算出选中的内容显示值
@@ -24,9 +24,13 @@ export const Checkbox = ({
   disabled, children: Child,
   className,
   onCheck,
-  style, ...props
+  style,
+  type: checkboxType,
+  ...props
 }) => {
-  const { check, currentValue } = useContext(context)
+  const { check, currentValue, type: groupType } = useContext(context)
+
+  const themeType = checkboxType || groupType || 'primary'
 
   const click = val => {
     if (onCheck) {
@@ -44,25 +48,28 @@ export const Checkbox = ({
       value={value}
       label={label}
       checked={isCheck}
+      type={themeType}
       onCheck={() => !disabled && click(value)}
     />
   }
 
+  const event = !disabled && (check !== noop || onCheck)
+
   return <Row
     className={classNames('gap-1 items-center', className)}
-    {...disabled ? {} : {
+    {...event ? {
       onClick: e => {
         stopPropagation(e)
         click(value)
       }
-    }}
+    } : {}}
     style={style} {...props}
   >
     {/* <Text size={6} type={isCheck || half ? 'primary' : void 0} color={isCheck || half ? void 0 : 3}>
       <DuxuiIcon name={isCheck ? 'xuanzhong' : half ? 'banxuanze' : 'xuanzekuang'} />
     </Text> */}
     <DuxuiIcon
-      className={classNames('text-s6', isCheck || half ? 'text-primary' : 'text-c3')}
+      className={classNames('text-s6', isCheck || half ? `text-${themeType}` : 'text-c3')}
       name={isCheck ? 'xuanzhong' : half ? 'banxuanze' : 'xuanzekuang'}
     />
     {!!label && <Text>{label}</Text>}
@@ -81,6 +88,7 @@ export const CheckboxGroup = ({
   className,
   virtual,
   max,
+  type = 'primary',
   ...props
 }) => {
 
@@ -112,7 +120,7 @@ export const CheckboxGroup = ({
     })
   }, [disabled, setVal, max])
 
-  return <context.Provider value={{ check, currentValue: val }}>
+  return <context.Provider value={{ check, currentValue: val, type }}>
     {
       virtual ?
         children :

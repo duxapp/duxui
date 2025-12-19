@@ -19,6 +19,10 @@ interface TextareaProps extends TaroTextareaProps {
    */
   showLength?: boolean
   /**
+   * 白色背景
+   */
+  white?: boolean
+  /**
    * 是否自动增长宽度
    */
   grow?: boolean

@@ -1,7 +1,7 @@
 import { View, Button as TaroButton } from '@tarojs/components'
 import classNames from 'classnames'
 import { useMemo } from 'react'
-import { isPlatformMini, Loading, colorLighten, duxappTheme } from '@/duxapp'
+import { isPlatformMini, Loading, colorLighten, duxappTheme, theme, colorDark } from '@/duxapp'
 import { duxuiTheme, duxuiHook } from '@/duxui/utils'
 import { LinearGradient } from '../LinearGradient'
 import { Text } from '../Text'
@@ -49,6 +49,8 @@ export const Button = _props => {
 
   const _plain = linearGradient ? false : plain
 
+  const isDark = theme.useIsDark()
+
   const [viewStyle, selfTextStyle] = useMemo(() => {
     // styles[0] -> view style; styles[1] -> text style
     const styles = [{}, {}]
@@ -58,7 +60,7 @@ export const Button = _props => {
     if (soft && !linearGradient) {
       let baseColor
       if (type === 'default') {
-        baseColor = typeof color === 'string' && color ? color : duxappTheme.textColor1
+        baseColor = typeof color === 'string' && color ? color : isDark ? duxappTheme.textColor4 : duxappTheme.textColor1
         // When custom color is provided, ensure text uses this color
         if (typeof color === 'string' && color) {
           styles[1].color = color
@@ -77,7 +79,7 @@ export const Button = _props => {
         baseColor = map[type]
       }
       if (baseColor) {
-        styles[0].backgroundColor = colorLighten(baseColor, 0.9)
+        styles[0].backgroundColor = isDark ? colorDark(baseColor, 0.2) : colorLighten(baseColor, 0.9)
         if (_plain) {
           styles[0].borderColor = baseColor
         }
@@ -102,7 +104,7 @@ export const Button = _props => {
     }
 
     return []
-  }, [soft, color, linearGradient, _plain, type])
+  }, [soft, color, linearGradient, _plain, type, isDark])
 
   return <duxuiHook.Render mark='Button' option={{ props: _props, linearGradient, plain: _plain, viewStyle, selfTextStyle }}>
     <RootView

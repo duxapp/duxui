@@ -71,7 +71,7 @@ export const UploadImages = ({
       >
         <ItemView src={item} value={value} />
         {!disabled && <Column className='UIUplod__item__icon'>
-          <DuxuiIcon name='close' color='red' size={36} onClick={() => del(index)} />
+          <DuxuiIcon name='close' className='text-danger text-s7' onClick={() => del(index)} />
         </Column>}
       </View>
     }),

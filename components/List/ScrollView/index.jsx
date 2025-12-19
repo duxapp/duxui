@@ -19,6 +19,7 @@ export const BaseScrollView = ({
   page,
   action,
   refresh,
+  onRefresh,
   listStyle,
   listClassName,
   renderLine,
@@ -67,7 +68,7 @@ export const BaseScrollView = ({
     {...props}
     onScrollToLower={page && action.next || noop}
     onRefresh={() => {
-      action.reload()
+      onRefresh?.()
       refs.autoEnd = false
     }}
   >

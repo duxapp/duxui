@@ -14,6 +14,7 @@ export const Textarea = ({
   shrink,
   self,
   align,
+  white,
   maxlength,
   showLength = true,
   _designKey,
@@ -29,6 +30,7 @@ export const Textarea = ({
     style={style}
     className={classNames(
       'Textarea',
+      white && 'Textarea--white',
       grow && 'flex-grow',
       shrink && 'flex-shrink',
       self && 'self-' + self,

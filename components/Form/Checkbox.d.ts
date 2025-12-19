@@ -2,6 +2,25 @@ import { ReactNode, FC } from 'react'
 import { RowProps } from '../Flex'
 import { SpaceProps } from '../Space'
 
+interface type {
+  /** 主色 */
+  primary
+  /** 辅色 */
+  secondary
+  /** 成功 */
+  success
+  /** 错误 */
+  danger
+  /** 警告 */
+  warning
+  /** 自定义1 */
+  custom1
+  /** 自定义2 */
+  custom2
+  /** 自定义3 */
+  custom3
+}
+
 interface CheckboxGroupProps extends RowProps {
   /**
    * 当前选中的值
@@ -31,6 +50,11 @@ interface CheckboxGroupProps extends RowProps {
    * 禁用选择
    */
   disabled?: boolean
+  /**
+   * 主题色
+   * @default primary
+   */
+  type?: keyof type
 }
 
 interface CheckboxProps extends SpaceProps {
@@ -59,6 +83,11 @@ interface CheckboxProps extends SpaceProps {
    * 禁用这个选项
    */
   disabled?: boolean
+  /**
+   * 主题色
+   * @default primary
+   */
+  type?: keyof type
 }
 
 export const Checkbox: FC<CheckboxProps>

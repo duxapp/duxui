@@ -1,6 +1,25 @@
 import { ReactElement, FC } from 'react'
 import { SpaceProps } from '../Space'
 
+interface type {
+  /** 主色 */
+  primary
+  /** 辅色 */
+  secondary
+  /** 成功 */
+  success
+  /** 错误 */
+  danger
+  /** 警告 */
+  warning
+  /** 自定义1 */
+  custom1
+  /** 自定义2 */
+  custom2
+  /** 自定义3 */
+  custom3
+}
+
 interface RadioGroupProps extends SpaceProps {
   /**
    * 当前选中的值
@@ -30,6 +49,11 @@ interface RadioGroupProps extends SpaceProps {
    * 禁用选择
    */
   disabled?: boolean
+  /**
+   * 主题色
+   * @default primary
+   */
+  type?: keyof type
 }
 
 interface RadioProps extends SpaceProps {
@@ -49,6 +73,11 @@ interface RadioProps extends SpaceProps {
    * 是否禁用这个选项
    */
   disabled?: boolean
+  /**
+   * 主题色
+   * @default primary
+   */
+  type?: keyof type
 }
 
 export const Radio: FC<RadioProps>

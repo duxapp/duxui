@@ -19,6 +19,7 @@ export const WeappList = ({
   page,
   action,
   refresh,
+  onRefresh,
   virtualWaterfallProps,
   virtualListProps,
   props
@@ -55,10 +56,12 @@ export const WeappList = ({
       // 下拉刷新了上拉加载
       lowerThreshold={200}
       onScrollToLower={page && action.next || noop}
-      refresherEnabled={refresh !== undefined}
+      refresherEnabled={!!onRefresh}
       refresherThreshold={50}
       onRefresherrefresh={() => {
-        !refresh && action.reload()
+        if (!refresh) {
+          onRefresh?.()
+        }
       }}
       refresherTriggered={!!refresh}
       refresherBackground='transparent'
