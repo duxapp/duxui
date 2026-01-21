@@ -1,16 +1,16 @@
 import { useMemo } from 'react'
-import { htmlReplace } from '../utils/html'
+import { htmlParse } from '../utils/html'
 import { LineEditorView } from './LineEditorView'
 import { RichText } from './RichText'
 
-export const HtmlView = ({
-  html,
-  style,
-  className,
-  previewImage,
-  imageSpace,
-  onLinkClick
-}) => {
+export const HtmlView = props => {
+  const {
+    html,
+    style,
+    className,
+    previewImage,
+    imageSpace
+  } = props
 
   const _html = useMemo(() => {
     try {
@@ -18,10 +18,10 @@ export const HtmlView = ({
       if (_value.blocks && _value.time && _value.version) {
         return _value
       } else {
-        return html
+        return typeof _value === 'string' ? htmlParse(_value) : htmlParse(html)
       }
     } catch (error) {
-      return html
+      return htmlParse(html)
     }
   }, [html])
 
@@ -33,5 +33,5 @@ export const HtmlView = ({
     return <LineEditorView blocks={_html.blocks} style={style} className={className || ''} previewImage={previewImage} imageSpace={imageSpace} />
   }
 
-  return <RichText className={className || ''} style={style} nodes={htmlReplace(html)} />
+  return <RichText className={className || ''} style={style} nodes={_html} />
 }

@@ -149,4 +149,12 @@ export class Calendar extends Component<CalendarProps> {
     /** 日期 如 2020-01-01 */
     day: string
   ) => string[]
+
+  /**
+   * 检查两个日期范围是否有重叠
+   */
+  static checkDatesOverlap: (
+    range1: [string, string],
+    range2: [string, string]
+  ) => boolean
 }

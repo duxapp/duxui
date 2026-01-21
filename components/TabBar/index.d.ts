@@ -3,7 +3,16 @@ import { ReactElement, Component } from 'react'
 
 interface TabBarProps extends ViewProps {
   /** 切换时的回调 */
-  onChange: (select: number) => void
+  onChange?: (select: number) => void
+  /**
+   * 悬浮模式（默认 false）
+   * 如果开启，建议手动给TabBar设置一个宽度
+   */
+  floating?: boolean
+  /** 显示位置（默认 bottom，可选 left） */
+  position?: 'bottom' | 'left'
+  /** 默认展示的页面 index（默认 0） */
+  defaultIndex?: number
 }
 
 interface TabBarItemProps {
@@ -33,6 +42,10 @@ const TabBar: React.FC<TabBarProps> & {
   ItemIcon: React.FC<TabBarItemIconProps>
   /** 切换到index页面 */
   switch: (index: number) => void
+  /** 设置显示/隐藏 TabBar */
+  setVisible: (visible: boolean) => void
+  /** 当前显示状态 */
+  readonly visible: boolean
   /**
    * 设置某某个项目的红点数
    * 当设置的值大于0将显示设置的数值，

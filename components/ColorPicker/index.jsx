@@ -21,7 +21,7 @@ export const ColorPicker = ({ value: propsValue, onChange, size = 200, preview, 
   const [hue, setHue] = useState(defaultData.hue)        // 0-360
   const [saturation, setSaturation] = useState(defaultData.saturation)  // 0-1
   const [value, setValue] = useState(defaultData.value)    // 0-1
-  const [alpha, setAlpha] = useState(defaultData.alpha)    // 0-1
+  const [alpha] = useState(defaultData.alpha)    // 0-1
 
   const refs = useRef({}).current
   refs.hue = hue

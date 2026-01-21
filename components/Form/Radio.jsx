@@ -14,7 +14,11 @@ export const Radio = ({ value, label, disabled, checked, onClick, children: Chil
 
   const themeType = radioType || groupType || 'primary'
 
-  const _checked = typeof checked === 'boolean' ? checked : currentValue === value
+  const _checked = typeof checked === 'boolean'
+    ? checked
+    : currentValue instanceof Array
+      ? currentValue.includes(value)
+      : currentValue === value
 
   if (Child) {
     return <Child
@@ -54,6 +58,7 @@ export const RadioGroup = ({
   onChange,
   defaultValue,
   disabled,
+  multiple,
   direction = 'horizontal',
   vertical,
   cancel,
@@ -72,12 +77,24 @@ export const RadioGroup = ({
     if (disabled) {
       return
     }
+    if (multiple) {
+      const next = val instanceof Array ? [...val] : []
+      const index = next.indexOf(_val)
+      if (index === -1) {
+        next.push(_val)
+      } else {
+        next.splice(index, 1)
+      }
+      setVal(next)
+      return
+    }
+
     if (val === _val && cancel) {
       setVal()
     } else if (val !== _val) {
       setVal(_val)
     }
-  }, [val, cancel, disabled, setVal])
+  }, [cancel, disabled, multiple, setVal, val])
 
   return <context.Provider value={{ check, currentValue: val, type }}>
     {

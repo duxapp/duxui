@@ -1,12 +1,10 @@
 import { RichText } from '@tarojs/components'
-import { htmlReplace } from '../utils/html'
+import { htmlParse } from '../utils/html'
 
 export const HtmlView = ({
   html,
   style,
-  className,
-  previewImage,
-  onLinkClick
+  className
 }) => {
-  return <RichText className={className} style={style} nodes={htmlReplace(html)} />
+  return <RichText className={className} style={style} nodes={htmlParse(html)} />
 }

@@ -1,5 +1,6 @@
 import { useImperativeHandle, forwardRef, useMemo, useRef, useState } from 'react'
 import { View } from '@tarojs/components'
+import { duxuiLang } from '@/duxui/utils'
 import { Svg, Path, PanResponder, SvgToImage } from '../Svg'
 import { formConfig } from '../Form/config'
 
@@ -89,7 +90,7 @@ export const Sign = forwardRef(({ color = '#333', size = 3, style, className, on
       // 保存画板内容
       async save(getTempFilePath) {
         if (data.current.touchCount < 30) {
-          throw '笔画太少了'
+          throw duxuiLang.t('sign.tooFewStrokes')
         }
 
         const { tempFilePath } = await svgToImage.current.capture()

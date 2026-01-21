@@ -1,6 +1,7 @@
 import { useCallback, useState, createContext, useContext, useRef, forwardRef, useImperativeHandle, useMemo, useEffect } from 'react'
 import { Layout, Absolute, duxappTheme, Animated, nextTick, pxNum, asyncTimeOut, transformStyle, px, getWindowInfo } from '@/duxapp'
 import classNames from 'classnames'
+import { duxuiLang } from '@/duxui/utils'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -51,7 +52,7 @@ export const Menu = ({
   const callback = useRef([])
   const option = useRef(null)
   const itemClick = useCallback(async _option => {
-    callback.current[1]?.('点击了其他菜单')
+    callback.current[1]?.(duxuiLang.t('menu.clickedOther'))
     if (_option.close) {
       await pullContent.current.close()
       setShow(-1)
@@ -70,7 +71,7 @@ export const Menu = ({
       await pullContent.current.close()
       setShow(-1)
       option.current = null
-      return Promise.reject('关闭菜单')
+      return Promise.reject(duxuiLang.t('menu.closeMenu'))
     }
     return new Promise((resolve, reject) => {
       callback.current = [resolve, reject]
@@ -95,7 +96,7 @@ export const Menu = ({
   }, [])
 
   const close = useCallback(() => {
-    callback.current[1]('关闭了菜单')
+    callback.current[1](duxuiLang.t('menu.closedMenu'))
     callback.current = []
     option.current = null
     setShow(-1)

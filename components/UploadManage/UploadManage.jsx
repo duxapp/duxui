@@ -3,6 +3,7 @@ import { useMemo, useRef, useState, useCallback, useReducer } from 'react'
 import { chooseMessageFile } from '@tarojs/taro'
 import { getWindowInfo, stopPropagation, toast } from '@/duxapp/utils'
 import { ScrollView, PullView, TopView, chooseMedia } from '@/duxapp'
+import { duxuiLang } from '@/duxui/utils'
 import { UploadManage } from './utils'
 import './UploadManage.scss'
 import { showContextMenu } from '../ContextMenu'
@@ -67,6 +68,7 @@ export const choiceUploadManage = (type, max, option) => {
 export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }) => {
 
   const pull = useRef()
+  const t = duxuiLang.useT()
 
   const uploadManage = UploadManage.getInstance()
 
@@ -78,7 +80,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
     const _list = []
     if (types.image) {
       _list.push({
-        name: '图片',
+        name: t('uploadManage.type.image'),
         callback: () => {
           chooseMedia('image', {
             count: 9,
@@ -96,7 +98,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
     }
     if (types.video) {
       _list.push({
-        name: '视频',
+        name: t('uploadManage.type.video'),
         callback: () => {
           chooseMedia('video', {
             sourceType: ['album', 'camera'],
@@ -122,7 +124,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
     if (process.env.TARO_ENV === 'weapp') {
       if (types.image && types.video && types.file) {
         _list.push({
-          name: '从聊天中选择',
+          name: t('uploadManage.fromChatSelect'),
           callback: () => {
             chooseMessageFile({
               count: 10,
@@ -139,7 +141,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
       } else {
         if (types.image) {
           _list.push({
-            name: '聊天中的图片',
+            name: t('uploadManage.chat.image'),
             callback: () => {
               chooseMessageFile({
                 count: 10,
@@ -156,7 +158,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
         }
         if (types.video) {
           _list.push({
-            name: '聊天中的视频',
+            name: t('uploadManage.chat.video'),
             callback: () => {
               chooseMessageFile({
                 count: 10,
@@ -173,7 +175,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
         }
         if (types.file) {
           _list.push({
-            name: '聊天中的文件',
+            name: t('uploadManage.chat.file'),
             callback: () => {
               chooseMessageFile({
                 count: 10,
@@ -192,8 +194,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
       }
     }
     return _list
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [option, t, types.extension, types.file, types.image, types.video, uploadManage])
 
   const select = useCallback(async item => {
     if (max > 1) {
@@ -201,28 +202,28 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
         const index = old.indexOf(item)
         if (~index) {
           old.splice(index, 1)
-        } else {
-          if (old.length >= max) {
-            toast('最多选择' + max + '项')
-            return old
+          } else {
+            if (old.length >= max) {
+              toast(t('listSelect.maxSelect', { params: { max } }))
+              return old
+            }
+            old.push(item)
           }
-          old.push(item)
-        }
         return [...old]
       })
     } else {
       await pull.current.close(false)
       onSubmit([item])
     }
-  }, [max, onSubmit])
+  }, [max, onSubmit, t])
 
   const submit = useCallback(async () => {
     if (!selects.length) {
-      return toast('请至少选择一项')
+      return toast(t('uploadManage.leastOne'))
     }
     await pull.current.close(false)
     onSubmit(selects)
-  }, [onSubmit, selects])
+  }, [onSubmit, selects, t])
 
   const upload = <Row className='border-w1 border-primary r-1 pv-1 ph-2 gap-1'
     onClick={async e => {
@@ -237,7 +238,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
     }}
   >
     <DuxuiIcon name='shangchuan' className='text-s4 text-primary' />
-    <Text className='text-s3 text-primary'>上传</Text>
+    <Text className='text-s3 text-primary'>{t('common.upload')}</Text>
   </Row>
 
   return <PullView ref={pull} onClose={onClose}>
@@ -248,7 +249,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
         {upload}
         {max > 1 && <Row className='border-w1 border-primary r-1 pv-1 ph-2 gap-1' onClick={submit}>
           <DuxuiIcon name='shangchuan' className='text-s4 text-primary' />
-          <Text className='text-s3 text-primary'>上传</Text>
+          <Text className='text-s3 text-primary'>{t('common.upload')}</Text>
         </Row>}
       </View>
       <ScrollView>
@@ -256,7 +257,7 @@ export const UploadManageView = ({ max, type, types, option, onClose, onSubmit }
         {
           list.map((item, index) => <Item key={item.url} index={index} select={max > 1} isSelect={selects.includes(item)} onSelect={select} item={item} />)
         }
-        {!list.length && <Empty title='暂无资源 点击上传开始' renderFooter={upload} />}
+        {!list.length && <Empty title={t('empty.noResourceStartUpload')} renderFooter={upload} />}
       </ScrollView>
     </View>
   </PullView>
@@ -274,6 +275,8 @@ const UploadList = () => {
 const Item = ({ item, index, uploading, isSelect, select, onSelect }) => {
 
   const [, forceUpdate] = useReducer(x => x + 1, 0)
+
+  const t = duxuiLang.useT()
 
   const click = useCallback(() => {
     onSelect?.(item)
@@ -294,9 +297,9 @@ const Item = ({ item, index, uploading, isSelect, select, onSelect }) => {
               stopPropagation(e)
               const res = getFileInfo(item.name)
               const val = await confirmForm({
-                title: '修改名称',
+                title: t('uploadManage.renameTitle'),
                 defaultValue: res.name,
-                form: <Input placeholder='文件名' align='center' focus />
+                form: <Input placeholder={t('uploadManage.filenamePlaceholder')} align='center' focus />
               })
               if (!val) {
                 return
@@ -315,7 +318,7 @@ const Item = ({ item, index, uploading, isSelect, select, onSelect }) => {
             onClick={async e => {
               stopPropagation(e)
               if (!await confirm({
-                content: '是否删除这个资源？'
+                content: t('uploadManage.deleteConfirm')
               })) {
                 return
               }

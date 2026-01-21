@@ -104,12 +104,12 @@ export const HTMLParser = (function () {
         }
 
       } else {
-        html = html.replace(new RegExp("(.*)<\/" + stack.last() + "[^>]*>"), function (all, text) {
-          text = text.replace(/<!--(.*?)-->/g, "$1")
+        html = html.replace(new RegExp("(.*)<\/" + stack.last() + "[^>]*>"), function (all, _text) {
+          _text = _text.replace(/<!--(.*?)-->/g, "$1")
             .replace(/<!\[CDATA\[(.*?)]]>/g, "$1");
 
           if (handler.chars)
-            handler.chars(text);
+            handler.chars(_text);
 
           return "";
         });
@@ -146,7 +146,7 @@ export const HTMLParser = (function () {
       if (handler.start) {
         var attrs = [];
 
-        rest.replace(attr, function (match, name) {
+        rest.replace(attr, function (_match, name) {
           var value = arguments[2] ? arguments[2] :
             arguments[3] ? arguments[3] :
               arguments[4] ? arguments[4] :

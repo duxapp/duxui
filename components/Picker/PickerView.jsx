@@ -2,7 +2,6 @@ import { useCallback, useMemo, useRef } from 'react'
 import classNames from 'classnames'
 import { PickerView as TaroPickerView, PickerViewColumn } from './view'
 import './common.scss'
-import { Text } from '../Text'
 
 export const PickerView = ({
   value = [],
@@ -61,7 +60,6 @@ export const PickerView = ({
 }
 
 export const PickerViewColumnItem = ({
-  value,
   children
 }) => {
   return children

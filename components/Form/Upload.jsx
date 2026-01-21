@@ -3,6 +3,8 @@ import { useCallback, useState } from 'react'
 import { Loading, previewMedia, requestPermissionMessage } from '@/duxapp/components'
 import classNames from 'classnames'
 import { toast } from '@/duxapp'
+import { duxappLang } from '@/duxapp/utils'
+import { duxuiLang } from '@/duxui/utils'
 import { formConfig } from './config'
 import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
@@ -14,7 +16,7 @@ import './Upload.scss'
 export const UploadImages = ({
   value = [],
   column = 4,
-  addText = '上传',
+  addText,
   onChange,
   type = 'image',
   max = 9,
@@ -27,6 +29,9 @@ export const UploadImages = ({
   if (!value) {
     value = []
   }
+
+  const t = duxuiLang.useT()
+  const addTextValue = addText ?? t('upload.add')
 
   const del = useCallback((index) => {
     value.splice(index, 1)
@@ -50,7 +55,7 @@ export const UploadImages = ({
       onChange([...value || [], ...urls])
     } catch (error) {
       console.log(error)
-      if (error !== '取消选择') {
+      if (error !== duxappLang.t('common.cancelSelect')) {
         toast(error?.message || error)
       }
       setProgress(-1)
@@ -92,8 +97,8 @@ export const UploadImages = ({
             <Text color={2} size={2}>{(progress * 100).toFixed(1)}%</Text>
           </> :
           <>
-            <DuxuiIcon name='add-select' className='text-c2' size={addText ? 48 : 64} />
-            {!!addText && <Text color={2} size={2}>{addText}</Text>}
+            <DuxuiIcon name='add-select' className='text-c2' size={addTextValue ? 48 : 64} />
+            {!!addTextValue && <Text color={2} size={2}>{addTextValue}</Text>}
           </>
       }
     </Column>

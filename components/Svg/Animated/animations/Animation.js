@@ -18,13 +18,7 @@ export class Animation {
   __onEnd
   __iterations
 
-  start(
-    fromValue,
-    onUpdate,
-    onEnd,
-    previousAnimation,
-    animatedValue,
-  ) {}
+  start() {}
 
   stop() {
 

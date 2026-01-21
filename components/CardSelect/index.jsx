@@ -6,8 +6,8 @@ import { duxuiTheme } from '@/duxui/utils'
 import './index.scss'
 
 const context = /*@__PURE__*/ createContext({
-  isCheck: value => false,
-  check: value => void 0
+  isCheck: () => false,
+  check: () => void 0
 })
 
 export const CardSelectGroup = ({

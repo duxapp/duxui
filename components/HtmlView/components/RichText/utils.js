@@ -194,7 +194,6 @@ const getScript = ({
   files,
   customStyle,
   customScript,
-  style,
   viewportContent,
   scalesPageToFit,
   scrollEnabledWithZoomedin,

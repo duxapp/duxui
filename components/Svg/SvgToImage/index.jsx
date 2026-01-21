@@ -1,4 +1,5 @@
 import { cloneElement, forwardRef, isValidElement, useImperativeHandle, useRef } from 'react'
+import { duxuiLang } from '@/duxui/utils'
 
 export const SvgToImage = forwardRef(({ children, option = {} }, ref) => {
 
@@ -23,5 +24,5 @@ export const SvgToImage = forwardRef(({ children, option = {} }, ref) => {
     })
   }
 
-  throw new Error('SvgToImage 的子元素只能是 Svg')
+  throw new Error(duxuiLang.t('svg.svgToImageOnlySvg'))
 })

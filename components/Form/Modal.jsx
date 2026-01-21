@@ -1,6 +1,7 @@
 import { deepCopy, noop, PullView } from '@/duxapp'
 import { cloneElement, useMemo, isValidElement, useCallback, createContext, useContext, useState, useRef, useEffect } from 'react'
 import classNames from 'classnames'
+import { duxuiLang, pure } from '@/duxui/utils'
 import { Button } from '../Button'
 import { Row, Column } from '../Flex'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -10,12 +11,12 @@ import { Space } from '../Space'
 import { useFormContext, formContext, useFormItemProxy } from './Form'
 import './Modal.scss'
 
-const context = createContext({
+const context = /*@__PURE__*/ createContext({
   reset: noop,
   submit: noop
 })
 
-export const ModalForm = ({
+const ModalFormComponent = ({
   value,
   onChange,
   defaultValue,
@@ -26,8 +27,8 @@ export const ModalForm = ({
   renderForm: RenderForm,
   renderHeader,
   renderFooter,
-  title,
-  placeholder = '请选择',
+  title = duxuiLang.t('common.pleaseSelect'),
+  placeholder,
   showButton = true,
   onSubmitBefore,
   autoSubmit,
@@ -36,6 +37,9 @@ export const ModalForm = ({
   field,
   ...props
 }) => {
+
+  const t = duxuiLang.useT()
+  const placeholderText = placeholder ?? t('common.pleaseSelect')
 
   const [val, setVal] = useFormItemProxy({ value, onChange, defaultValue })
 
@@ -117,7 +121,7 @@ export const ModalForm = ({
       {
         typeof val !== 'undefined' ?
           <Text>{renderText}</Text> :
-          <Text color={3}>{placeholder}</Text>
+          <Text color={3}>{placeholderText}</Text>
       }
       <Text color={3} size={5}><DuxuiIcon name='direction_right' /></Text>
     </Row>
@@ -158,8 +162,8 @@ export const ModalForm = ({
             showButton && !autoSubmit && <>
               <Divider padding={0} />
               <Space row className='ModalForm__btns'>
-                <Reset type='primary' size='l' plain className='flex-grow' mode={resetMode}>重置</Reset>
-                <Submit type='primary' size='l' className='flex-grow'>提交</Submit>
+                <Reset type='primary' size='l' plain className='flex-grow' mode={resetMode}>{t('common.reset')}</Reset>
+                <Submit type='primary' size='l' className='flex-grow'>{t('common.submit')}</Submit>
               </Space>
             </>
           }
@@ -199,10 +203,7 @@ const Reset = ({ children, mode, ...props }) => {
   </Button>
 }
 
-ModalForm.Reset = Reset
-ModalForm.Submit = Submit
-
-export const ModalForms = ({
+const ModalFormsComponent = ({
   title,
   children,
   renderForm,
@@ -337,5 +338,14 @@ export const ModalForms = ({
   </>
 }
 
-ModalForms.Reset = Reset
-ModalForms.Submit = Submit
+export const ModalForm = /*@__PURE__*/ pure(() => {
+  ModalFormComponent.Reset = Reset
+  ModalFormComponent.Submit = Submit
+  return ModalFormComponent
+})
+
+export const ModalForms = /*@__PURE__*/ pure(() => {
+  ModalFormsComponent.Reset = Reset
+  ModalFormsComponent.Submit = Submit
+  return ModalFormsComponent
+})

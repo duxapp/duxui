@@ -2,6 +2,7 @@ import { View, Image, Video } from '@tarojs/components'
 import { useCallback } from 'react'
 import { previewMedia } from '@/duxapp/components'
 import classNames from 'classnames'
+import { duxuiLang } from '@/duxui/utils'
 import { DuxuiIcon } from '../DuxuiIcon'
 import { Text } from '../Text'
 import { Grid } from '../Grid'
@@ -15,7 +16,7 @@ import '../Form/Upload.scss'
 const Uploads = ({
   value = [],
   column = 4,
-  addText = '选择',
+  addText,
   onChange,
   type = 'image/*',
   max = 9,
@@ -28,6 +29,9 @@ const Uploads = ({
   if (!value) {
     value = []
   }
+
+  const t = duxuiLang.useT()
+  const addTextValue = addText ?? t('common.select')
 
   const del = useCallback((index) => {
     value.splice(index, 1)
@@ -70,8 +74,8 @@ const Uploads = ({
       {...isOne ? props : {}}
       className={itemClass}
     >
-      <DuxuiIcon name='add-select' className='text-c2' size={addText ? 48 : 64} />
-      {!!addText && <Text color={2} size={2}>{addText}</Text>}
+      <DuxuiIcon name='add-select' className='text-c2' size={addTextValue ? 48 : 64} />
+      {!!addTextValue && <Text color={2} size={2}>{addTextValue}</Text>}
     </Column>
   ]
 

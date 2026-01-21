@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { duxuiLang } from '@/duxui/utils'
 import { DatePicker, SelectorPicker, MultiSelectorPicker } from '../Picker'
 import { ModalForm } from './Modal'
 import { Column } from '../Flex'
@@ -34,9 +35,10 @@ export const PickerSelect = ({
   >{children}</ModalForm>
 }
 
-const SelectRenderForm = props => {
+const SelectRenderForm = /*@__PURE__*/ Object.assign(props => {
 
   const [keyword, setKeyword] = useState('')
+  const t = duxuiLang.useT()
 
   const rangeList = useMemo(() => {
     if (!keyword) {
@@ -48,17 +50,15 @@ const SelectRenderForm = props => {
 
   return <Column className='gap-3'>
     <Column className='bg-page r-2 p-2 mh-3 items-start'>
-      <InputSearch value={keyword} placeholder='输入关键词搜索' onChange={setKeyword} className='w-full' />
+      <InputSearch value={keyword} placeholder={t('picker.searchPlaceholder')} onChange={setKeyword} className='w-full' />
     </Column>
     {
       !rangeList?.length ?
-        <Empty title='没有可选数据' /> :
+        <Empty title={t('empty.noOptions')} /> :
         <SelectorPicker {...props} range={rangeList} />
     }
   </Column>
-}
-
-SelectRenderForm.getShowText = SelectorPicker.getShowText
+}, { getShowText: SelectorPicker.getShowText })
 
 export const PickerMultiSelect = ({
   placeholder, grow, value = [], onChange, defaultValue,

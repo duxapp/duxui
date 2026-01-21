@@ -1,4 +1,5 @@
 import { toast } from '@/duxapp'
+import { duxuiLang } from '@/duxui/utils'
 import { Rect, SvgComponent } from '../Svg'
 import { Column } from '../Flex'
 import { Input } from '../Form'
@@ -37,17 +38,17 @@ export const TextInput = ({ onSubmit, ...props }) => {
 const inputText = async () => {
   let text = ''
   if (await confirm({
-    title: '文本输入',
+    title: duxuiLang.t('svg.editor.textInputTitle'),
     content: <Column className='p-3'>
-      <Input placeholder='请输入文本' align='center' className='text-s7' focus onChange={e => text = e} />
+      <Input placeholder={duxuiLang.t('svg.editor.textPlaceholder')} align='center' className='text-s7' focus onChange={e => text = e} />
     </Column>
   })) {
     if (!text) {
-      toast('请输入内容')
-      throw new Error('未输入')
+      toast(duxuiLang.t('svg.editor.pleaseInputContent'))
+      throw new Error(duxuiLang.t('svg.editor.notInput'))
     }
     return text
   } else {
-    throw new Error('取消输入')
+    throw new Error(duxuiLang.t('svg.editor.cancelInput'))
   }
 }

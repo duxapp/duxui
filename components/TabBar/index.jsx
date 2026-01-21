@@ -1,17 +1,10 @@
 import { View, Text, Image } from '@tarojs/components'
-import { useDidShow, useDidHide, getCurrentPages } from '@tarojs/taro'
-import React, { useState, useCallback, createContext, useContext, useEffect, useRef } from 'react'
-import { QuickEvent, currentPage, route } from '@/duxapp'
+import { getCurrentPages } from '@tarojs/taro'
+import React, { useState, useCallback, createContext, useContext, useEffect, useMemo, useRef } from 'react'
+import { Animated, QuickEvent, currentPage, getBottomSafeAreaHeight, pxNum, route, transformStyle, useDeepObject, usePageShow } from '@/duxapp'
 import classNames from 'classnames'
 import { Badge } from '../Badge'
 import './index.scss'
-
-const usePageShow = () => {
-  const [show, setShow] = useState(true)
-  useDidShow(() => setShow(true))
-  useDidHide(() => setShow(false))
-  return show
-}
 
 const screenContext = /*@__PURE__*/ createContext({
   hover: false,
@@ -64,7 +57,13 @@ const TabbarButton = ({
   icon: Icon
 }) => {
 
-  return <View className={classNames('TabBar-menu__item', Icon ? 'pv-2' : 'pv-3')} onClick={() => onClick({ index })}>
+  return <View
+    className={classNames(
+      'TabBar-menu__item',
+      Icon ? 'pv-2' : 'pv-3'
+    )}
+    onClick={() => onClick({ index })}
+  >
     <Badge count={number > 0 ? number : 0} dot={number < 0}>
       {
         !Icon ? null : React.isValidElement(Icon)
@@ -82,12 +81,128 @@ const TabbarButton = ({
   </View>
 }
 
-const Item = ({
-  name,
-  component,
-  icon,
-  itemKey
+const TabBarMenus = ({
+  style,
+  className,
+  floating,
+  position,
+  childs,
+  select,
+  itemClick,
+  actionEvent
 }) => {
+
+  const bottomSafeAreaHeight = position === 'left' ? 0 : getBottomSafeAreaHeight()
+
+  // 红点数量
+  const [numbers, setNumbers] = useState({})
+  const [visible, setVisible] = useState(true)
+
+  useEffect(() => {
+    const { remove } = actionEvent.on((key, ...value) => {
+      if (key === 'setNumber') {
+        setNumbers(old => ({ ...old, [value[0]]: value[1] }))
+      } else if (key === 'setVisible') {
+        setVisible(!!value[0])
+      }
+    })
+    return () => remove()
+  }, [actionEvent])
+
+  const firstRenderRef = useRef(true)
+
+  const hiddenTransform = useMemo(() => {
+    return transformStyle(position === 'left'
+      ? { translateX: -240 }
+      : { translateY: 240 })
+  }, [position])
+
+  const [menuAn, setMenuAn] = useState(Animated.defaultState)
+
+  useEffect(() => {
+    const duration = firstRenderRef.current ? 0 : 300
+    firstRenderRef.current = false
+
+    const an = Animated.create({
+      duration,
+      timingFunction: 'ease-in-out'
+    })
+
+    if (position === 'left') {
+      an.translateX(visible ? 0 : -240)
+    } else {
+      an.translateY(visible ? 0 : 240)
+    }
+
+    setMenuAn(an.opacity(visible ? 1 : 0).step().export())
+  }, [position, visible])
+
+  const safeAreaPaddingBottom = !floating && position !== 'left' ? bottomSafeAreaHeight : 0
+
+  const baseStyle = (style && typeof style === 'object' && !Array.isArray(style)) ? style : {}
+  const menuStyle = !visible
+    ? {
+      ...baseStyle,
+      ...(safeAreaPaddingBottom > 0 ? { paddingBottom: safeAreaPaddingBottom } : {}),
+      opacity: 0,
+      transform: hiddenTransform
+    }
+    : {
+      ...baseStyle,
+      ...(safeAreaPaddingBottom > 0 ? { paddingBottom: safeAreaPaddingBottom } : {}),
+    }
+
+  const menus = (
+    <Animated.View
+      key='tabbar-menus'
+      style={menuStyle}
+      animation={menuAn}
+      className={classNames(
+        'TabBar-menu',
+        position === 'left' && 'TabBar-menu--left',
+        floating && 'TabBar-menu--floating shadow',
+        floating && position === 'left' && 'TabBar-menu--floating-left',
+        className
+      )}
+    >
+      {
+        childs.map((item, index) => <TabbarButton
+          icon={item.icon}
+          number={numbers[index]}
+          name={item.name}
+          key={index}
+          select={select}
+          hover={index === select}
+          length={childs.length}
+          index={index}
+          onClick={itemClick}
+          floating={floating}
+        />)
+      }
+    </Animated.View>
+  )
+
+  return floating ? (
+    <View
+      className={classNames(
+        'TabBar-menu__wrap',
+        position === 'left' ? 'TabBar-menu__wrap--floating-left' : 'TabBar-menu__wrap--floating'
+      )}
+      style={{
+        transform: transformStyle(position === 'left'
+          ? { translateY: '-50%' }
+          : { translateX: '-50%' }),
+        ...(position === 'left' ? {} : { bottom: pxNum(16) + bottomSafeAreaHeight })
+      }}
+    >
+      {menus}
+    </View>
+  ) : (
+    menus
+  )
+}
+
+const Item = () => {
   return null
 }
 
@@ -113,34 +228,49 @@ const TabBar = ({
   children,
   beforeEvent,
   afterEvent,
-  actionEvent
+  actionEvent,
+  floating = false,
+  position = 'bottom',
+  defaultIndex = 0
 }) => {
 
   const { path } = route.useRoute()
 
-  // 红点数量
-  const [numbers, setNumbers] = useState({})
-
-  const childs = React.Children.map(children, ({ props }, index) => {
-    return {
-      child: {
-        Comp: props.component,
+  const childs = useDeepObject(
+    React.Children.toArray(children)
+      .filter(React.isValidElement)
+      .map(({ props }, index) => ({
+        child: {
+          Comp: props.component,
+          index,
+          itemKey: props.itemKey
+        },
+        key: props.itemKey,
         index,
-        itemKey: props.itemKey
-      },
-      key: props.itemKey,
-      index,
-      name: props.name,
-      icon: props.icon
-    }
-  })
+        name: props.name,
+        icon: props.icon
+      }))
+  )
 
-  const [select, setSelect] = useState(0)
+  const clampIndex = useCallback(index => {
+    const max = Math.max((childs?.length || 1) - 1, 0)
+    const next = Number(index)
+    if (!Number.isFinite(next)) {
+      return 0
+    }
+    return Math.min(Math.max(next, 0), max)
+  }, [childs?.length])
+
+  const [select, setSelect] = useState(() => clampIndex(defaultIndex))
 
   useEffect(() => {
     onChange?.(select)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [select])
+
+  useEffect(() => {
+    setSelect(clampIndex(defaultIndex))
+  }, [clampIndex, defaultIndex])
 
   const itemClick = useCallback(async ({ index }) => {
     for (let i = 0; i < beforeEvent.callbacks.length; i++) {
@@ -168,9 +298,6 @@ const TabBar = ({
           })
           route.back(pages.length - index - 1)
         }
-      } else if (key === 'setNumber') {
-        // 设置红点数量
-        setNumbers(old => ({ ...old, [value[0]]: value[1] }))
       }
     })
     return () => remove()
@@ -178,33 +305,40 @@ const TabBar = ({
 
   const show = usePageShow()
 
-  return <tabbarContext.Provider value={{ show }}>
-    {
-      childs.map((item, index) => <TabbarScreen
-        key={item.key || index}
-        select={select === index}
-        index={index}
-        child={item.child}
-      />)
-    }
-    <View
-      key='tabbar-menus'
-      style={style}
-      className={classNames('TabBar-menu', className)}
-    >
+  const menusNode = <TabBarMenus
+    style={style}
+    className={className}
+    floating={floating}
+    position={position}
+    childs={childs}
+    select={select}
+    itemClick={itemClick}
+    actionEvent={actionEvent}
+  />
+
+  const pagesNode = (
+    <View className='TabBar-page'>
       {
-        childs.map((item, index) => <TabbarButton
-          icon={item.icon}
-          number={numbers[index]}
-          name={item.name}
-          key={index}
-          select={select}
-          hover={index === select}
-          length={childs.length}
+        childs.map((item, index) => <TabbarScreen
+          key={item.key || index}
+          select={select === index}
           index={index}
-          onClick={itemClick}
+          child={item.child}
         />)
       }
+    </View>
+  )
+
+  return <tabbarContext.Provider value={{ show }}>
+    <View
+      className={classNames(
+        'TabBar',
+        `TabBar--${position}`,
+        floating && 'TabBar--floating'
+      )}
+    >
+      {position === 'left' ? menusNode : pagesNode}
+      {position === 'left' ? pagesNode : menusNode}
     </View>
   </tabbarContext.Provider>
 }
@@ -219,6 +353,7 @@ export const createTabBar = (() => {
     const afterEvent = new QuickEvent()
 
     const actionEvent = new QuickEvent()
+    let visible = true
 
     const _TabBar = ({
       children,
@@ -284,6 +419,11 @@ export const createTabBar = (() => {
       actionEvent.trigger('switch', index)
     }
 
+    _TabBar.setVisible = next => {
+      visible = !!next
+      actionEvent.trigger('setVisible', visible)
+    }
+
     _TabBar.onSwitchBefore = beforeEvent.on
 
     _TabBar.onSwitchAfter = afterEvent.on
@@ -297,6 +437,12 @@ export const createTabBar = (() => {
     _TabBar.useHide = useHide
 
     _TabBar.useShowStatus = useShowStatus
+
+    Object.defineProperty(_TabBar, 'visible', {
+      enumerable: true,
+      configurable: false,
+      get: () => visible
+    })
 
     return _TabBar
   }

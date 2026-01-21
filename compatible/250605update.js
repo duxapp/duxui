@@ -87,8 +87,8 @@ function replaceJsxTags(content, map) {
 }
 
 // 替换函数调用，类似 useNumberKeyboardController() => useNumberKeyboardController()
-function replaceFunctionCalls(content, map) {
-  for (const [oldName, newName] of map) {
+function replaceFunctionCalls(content, _map) {
+  for (const [oldName, newName] of _map) {
     if (!oldName.includes('.')) continue // 组件标签替换不处理这里
     // 匹配函数调用： useNumberKeyboardController(...) 或 useNumberKeyboardController()
     // 注意避免替换 import { useNumberKeyboardController } from ...

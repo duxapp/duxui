@@ -1,12 +1,14 @@
 import { duxappTheme, px } from '@/duxapp'
+import { duxuiLang } from '@/duxui/utils'
 import { Column } from '../../Flex'
 import { Form, FormItem } from '../../Form/Form'
 import { Range, Color, FillRadio } from './Common'
 
 const StrokeFrom = ({ addMenu }) => {
+  const t = duxuiLang.useT()
   return <>
     <FormItem field='strokeWidth'>
-      <Range max={16} name='粗细' />
+      <Range max={16} name={t('svg.editor.strokeWidth')} />
     </FormItem>
     <MenuLine />
     <FormItem field='stroke'>
@@ -22,13 +24,14 @@ const PathMenu = ({ defaultValues, onChange, addMenu }) => {
 }
 
 const TextMenu = ({ defaultValues, onChange, addMenu }) => {
+  const t = duxuiLang.useT()
   return <Form defaultValues={defaultValues} onChange={onChange}>
     <FormItem field='fill'>
       <Color addMenu={addMenu} />
     </FormItem>
     <MenuLine />
     <FormItem field='fontSize'>
-      <Range min={12} max={64} name='字号' />
+      <Range min={12} max={64} name={t('svg.editor.fontSize')} />
     </FormItem>
   </Form>
 }

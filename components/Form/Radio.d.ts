@@ -34,6 +34,11 @@ interface RadioGroupProps extends SpaceProps {
    */
   defaultValue?: any
   /**
+   * 是否多选
+   * 开启后 value/onChange/defaultValue 将变成数组结构
+   */
+  multiple?: boolean
+  /**
    * 是否垂直布局
    */
   vertical?: boolean
@@ -82,4 +87,17 @@ interface RadioProps extends SpaceProps {
 
 export const Radio: FC<RadioProps>
 
-export const RadioGroup: FC<RadioGroupProps>
+export const RadioGroup: FC<
+  | (RadioGroupProps & {
+    multiple?: false
+    value: any
+    onChange?: (value: any) => void
+    defaultValue?: any
+  })
+  | (Omit<RadioGroupProps, 'value' | 'onChange' | 'defaultValue'> & {
+    multiple: true
+    value: any[]
+    onChange?: (value: any[]) => void
+    defaultValue?: any[]
+  })
+>

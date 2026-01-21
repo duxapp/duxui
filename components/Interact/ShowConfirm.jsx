@@ -1,17 +1,18 @@
 import { View } from '@tarojs/components'
 import { useEffect, isValidElement, useRef } from 'react'
 import { PullView, TopView } from '@/duxapp'
+import { duxuiLang } from '@/duxui/utils'
 import { Divider } from '../Divider'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import './ShowConfirm.scss'
 
 const ShowConfirm = ({
-  title = '提示',
+  title,
   content,
   cancel = true,
-  cancelText = '取消',
-  confirmText = '确定',
+  cancelText,
+  confirmText,
   renderTop,
   renderBottom,
   extraMenu,
@@ -19,6 +20,11 @@ const ShowConfirm = ({
   onCancel,
   onClose
 }) => {
+
+  const t = duxuiLang.useT()
+  const titleText = title ?? t('interact.confirm.title')
+  const cancelTextValue = cancelText ?? t('common.cancel')
+  const confirmTextValue = confirmText ?? t('common.ok')
 
   useEffect(() => {
     return () => onClose?.()
@@ -31,7 +37,7 @@ const ShowConfirm = ({
     <PullView ref={pullView} mask side='center' duration={120}>
       {renderTop}
       <View className='DuxuiShowConfirm__main'>
-        {!!title && <Text size={6} bold align='center' className='mh-3'>{title}</Text>}
+        {!!titleText && <Text size={6} bold align='center' className='mh-3'>{titleText}</Text>}
         {content && <>{isValidElement(content) ? content : <Text className='DuxuiShowConfirm__content' color={2} size={3} align='center'>{content}</Text>}</>}
         <Row className='DuxuiShowConfirm__btns'>
           {cancel && <>
@@ -41,7 +47,7 @@ const ShowConfirm = ({
                 onCancel()
               }}
             >
-              <Text size={6} align='center'>{cancelText}</Text>
+              <Text size={6} align='center'>{cancelTextValue}</Text>
             </Column>
             <Divider vertical />
           </>}
@@ -65,7 +71,7 @@ const ShowConfirm = ({
               onConfirm()
             }}
           >
-            <Text type='primary' size={6} align='center'>{confirmText}</Text>
+            <Text type='primary' size={6} align='center'>{confirmTextValue}</Text>
           </Column>
         </Row>
       </View>
@@ -102,7 +108,7 @@ export const confirm = option => {
         },
         onClose: () => {
           setTimeout(() => {
-            reject('confirm:组件被卸载')
+            reject(duxuiLang.t('interact.confirm.unmounted'))
           }, 10)
           action.remove()
         }
@@ -120,8 +126,7 @@ export const confirm = option => {
   }
   promise.close = () => {
     callback[1]()
-    action.remove('confirm:主动关闭')
+    action.remove(duxuiLang.t('interact.confirm.close'))
   }
   return promise
 }
-

@@ -2,6 +2,7 @@ import { useRef, forwardRef, useMemo, useState, useEffect } from 'react'
 import { PullView, pxNum, TopView } from '@/duxapp'
 import { View } from '@tarojs/components'
 import { getImageInfo } from '@tarojs/taro'
+import { duxuiLang } from '@/duxui/utils'
 import { Svg, Image, SvgToImage, G } from '../Svg'
 import { Column, Row } from '../Flex'
 import { Button } from '../Button'
@@ -90,7 +91,7 @@ export const svgImageCropper = ({ cropScale = '1:1', ...props } = {}) => {
         height,
         onClose: () => {
           remove()
-          reject('取消裁剪')
+          reject(duxuiLang.t('cropper.cancelCrop'))
         },
         onSubmit: res => {
           remove()
@@ -106,24 +107,25 @@ const SvgImageCropperContent = ({ onClose, onSubmit, width, height, ...option })
   const save = useRef()
 
   const pull = useRef()
+  const t = duxuiLang.useT()
 
   return <PullView side='center' ref={pull} onClose={onClose}>
     <Column style={{ width }} className='bg-white r-3' >
       <Column className='p-3'>
-        <Text align='center' size={4} bold>裁剪</Text>
+        <Text align='center' size={4} bold>{t('cropper.title')}</Text>
       </Column>
       <Column className='bg-page'>
         <SvgImageCropper width={width} height={height} {...option} ref={save} />
       </Column>
       <Row className='gap-3 p-3'>
-        <Button className='flex-grow' type='primary' plain onClick={() => pull.current.close()}>取消</Button>
+        <Button className='flex-grow' type='primary' plain onClick={() => pull.current.close()}>{t('common.cancel')}</Button>
         <Button className='flex-grow' type='primary'
           onClick={async () => {
             const res = await save.current.capture()
             await pull.current.close(false)
             onSubmit(res)
           }}
-        >确认</Button>
+        >{t('cropper.confirm')}</Button>
       </Row>
     </Column>
   </PullView>

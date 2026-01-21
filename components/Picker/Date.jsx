@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { View } from '@tarojs/components'
 import dayjs from 'dayjs'
-import { pure } from '@/duxui/utils'
+import { pure, duxuiLang } from '@/duxui/utils'
 import { PickerView, PickerViewColumn, PickerViewColumnItem } from './PickerView'
 import './common.scss'
 
@@ -19,16 +19,7 @@ const setMonth = (date, month) => {
 export const DatePicker = /*@__PURE__*/ pure(() => {
   const DatePicker_ = props => {
     const {
-      locale = {
-        year: '年',
-        month: '月',
-        day: '日',
-        hour: '时',
-        minute: '分',
-        second: '秒',
-        am: '上午',
-        pm: '下午',
-      },
+      locale: localeProp,
       mode,
       format = modes[mode] || 'YYYY-MM-DD',
       timestamp,
@@ -46,6 +37,18 @@ export const DatePicker = /*@__PURE__*/ pure(() => {
       className,
       grow,
     } = props
+
+    const t = duxuiLang.useT()
+    const locale = localeProp ?? {
+      year: t('picker.locale.year'),
+      month: t('picker.locale.month'),
+      day: t('picker.locale.day'),
+      hour: t('picker.locale.hour'),
+      minute: t('picker.locale.minute'),
+      second: t('picker.locale.second'),
+      am: t('picker.locale.am'),
+      pm: t('picker.locale.pm'),
+    }
 
     // 解析格式字符串获取需要的字段
     const formatFields = useMemo(() => {

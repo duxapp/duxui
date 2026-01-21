@@ -67,7 +67,7 @@ export class AnimatedValueXY extends AnimatedWithChildren {
 
   addListener(callback) {
     const id = String(_uniqueId++)
-    const jointCallback = ({ value }) => {
+    const jointCallback = () => {
       callback(this.__getValue())
     }
     this._listeners[id] = {

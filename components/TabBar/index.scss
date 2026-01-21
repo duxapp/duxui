@@ -1,4 +1,14 @@
+.TabBar {
+  flex: 1;
+
+  &--left {
+    flex-direction: row;
+  }
+}
+
 .TabBar-page {
+  flex: 1;
+
   &__item {
     display: none;
     flex: 1;
@@ -15,6 +25,38 @@
   background-color: $duxappWhiteColor;
   border-top-width: 1px;
   border-top-color: $duxappLineColor;
+
+  &__wrap--floating {
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    bottom: 24px;
+  }
+
+  &__wrap--floating-left {
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    bottom: auto;
+    left: 24px;
+  }
+
+  &--left {
+    flex-direction: column;
+    border-top-width: 0;
+    border-right-width: 1px;
+    border-right-color: $duxappLineColor;
+  }
+
+  &--floating {
+    border-top-width: 0;
+    border-radius: 750px;
+  }
+
+  &--floating-left {
+    border-radius: 24px;
+  }
+
   &__item {
     flex: 1;
     align-items: center;

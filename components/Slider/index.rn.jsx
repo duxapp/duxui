@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 import {
   Animated,
   Easing,
@@ -74,7 +74,7 @@ export class Slider extends PureComponent {
       trackSize: { width: 0, height: 0 },
       thumbSize: { width: 0, height: 0 },
       allMeasured: false,
-      value: new Animated.Value(this._getInitialValue(props)),
+      value: new Animated.Value(this._getInitialValue(props), { useNativeDriver: false }),
     }
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
@@ -346,39 +346,39 @@ export class Slider extends PureComponent {
       blockColor,
     } = this.props
     const viewProps = { ...this.props }
-    ;[
-      'min',
-      'minimumValue',
-      'max',
-      'maximumValue',
-      'step',
-      'disabled',
-      'value',
-      'defaultValue',
-      'blockSize',
-      'onChange',
-      'onChanging',
-      'animateTransitions',
-      'animationType',
-      'animationConfig',
-      'trackSize',
-      'className',
-      'style',
-      'trackStyle',
-      'thumbStyle',
-      'debugTouchArea',
-      'showValue',
-      'color',
-      'selectedColor',
-      'activeColor',
-      'backgroundColor',
-      'blockColor',
-    ].forEach(key => {
-      if (key in viewProps) {
-        delete viewProps[key]
-      }
-    })
-    const { value, containerSize, trackSize: _measuredTrackSize, thumbSize, allMeasured } = this.state
+      ;[
+        'min',
+        'minimumValue',
+        'max',
+        'maximumValue',
+        'step',
+        'disabled',
+        'value',
+        'defaultValue',
+        'blockSize',
+        'onChange',
+        'onChanging',
+        'animateTransitions',
+        'animationType',
+        'animationConfig',
+        'trackSize',
+        'className',
+        'style',
+        'trackStyle',
+        'thumbStyle',
+        'debugTouchArea',
+        'showValue',
+        'color',
+        'selectedColor',
+        'activeColor',
+        'backgroundColor',
+        'blockColor',
+      ].forEach(key => {
+        if (key in viewProps) {
+          delete viewProps[key]
+        }
+      })
+    const { value, containerSize, thumbSize, allMeasured } = this.state
 
     const minimumValue = this._getMinimumValue()
     const maximumValue = this._getMaximumValue()

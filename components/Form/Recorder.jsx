@@ -1,4 +1,5 @@
 import { Loading, PullView, px, TopView, loading } from '@/duxapp'
+import { duxuiLang } from '@/duxui/utils'
 import { getRecorderManager, createInnerAudioContext } from '@tarojs/taro'
 import classNames from 'classnames'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -34,12 +35,15 @@ const AudioRecorder = ({
   max = 1,
   column = 4,
   option,
-  tip = '录制'
+  tip
 }) => {
 
   if (!value) {
     value = []
   }
+
+  const t = duxuiLang.useT()
+  const tipText = tip ?? t('recorder.tip')
 
   const del = useCallback((index) => {
     value.splice(index, 1)
@@ -62,10 +66,10 @@ const AudioRecorder = ({
       setProgress(-1)
       onChange([...value || [], ...urls])
     } catch (error) {
-      console.log('音频上传失败', error)
+      console.log(t('recorder.uploadFail'), error)
       setProgress(-1)
     }
-  }, [onChange, option, value])
+  }, [onChange, option, t, value])
 
   const isOne = max === 1
 
@@ -97,12 +101,12 @@ const AudioRecorder = ({
             <Text color={2} size={2}>{(progress * 100).toFixed(1)}%</Text>
           </> :
           <>
-            <Column style={{ width: px(tip ? 46 : 64) }} items='center' justify='center' self='center'
+            <Column style={{ width: px(tipText ? 46 : 64) }} items='center' justify='center' self='center'
               className='square r-max border-w1 border-danger'
             >
-              <Column style={{ width: px(tip ? 18 : 28) }} className='square r-1 bg-danger' />
+              <Column style={{ width: px(tipText ? 18 : 28) }} className='square r-1 bg-danger' />
             </Column>
-            {!!tip && <Text color={2} size={2}>{tip}</Text>}
+            {!!tipText && <Text color={2} size={2}>{tipText}</Text>}
           </>
       }
     </Column>
@@ -166,6 +170,8 @@ const AddAudio = ({
   onClose
 }) => {
 
+  const t = duxuiLang.useT()
+
   const pullView = useRef()
 
   const RecorderManager = useRef()
@@ -200,7 +206,7 @@ const AddAudio = ({
         audioRef.current.stop?.()
       }
       setResult({})
-      const stop = loading('加载中', true)
+      const stop = loading(t('common.loading'), true)
       const recorder = RecorderManager.current = getRecorderManager()
       recorder.start({
         duration: 60000,
@@ -226,11 +232,11 @@ const AddAudio = ({
         })
       })
     }
-  }, [status])
+  }, [status, t])
 
   return <PullView ref={pullView} onClose={onClose}>
     <Column className='rt-3 bg-white p-3 gap-3'>
-      <Text align='center' bold>音频录制</Text>
+      <Text align='center' bold>{t('recorder.title')}</Text>
       {
         result.path ?
           <>
@@ -257,7 +263,7 @@ const AddAudio = ({
             {
               play ?
                 <Timer type='primary' /> :
-                <Text align='center' size={1} type='primary'>播放</Text>
+                <Text align='center' size={1} type='primary'>{t('recorder.play')}</Text>
             }
 
           </> :
@@ -271,7 +277,7 @@ const AddAudio = ({
             {
               status ?
                 <Timer /> :
-                <Text align='center' size={1} type='danger'>点击开始录制</Text>
+                <Text align='center' size={1} type='danger'>{t('recorder.clickToStart')}</Text>
             }
           </>
       }
@@ -280,10 +286,10 @@ const AddAudio = ({
           !!result.path && <>
             <Button type='primary' plain className='flex-grow'
               onClick={start}
-            >重录</Button>
+            >{t('recorder.rerecord')}</Button>
             <Button type='primary' className='flex-grow'
               onClick={() => onSubmit(result)}
-            >提交</Button>
+            >{t('recorder.submit')}</Button>
           </>
         }
       </Row>
@@ -337,7 +343,7 @@ export const recorderStart = () => {
         },
         onClose: () => {
           remove()
-          reject('取消')
+          reject(duxuiLang.t('recorder.cancel'))
         }
       }
     ])

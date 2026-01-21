@@ -1,5 +1,10 @@
+import { TextProps } from '../Text'
 
-type list = string[] | { name: string, callback?: () => any, children?: list }[]
+type list = string[] | {
+  name: string,
+  props?: TextProps,
+  callback?: () => any, children?: list
+}[]
 
 /**
  * 显示有个菜单

@@ -2,6 +2,8 @@
   "dependencies": {
     "b-validate": "^1.5.3",
     "qrcode": "~1.5.4",
-    "array-tree-filter": "^3.0.3"
+    "array-tree-filter": "^3.0.3",
+    "katex": "~0.16.27",
+    "mathjax-full": "~3.2.2"
   }
 }

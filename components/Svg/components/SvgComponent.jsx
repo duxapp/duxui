@@ -37,7 +37,7 @@ export const SvgComponent = ({ children, value }) => {
 
   const childRes = []
 
-  const getResult = (list = children, indexs = [], callback) => Children.map(list, (child, index) => {
+  const getResult = (list = children, indexs = []) => Children.map(list, (child, index) => {
     if (!isValidElement(child)) {
       return
     }

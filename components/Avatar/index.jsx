@@ -61,8 +61,6 @@ export const AvatarGroup = ({
   ...props
 }) => {
 
-  const itemSize = duxuiTheme.avatar.sizes[size]
-
   return <View className={classNames('AvatarGroup', 'AvatarGroup--' + size, className)} style={style} {...props}>
     {
       Children.map(children, (child, index) => {
@@ -75,7 +73,7 @@ export const AvatarGroup = ({
               {...maxProps}
               className='AvatarGroup__avatar'
               style={{
-                left: px(index * (itemSize + span))
+                marginLeft: px(span)
               }}
             >{maxProps?.children || '+N'}</Avatar>
           }
@@ -84,7 +82,7 @@ export const AvatarGroup = ({
           size, radiusType, color, bgColor, iconSize,
           className: classNames(child.props.className, 'AvatarGroup__avatar'),
           style: {
-            left: px(index * (itemSize + span))
+            marginLeft: px(span)
           }
         })
       })

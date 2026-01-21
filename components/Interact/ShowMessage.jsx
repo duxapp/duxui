@@ -1,6 +1,7 @@
 import { Text } from '@tarojs/components'
 import { useEffect, useRef, useState } from 'react'
 import { asyncTimeOut, route, Animated, nextTick, pxNum, currentPage, TopView, getWindowInfo } from '@/duxapp'
+import { duxuiLang } from '@/duxui/utils'
 import { BoxShadow } from '../BoxShadow'
 import './ShowMessage.scss'
 
@@ -86,7 +87,7 @@ export const message = (() => {
   return (title, content, url) => {
 
     if (!title) {
-      return console.log('message: 请传入标题')
+      return console.log(duxuiLang.t('interact.message.titleRequired'))
     }
 
     const onClose = () => {

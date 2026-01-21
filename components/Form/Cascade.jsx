@@ -2,6 +2,7 @@ import { View } from '@tarojs/components'
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ScrollView, duxappTheme, recursionGetValue } from '@/duxapp'
 import classNames from 'classnames'
+import { pure } from '@/duxui/utils'
 import { Divider, DividerGroup } from '../Divider'
 import { DuxuiIcon } from '../DuxuiIcon'
 import { Column } from '../Flex'
@@ -25,42 +26,43 @@ const findPosition = (cascadeData, value, valueKey = 'value', childrenKey = 'chi
   return null
 }
 
-export const Cascade = ({
-  data,
-  /**
-   * 当没有一次性返回全部数据时，加载子分类数据的回调函数
-   */
-  getData,
-  value,
-  defaultValue,
-  onChange,
-  // 会把选中项的对象，而不是值传回去
-  onChangeItem,
-  disabled,
-  mode = 'radio',
-  // 是否多选
-  checkbox = mode === 'checkbox',
-  /**
-   * 允许选中任何一级
-   * 如果是多选模式当选到最后一级时才多选
-   * 如果多选时就不会显示选中统计
-   * 如果是多选时就不支持跨分类选择
-   */
-  anyLevel,
-  /**
-   * default 默认样式
-   * fill 填充样式
-   */
-  theme = 'default',
-  // 显示层级
-  level = 1,
-  childrenKey = 'children',
-  nameKey = 'name',
-  valueKey = 'value',
-  className,
-  style,
-  ...props
-}) => {
+export const Cascade = /*@__PURE__*/ pure(() => {
+  const Cascade_ = ({
+    data,
+    /**
+     * 当没有一次性返回全部数据时，加载子分类数据的回调函数
+     */
+    getData,
+    value,
+    defaultValue,
+    onChange,
+    // 会把选中项的对象，而不是值传回去
+    onChangeItem,
+    disabled,
+    mode = 'radio',
+    // 是否多选
+    checkbox = mode === 'checkbox',
+    /**
+     * 允许选中任何一级
+     * 如果是多选模式当选到最后一级时才多选
+     * 如果多选时就不会显示选中统计
+     * 如果是多选时就不支持跨分类选择
+     */
+    anyLevel,
+    /**
+     * default 默认样式
+     * fill 填充样式
+     */
+    theme = 'default',
+    // 显示层级
+    level = 1,
+    childrenKey = 'children',
+    nameKey = 'name',
+    valueKey = 'value',
+    className,
+    style,
+    ...props
+  }) => {
 
   const [val, setVal] = useFormItemProxy({
     onChange,
@@ -263,52 +265,55 @@ export const Cascade = ({
 
   const Render = theme === 'fill' ? FillRender : DefaultRender
 
-  return <View className={classNames('Cascade', className)} style={style} {...props}>
-    <Render
-      list={selectList}
-      select={select}
-      isRadio={isRadio}
-      checkNumbers={checkNumbers}
-      labelClick={labelClick}
-      nameKey={nameKey}
-      value={val}
-      valueKey={valueKey}
-      rightClick={rightClick}
-      itemClick={itemClick}
-      anyLevel={anyLevel}
-    />
-  </View>
-}
+    return <View className={classNames('Cascade', className)} style={style} {...props}>
+      <Render
+        list={selectList}
+        select={select}
+        isRadio={isRadio}
+        checkNumbers={checkNumbers}
+        labelClick={labelClick}
+        nameKey={nameKey}
+        value={val}
+        valueKey={valueKey}
+        rightClick={rightClick}
+        itemClick={itemClick}
+        anyLevel={anyLevel}
+      />
+    </View>
+  }
 
 
-/**
- * 用于计算出选中的内容显示值
- * @param {*} value 当前值
- * @param {*} param1 传入组件的参数
- * @returns
- */
-Cascade.getShowText = (value, {
-  data = [],
-  childrenKey = 'children',
-  nameKey = 'name',
-  valueKey = 'value',
-} = {}) => {
-  if (!Array.isArray(value)) {
-    value = [value]
+  /**
+   * 用于计算出选中的内容显示值
+   * @param {*} value 当前值
+   * @param {*} param1 传入组件的参数
+   * @returns
+   */
+  Cascade_.getShowText = (value, {
+    data = [],
+    childrenKey = 'children',
+    nameKey = 'name',
+    valueKey = 'value',
+  } = {}) => {
+    if (!Array.isArray(value)) {
+      value = [value]
+    }
+    const getValue = (list = data, select = []) => {
+      list.forEach(item => {
+        if (value.includes(item[valueKey])) {
+          select.push(item[nameKey])
+        }
+        if (item[childrenKey]?.length) {
+          getValue(item[childrenKey], select)
+        }
+      })
+      return select
+    }
+    return getValue()
   }
-  const getValue = (list = data, select = []) => {
-    list.forEach(item => {
-      if (value.includes(item[valueKey])) {
-        select.push(item[nameKey])
-      }
-      if (item[childrenKey]?.length) {
-        getValue(item[childrenKey], select)
-      }
-    })
-    return select
-  }
-  return getValue()
-}
+
+  return Cascade_
+})
 
 const DefaultRender = ({
   list,

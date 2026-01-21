@@ -152,7 +152,7 @@ const getNodes = (() => {
           parent.child.push(text)
         }
       },
-      end(tag) {
+      end() {
         const node = bufArray.shift()
         // if (node.tag !== tag) console.error('invalid state: mismatch end tag');
         //判断子元素中是否存在不属于文本的元素

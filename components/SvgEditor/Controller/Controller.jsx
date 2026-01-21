@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Animated, duxappTheme, px, pxNum, transformStyle } from '@/duxapp'
 import { getImageInfo } from '@tarojs/taro'
+import { duxuiLang } from '@/duxui/utils'
 import { DuxuiIcon } from '../../DuxuiIcon'
 import { Column, Row } from '../../Flex'
 import { menus } from './Menus'
@@ -16,6 +17,8 @@ export const SvgEditorController = ({
   editor,
   ...props
 }) => {
+
+  const t = duxuiLang.useT()
 
   const Menu = menus[mode]
 
@@ -43,7 +46,7 @@ export const SvgEditorController = ({
               })
             })
           } else {
-            throw new Error('请传入 selectImage 函数，用来获取本地图片')
+            throw new Error(t('svg.editor.needSelectImage'))
           }
         } else {
           setMode(val)

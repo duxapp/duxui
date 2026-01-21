@@ -35,15 +35,15 @@
     &__line {
       &--row {
         position: absolute;
-        border-top-width: 2px;
-        border-top-color: $duxappTextColor2;
+        border-top-width: 1px;
+        border-top-color: $duxappTextColor3;
         top: 50%;
       }
 
       &--column {
         position: absolute;
-        border-left-width: 2px;
-        border-left-color: $duxappTextColor2;
+        border-left-width: 1px;
+        border-left-color: $duxappTextColor3;
         left: 50%;
       }
     }

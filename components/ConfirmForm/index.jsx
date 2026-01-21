@@ -1,5 +1,6 @@
 import { cloneElement, isValidElement, useEffect, useRef, useState } from 'react'
 import { KeyboardDismiss, PullView, TopView } from '@/duxapp'
+import { duxuiLang } from '@/duxui/utils'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { Divider } from '../Divider'
@@ -8,16 +9,21 @@ import './index.scss'
 
 const ConfirmForm = ({
   defaultValue,
-  title = '请输入',
+  title,
   form: FormIns,
   multiple,
   verify,
   cancel = true,
-  submitText = '确定',
-  cancelText = '取消',
+  submitText,
+  cancelText,
   onSubmit,
   onCancel
 }) => {
+
+  const t = duxuiLang.useT()
+  const titleText = title ?? t('confirmForm.title')
+  const submitTextValue = submitText ?? t('common.ok')
+  const cancelTextValue = cancelText ?? t('common.cancel')
 
   useEffect(() => {
     return () => onCancel?.()
@@ -43,7 +49,7 @@ const ConfirmForm = ({
   }
 
   const content = (<Column className='ConfirmForm__main'>
-    <Text size={6} bold align='center'>{title}</Text>
+    <Text size={6} bold align='center'>{titleText}</Text>
     <Column className='ConfirmForm__input'>
       {
         multiple ?
@@ -55,7 +61,7 @@ const ConfirmForm = ({
             })
             : typeof FormIns === 'function' ?
               <FormIns value={val} onChange={setVal} />
-              : console.error('confirmForm: 传入的form不是一个有效的元素')
+              : console.error(t('confirmForm.invalidForm'))
       }
     </Column>
     <Divider className='ConfirmForm__divider' />
@@ -66,18 +72,18 @@ const ConfirmForm = ({
           onCancel()
         }}
       >
-        <Text size={6}>{cancelText}</Text>
+        <Text size={6}>{cancelTextValue}</Text>
       </Row>}
       <Divider direction='vertical' />
       {
         multiple ?
           <FormSubmit>
             <Row grow items='center' justify='center'>
-              <Text type='primary' size={6}>{submitText}</Text>
+              <Text type='primary' size={6}>{submitTextValue}</Text>
             </Row>
           </FormSubmit> :
           <Row grow items='center' justify='center' onClick={submit}>
-            <Text type='primary' size={6}>{submitText}</Text>
+            <Text type='primary' size={6}>{submitTextValue}</Text>
           </Row>
       }
     </Row>
@@ -108,7 +114,7 @@ export const confirmForm = props => {
       },
       onCancel: () => {
         action.remove()
-        reject('取消输入')
+        reject(duxuiLang.t('confirmForm.cancelInput'))
       }
     }])
   })

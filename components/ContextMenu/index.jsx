@@ -1,6 +1,7 @@
-import { Animated, colorDark, colorLighten, duxappTheme, getWindowInfo, nextTick, pxNum, theme, TopView, transformStyle } from '@/duxapp'
+import { Animated, colorDark, colorLighten, duxappTheme, getWindowInfo, nextTick, px, pxNum, theme, TopView, transformStyle } from '@/duxapp'
 import { View } from '@tarojs/components'
 import { useEffect, useMemo, useState } from 'react'
+import { duxuiLang } from '@/duxui/utils'
 import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -9,7 +10,7 @@ export const showContextMenu = ({
   x, y, list, animation, oneCallback
 }) => {
   if (!list?.length) {
-    return Promise.reject('菜单列表为空')
+    return Promise.reject(duxuiLang.t('contextMenu.emptyList'))
   }
   if (list.length === 1 && oneCallback) {
     return Promise.resolve({
@@ -18,7 +19,7 @@ export const showContextMenu = ({
     })
   }
   if (typeof x !== 'number' || typeof y !== 'number') {
-    return Promise.reject('坐标参数错误')
+    return Promise.reject(duxuiLang.t('contextMenu.invalidCoord'))
   }
 
   const select = () => {
@@ -29,7 +30,7 @@ export const showContextMenu = ({
           x, y, list, animation,
           onClose: () => {
             remove()
-            reject('取消选择')
+            reject(duxuiLang.t('contextMenu.cancelSelect'))
           },
           onSelect: data => {
             remove()
@@ -150,16 +151,13 @@ const ContextMenu = ({ x, y, list, animation = true, onClose, onSelect }) => {
               className='ph-3 z-2 gap-1 justify-between items-center'
               style={{
                 height: itemSize,
-                borderBottom: index < list.length - 1
-                  ? `1px solid ${duxappTheme.borderColor}`
-                  : 'none',
-                minWidth: pxNum(120)
+                minWidth: px(120)
               }}
               onClick={() => {
                 onSelect({ item, index })
               }}
             >
-              <Text nowrap>{item?.name || item}</Text>
+              <Text nowrap {...item?.props}>{item?.name || item}</Text>
               {!!item.children?.length && <DuxuiIcon name='direction_right' className='text-s3 text-c1' />}
             </Row>
           ))}

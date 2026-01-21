@@ -2,12 +2,14 @@ import { ScrollViewProps } from '@tarojs/components'
 import { Component, ReactElement, CSSProperties, FC } from 'react'
 import { VirtualListProps } from '@tarojs/components-advanced/dist/components/virtual-list'
 import { VirtualWaterfallProps } from '@tarojs/components-advanced/dist/components/virtual-waterfall'
-import { Request } from '../../utils/net'
-import { RequestHooks } from '../../utils/hooks/request'
+import { Request } from '@/duxapp/utils/net'
+import { RequestHooks } from '@/duxapp/utils/hooks/request'
 
 interface ListProps extends ScrollViewProps {
-  /** 请求url 和 request的url相同 */
-  url: string
+  /** 请求url 和 request的url相同 如果url为空下拉刷新 上拉加载功能将停用 */
+  url?: string
+  /** 如果是外部控制列表数据，直接传入这个字段，并且url留空 */
+  listData?: any[]
   /** 每一项的渲染组件 */
   renderItem: Component
   /** 请求参数 request 的data */
@@ -34,6 +36,13 @@ interface ListProps extends ScrollViewProps {
     // 传入一个展示的钩子
     useShow: () => void
   }
+  /**
+   * 控制列表刷新的行为（用于 `reloadForShow` 和下拉刷新）
+   *
+   * - `first`: 刷新到第一页（默认）
+   * - `top`: 仅当滚动接近顶部时才刷新（scrollTop < 100）
+   */
+  reloadType?: 'first' | 'top'
   /** 传给 usePageData 的第二个参数 */
   option: RequestHooks.PageDataConfig
   /**

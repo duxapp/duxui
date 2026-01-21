@@ -1,6 +1,7 @@
 import { uploadFile as uploadFileTaro } from '@tarojs/taro'
 import md5 from 'crypto-js/md5'
 import { Platform } from '@/duxapp/utils/rn/util'
+import { duxuiLang } from '@/duxui/utils'
 
 const uploadFile = process.env.TARO_ENV === 'rn'
   ? (() => {
@@ -62,7 +63,7 @@ const uploadFile = process.env.TARO_ENV === 'rn'
 
         const timer = setTimeout(() => {
           xhr.abort()
-          reject({ errMsg: 'uploadFile fail: 请求超时' })
+          reject({ errMsg: duxuiLang.t('uploadManage.qiniu.timeout') })
         }, timeout)
       })
       let progressFunc
@@ -115,7 +116,7 @@ export default (() => {
       return
     }
     if (!config.asyncCallback) {
-      throw '请注册获取配置的异步函数'
+      throw duxuiLang.t('uploadManage.qiniu.needAsyncConfig')
     }
 
     const _config = await config.asyncCallback()
@@ -141,8 +142,9 @@ export default (() => {
       }) => {
         await initToken()
         if (!isReady()) {
-          console.error('七牛云上传参数错误 请配置参数后重试')
-          throw '七牛云上传参数错误 请配置参数后重试'
+          const msg = duxuiLang.t('uploadManage.qiniu.invalidParams')
+          console.error(msg)
+          throw msg
         }
 
         // qiniuShouldUseQiniuFileName 如果是 true，则文件的 key 由 qiniu 服务器分配（全局去重）。如果是 false，则文件的 key 使用微信自动生成的 filename。出于初代sdk用户升级后兼容问题的考虑，默认是 false。
@@ -158,7 +160,9 @@ export default (() => {
         })
 
         // 文件上传进度
-        uploadTask.progress(progress)
+        if (progress) {
+          uploadTask.progress(progress)
+        }
 
         // 中断文件上传
         cancelTask && cancelTask(() => {

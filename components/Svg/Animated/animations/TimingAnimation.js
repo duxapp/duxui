@@ -44,9 +44,7 @@ export class TimingAnimation extends Animation {
   start(
     fromValue,
     onUpdate,
-    onEnd,
-    previousAnimation,
-    animatedValue,
+    onEnd
   ) {
     this.__active = true
     this._fromValue = fromValue

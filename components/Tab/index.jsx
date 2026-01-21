@@ -42,6 +42,9 @@ export const Tab = ({
     const _tabPane = []
     let _badgeType = null
     const _list = Children.map(children, (_child, index) => {
+      if(!_child) {
+        return
+      }
       const paneKey = _child?.props?.value ?? _child?.props?.paneKey ?? index
 
       if (_badgeType !== 'count') {
@@ -51,15 +54,15 @@ export const Tab = ({
           _badgeType = 'dot'
         }
       }
-      _tabPane[index] = {
+      _tabPane.push({
         paneKey,
         el: _child
-      }
+      })
       return {
         ..._child?.props,
         paneKey
       }
-    }) || []
+    }).filter(v => v) || []
     return [_list, _tabPane, _badgeType]
   }, [children])
 

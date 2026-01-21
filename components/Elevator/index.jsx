@@ -2,6 +2,7 @@ import { useCallback, useRef, useState, createContext, useContext as useReactCon
 import { View, Text, Input, Image } from '@tarojs/components'
 import { noop, px, pxNum, transformStyle } from '@/duxapp/utils/util'
 import { ScrollView, Layout, Absolute } from '@/duxapp'
+import { duxuiLang } from '@/duxui/utils'
 import classNames from 'classnames'
 import searchIcon from './images/search.png'
 import './index.scss'
@@ -11,11 +12,13 @@ const context = /*@__PURE__*/ createContext({ setKeyword: noop })
 const useContext = () => useReactContext(context)
 
 export const ElevatorSearch = ({
-  placeholder = '请输入关键词搜索',
+  placeholder,
   className,
   ...props
 }) => {
   const { setKeyword } = useContext()
+  const t = duxuiLang.useT()
+  const placeholderText = placeholder ?? t('elevator.searchPlaceholder')
 
   const timer = useRef(null)
   const input = useCallback(e => {
@@ -31,7 +34,7 @@ export const ElevatorSearch = ({
 
   return <View className={classNames('Elevator__search', className)} {...props}>
     <Image src={searchIcon} className='Elevator__search__icon' />
-    <Input className='Elevator__search__input' placeholder={placeholder} onInput={input} />
+    <Input className='Elevator__search__input' placeholder={placeholderText} onInput={input} />
   </View>
 }
 

@@ -48,6 +48,7 @@
   }
 }
 .AvatarGroup {
+  flex-direction: row;
   &--s {
     height: $duxuiAvatarSSize;
   }
@@ -58,8 +59,6 @@
     height: $duxuiAvatarLSize;
   }
   &__avatar {
-    position: absolute;
-    top: 0;
     border-width: 1px;
     border-color: $duxappLineColor;
   }

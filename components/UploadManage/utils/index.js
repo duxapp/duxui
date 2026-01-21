@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useMemo, useState, } from 'react'
 import { ObjectManage, QuickEvent, toast } from '@/duxapp'
+import { duxuiLang } from '@/duxui/utils'
 import { uploadManageDrive } from '../drive'
 import { getExtIcon } from '../icons'
 
@@ -181,7 +182,7 @@ export class UploadManage extends ObjectManage {
   async upload(files) {
     const dreve = uploadManageDrive.getDreve()
     if (!dreve?.isReady()) {
-      console.error('上传驱动未准备就绪 请检查设置')
+      console.error(duxuiLang.t('uploadManage.driveNotReady'))
     }
     const uploadList = files.map(item => {
       const ext = item.path.split('.').reverse()[0]
@@ -220,7 +221,7 @@ export class UploadManage extends ObjectManage {
               done()
             }, 200)
           }).catch(err => {
-            console.log('上传失败', err)
+            console.log(duxuiLang.t('uploadManage.uploadFailed'), err)
             toast(JSON.stringify(err))
             setTimeout(() => {
               this.uploadList.splice(this.uploadList.indexOf(uploadItem), 1)
