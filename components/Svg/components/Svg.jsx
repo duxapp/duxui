@@ -96,7 +96,10 @@ export const Svg = /*@__PURE__*/ pure(() => {
         .select(`#${canvasId}`)
         .fields({ node: true, size: true })
         .exec((_res) => {
-          const canvas = _res[0].node
+          const canvas = _res[0]?.node
+          if (!canvas) {
+            return
+          }
           const ctx = canvas.getContext('2d')
 
           if (process.env.TARO_ENV !== 'h5') {

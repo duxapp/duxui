@@ -41,7 +41,7 @@ export const BaseScrollView = ({
 
   // 当内容不满一屏时，自动加载后面的内容
   useEffect(() => {
-    if (!list.length || refs.action.loadEnd || refs.autoEnd) {
+    if (!page || !url || !list.length || refs.action?.loadEnd || refs.autoEnd || refs.action?.refresh || refs.action?.loading) {
       return
     }
     nextTick(() => {

@@ -1,4 +1,4 @@
-import { ReactElement, CSSProperties } from 'react'
+import { ReactElement } from 'react'
 import { ColumnProps } from '../Flex'
 
 interface CustomKey {

@@ -19,7 +19,7 @@ export const Avatar = ({
   ...props
 }) => {
 
-  url = url || duxuiTheme.avatar.url
+  url = url || duxuiTheme.avatar.url || duxuiTheme.avatar.src
 
   const [viewStyle, textStyle] = useMemo(() => {
     const _sty = { ...style }

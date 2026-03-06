@@ -3,7 +3,6 @@ import { useCallback, useState } from 'react'
 import { Loading, previewMedia, requestPermissionMessage } from '@/duxapp/components'
 import classNames from 'classnames'
 import { toast } from '@/duxapp'
-import { duxappLang } from '@/duxapp/utils'
 import { duxuiLang } from '@/duxui/utils'
 import { formConfig } from './config'
 import { DuxuiIcon } from '../DuxuiIcon'
@@ -54,9 +53,8 @@ export const UploadImages = ({
       setProgress(-1)
       onChange([...value || [], ...urls])
     } catch (error) {
-      console.log(error)
-      if (error !== duxappLang.t('common.cancelSelect')) {
-        toast(error?.message || error)
+      if (error?.errMsg !== 'chooseMedia:fail cancel') {
+        toast(error?.message || error?.errMsg || error)
       }
       setProgress(-1)
     }

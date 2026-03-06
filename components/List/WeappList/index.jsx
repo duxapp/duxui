@@ -54,6 +54,11 @@ export const WeappList = ({
   const hardRelayout = useCallback(() => {
     const instance = vlistRef.current
     instance?.preset?.resetCache?.()
+    const itemList = instance?.preset?.itemList
+    if (itemList?.list && typeof itemList.length === 'number') {
+      itemList.list = new Array(itemList.length).fill(-1)
+      itemList.refreshCounter++
+    }
     if (isWaterfall && instance?.itemMap) {
       if (typeof columns === 'number' && columns > 0) {
         instance.itemMap.columns = columns
@@ -67,21 +72,16 @@ export const WeappList = ({
   }, [columns, isWaterfall])
 
   useEffect(() => {
-    if (!isWaterfall) {
-      oldLength.current = list.length
-      oldActionRefresh.current = !!action?.refresh
-      return
-    }
-
     const refreshEnded = oldActionRefresh.current && !action?.refresh
     const dataChanged = list !== oldList.current
     const lengthChanged = list.length !== oldLength.current
     const lengthDecreased = list.length < oldLength.current
+    const lengthSameButDataChanged = dataChanged && !lengthChanged && list.length > 0
 
-    if (lengthDecreased) {
+    if (lengthDecreased || lengthSameButDataChanged) {
       hardRelayout()
     } else if (refreshEnded && (dataChanged || lengthChanged)) {
-      // 瀑布流在小程序端会缓存 item 高度/布局；刷新或参数变更后需要重置布局映射，否则会沿用旧高度
+      // 小程序端会缓存 item 高度/布局；刷新或参数变更后需要重置布局映射，否则会沿用旧高度
       hardRelayout()
     }
 
@@ -89,14 +89,14 @@ export const WeappList = ({
     oldList.current = list
     oldActionRefresh.current = !!action?.refresh
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [action?.refresh, hardRelayout, isWaterfall, list, list.length])
+  }, [action?.refresh, hardRelayout, list, list.length])
 
   useEffect(() => {
-    if (isWaterfall && oldColumns.current !== columns) {
+    if (oldColumns.current !== columns) {
       oldColumns.current = columns
       hardRelayout()
     }
-  }, [columns, hardRelayout, isWaterfall])
+  }, [columns, hardRelayout])
 
   useEffect(() => {
     if (actionRefresh) {

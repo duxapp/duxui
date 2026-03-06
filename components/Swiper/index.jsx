@@ -21,8 +21,10 @@ export const Swiper = ({
 
   const [current, setCurrent] = useState(defaultCurrent)
 
+  const list = Children.toArray(children).filter(item => item)
+
   return <Column style={style} className={className}>
-    {Children.count(children) > 0 && <TaroSwiper
+    {list.length > 0 && <TaroSwiper
       className='h-full w-full'
       autoplay={autoplay}
       interval={interval}
@@ -35,9 +37,9 @@ export const Swiper = ({
     >
       {children}
     </TaroSwiper>}
-    {dot && !!children?.length && <Row className='gap-1 absolute w-full z-1' justify='center' style={{ bottom: px(dotDistance) }}>
+    {dot && !!list?.length && <Row className='gap-1 absolute w-full z-1' justify='center' style={{ bottom: px(dotDistance) }}>
       {
-        children.map((v, i) => <Column
+        list.map((v, i) => <Column
           key={i}
           style={{ width: px(current === i ? 32 : 16), height: px(16), backgroundColor: current === i ? dotSelectColor : dotColor }}
           className='r-1 bg-white'

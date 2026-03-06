@@ -108,6 +108,7 @@ export const Form = forwardRef(({
         try {
           await callback()
         } catch (error) {
+          console.error(error)
           refs.error++
         }
       } else {

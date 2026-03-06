@@ -1,8 +1,7 @@
 import { Animated, colorDark, colorLighten, duxappTheme, getWindowInfo, nextTick, px, pxNum, theme, TopView, transformStyle } from '@/duxapp'
-import { View } from '@tarojs/components'
+import { ScrollView, View } from '@tarojs/components'
 import { useEffect, useMemo, useState } from 'react'
 import { duxuiLang } from '@/duxui/utils'
-import { Column, Row } from '../Flex'
 import { Text } from '../Text'
 import { DuxuiIcon } from '../DuxuiIcon'
 
@@ -56,9 +55,11 @@ const ContextMenu = ({ x, y, list, animation = true, onClose, onSelect }) => {
 
   const [an, setAn] = useState(Animated.defaultState)
 
-  const { transformOrigin, transform, top } = useMemo(() => {
+  const { transformOrigin, transform, top, height } = useMemo(() => {
     const info = getWindowInfo()
     const menuHeight = list.length * itemSize
+    const maxHeight = info.windowHeight * 0.95
+    const displayHeight = Math.min(menuHeight, maxHeight)
 
     // 计算水平位置和变换
     let translateX = '0%'
@@ -70,15 +71,15 @@ const ContextMenu = ({ x, y, list, animation = true, onClose, onSelect }) => {
     let _top = y
     let originY = '0%' // 默认从上方向下展开
 
-    if (y + menuHeight <= info.windowHeight) {
+    if (y + displayHeight <= info.windowHeight) {
       // 下侧空间足够，正常放在下侧，但如果高度过大仍然可能超出底部，做一次兜底修正
-      const bottom = y + menuHeight
+      const bottom = y + displayHeight
       if (bottom > info.windowHeight) {
-        _top = Math.max(0, info.windowHeight - menuHeight)
+        _top = Math.max(0, info.windowHeight - displayHeight)
       }
     } else {
       // 下侧不够，尝试放到上侧
-      const aboveTop = y - menuHeight
+      const aboveTop = y - displayHeight
       if (aboveTop >= 0) {
         // 上侧空间足够，直接贴在上侧
         _top = aboveTop
@@ -92,7 +93,8 @@ const ContextMenu = ({ x, y, list, animation = true, onClose, onSelect }) => {
     return {
       transformOrigin: `${translateX === '0%' ? '0%' : '100%'} ${originY}`,
       transform: { translateX },
-      top: _top
+      top: _top,
+      height: displayHeight
     }
   }, [x, y, list.length, itemSize])
 
@@ -120,7 +122,7 @@ const ContextMenu = ({ x, y, list, animation = true, onClose, onSelect }) => {
         onClick={onClose}
         style={{ zIndex: 10 }}
       />
-      <Column
+      <View
         className='absolute z-2'
         style={{
           zIndex: 10,
@@ -142,27 +144,33 @@ const ContextMenu = ({ x, y, list, animation = true, onClose, onSelect }) => {
               scaleX: animation ? 0 : 1,
               scaleY: animation ? 0 : 1
             }),
-            transformOrigin
+            transformOrigin,
+            height
           }}
         >
-          {list.map((item, index) => (
-            <Row
-              key={index}
-              className='ph-3 z-2 gap-1 justify-between items-center'
-              style={{
-                height: itemSize,
-                minWidth: px(120)
-              }}
-              onClick={() => {
-                onSelect({ item, index })
-              }}
-            >
-              <Text nowrap {...item?.props}>{item?.name || item}</Text>
-              {!!item.children?.length && <DuxuiIcon name='direction_right' className='text-s3 text-c1' />}
-            </Row>
-          ))}
+          <ScrollView
+            scrollY
+            style={{ height }}
+          >
+            {list.map((item, index) => (
+              <View
+                key={index}
+                className='flex-row ph-3 z-2 gap-1 justify-between items-center'
+                style={{
+                  height: itemSize,
+                  minWidth: px(120)
+                }}
+                onClick={() => {
+                  onSelect({ item, index })
+                }}
+              >
+                <Text nowrap {...item?.props}>{item?.name || item}</Text>
+                {!!item.children?.length && <DuxuiIcon name='direction_right' className='text-s3 text-c1' />}
+              </View>
+            ))}
+          </ScrollView>
         </Animated.View>
-      </Column>
+      </View>
     </>
   )
 }
